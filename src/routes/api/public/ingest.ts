@@ -42,7 +42,7 @@ export const Route = createFileRoute("/api/public/ingest")({
           humidity: parsed.data.humidity ?? null,
           light_lux: parsed.data.light_lux ?? null,
           motion_events: parsed.data.motion_events ?? null,
-          extra: parsed.data.extra ?? null,
+          extra: (parsed.data.extra as never) ?? null,
           source_device: parsed.data.device_id,
         });
         if (insErr) return jsonError(500, insErr.message);
