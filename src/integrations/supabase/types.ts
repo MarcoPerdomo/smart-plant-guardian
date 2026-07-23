@@ -1,0 +1,470 @@
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[]
+
+export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.5"
+  }
+  public: {
+    Tables: {
+      ai_summaries: {
+        Row: {
+          created_at: string
+          id: string
+          plant_id: string
+          recommendations: Json | null
+          status: string
+          summary: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          plant_id: string
+          recommendations?: Json | null
+          status: string
+          summary: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          plant_id?: string
+          recommendations?: Json | null
+          status?: string
+          summary?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_summaries_plant_id_fkey"
+            columns: ["plant_id"]
+            isOneToOne: false
+            referencedRelation: "user_plants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          plant_id: string | null
+          read_at: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          plant_id?: string | null
+          read_at?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          plant_id?: string | null
+          read_at?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_plant_id_fkey"
+            columns: ["plant_id"]
+            isOneToOne: false
+            referencedRelation: "user_plants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      plant_species: {
+        Row: {
+          care_tips: string | null
+          common_diseases: string[] | null
+          common_name: string
+          common_pests: string[] | null
+          created_at: string
+          description: string | null
+          fertilizer: string | null
+          humidity_max: number | null
+          humidity_min: number | null
+          id: string
+          image_url: string | null
+          light: string | null
+          scientific_name: string | null
+          slug: string
+          soil: string | null
+          soil_moisture_max: number | null
+          soil_moisture_min: number | null
+          source: string
+          temperature_max_c: number | null
+          temperature_min_c: number | null
+          toxicity: string | null
+          water_frequency_days: number | null
+        }
+        Insert: {
+          care_tips?: string | null
+          common_diseases?: string[] | null
+          common_name: string
+          common_pests?: string[] | null
+          created_at?: string
+          description?: string | null
+          fertilizer?: string | null
+          humidity_max?: number | null
+          humidity_min?: number | null
+          id?: string
+          image_url?: string | null
+          light?: string | null
+          scientific_name?: string | null
+          slug: string
+          soil?: string | null
+          soil_moisture_max?: number | null
+          soil_moisture_min?: number | null
+          source?: string
+          temperature_max_c?: number | null
+          temperature_min_c?: number | null
+          toxicity?: string | null
+          water_frequency_days?: number | null
+        }
+        Update: {
+          care_tips?: string | null
+          common_diseases?: string[] | null
+          common_name?: string
+          common_pests?: string[] | null
+          created_at?: string
+          description?: string | null
+          fertilizer?: string | null
+          humidity_max?: number | null
+          humidity_min?: number | null
+          id?: string
+          image_url?: string | null
+          light?: string | null
+          scientific_name?: string | null
+          slug?: string
+          soil?: string | null
+          soil_moisture_max?: number | null
+          soil_moisture_min?: number | null
+          source?: string
+          temperature_max_c?: number | null
+          temperature_min_c?: number | null
+          toxicity?: string | null
+          water_frequency_days?: number | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          email: string | null
+          id: string
+          notify_email: boolean
+          notify_in_app: boolean
+          notify_sms: boolean
+          phone: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id: string
+          notify_email?: boolean
+          notify_in_app?: boolean
+          notify_sms?: boolean
+          phone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id?: string
+          notify_email?: boolean
+          notify_in_app?: boolean
+          notify_sms?: boolean
+          phone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      sensor_readings: {
+        Row: {
+          extra: Json | null
+          humidity: number | null
+          id: string
+          light_lux: number | null
+          motion_events: number | null
+          plant_id: string
+          recorded_at: string
+          soil_moisture: number | null
+          source_device: string | null
+          temperature_c: number | null
+        }
+        Insert: {
+          extra?: Json | null
+          humidity?: number | null
+          id?: string
+          light_lux?: number | null
+          motion_events?: number | null
+          plant_id: string
+          recorded_at?: string
+          soil_moisture?: number | null
+          source_device?: string | null
+          temperature_c?: number | null
+        }
+        Update: {
+          extra?: Json | null
+          humidity?: number | null
+          id?: string
+          light_lux?: number | null
+          motion_events?: number | null
+          plant_id?: string
+          recorded_at?: string
+          soil_moisture?: number | null
+          source_device?: string | null
+          temperature_c?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sensor_readings_plant_id_fkey"
+            columns: ["plant_id"]
+            isOneToOne: false
+            referencedRelation: "user_plants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_plants: {
+        Row: {
+          created_at: string
+          device_id: string | null
+          id: string
+          image_url: string | null
+          last_watered_at: string | null
+          location: string | null
+          nickname: string
+          notes: string | null
+          species_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          device_id?: string | null
+          id?: string
+          image_url?: string | null
+          last_watered_at?: string | null
+          location?: string | null
+          nickname: string
+          notes?: string | null
+          species_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          device_id?: string | null
+          id?: string
+          image_url?: string | null
+          last_watered_at?: string | null
+          location?: string | null
+          nickname?: string
+          notes?: string | null
+          species_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_plants_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: false
+            referencedRelation: "plant_species"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      watering_events: {
+        Row: {
+          amount_ml: number | null
+          created_at: string
+          id: string
+          notes: string | null
+          plant_id: string
+          watered_at: string
+        }
+        Insert: {
+          amount_ml?: number | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          plant_id: string
+          watered_at?: string
+        }
+        Update: {
+          amount_ml?: number | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          plant_id?: string
+          watered_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "watering_events_plant_id_fkey"
+            columns: ["plant_id"]
+            isOneToOne: false
+            referencedRelation: "user_plants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      [_ in never]: never
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
+}
+
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
+
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
+
+export type Tables<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R
+      }
+      ? R
+      : never
+    : never
+
+export type TablesInsert<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I
+      }
+      ? I
+      : never
+    : never
+
+export type TablesUpdate<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U
+      }
+      ? U
+      : never
+    : never
+
+export type Enums<
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema["Enums"]
+    | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    : never = never,
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof DefaultSchema["CompositeTypes"]
+    | { schema: keyof DatabaseWithoutInternals },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never
+
+export const Constants = {
+  public: {
+    Enums: {},
+  },
+} as const

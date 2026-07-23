@@ -1,0 +1,269 @@
+import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+
+// ============ Plant catalog ============
+export const searchSpecies = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ q: z.string().default("") }).parse(input))
+  .handler(async ({ data, context }) => {
+    const q = data.q.trim();
+    let query = context.supabase.from("plant_species").select("*").order("common_name").limit(30);
+    if (q) query = query.or(`common_name.ilike.%${q}%,scientific_name.ilike.%${q}%`);
+    const { data: rows, error } = await query;
+    if (error) throw new Error(error.message);
+    return rows ?? [];
+  });
+
+export const lookupOrCreateSpecies = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ name: z.string().min(2) }).parse(input))
+  .handler(async ({ data, context }) => {
+    const name = data.name.trim();
+    const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    const { data: existing } = await context.supabase
+      .from("plant_species").select("*").eq("slug", slug).maybeSingle();
+    if (existing) return existing;
+
+    // Ask AI for care profile
+    const apiKey = process.env.LOVABLE_API_KEY;
+    if (!apiKey) throw new Error("AI unavailable");
+    const prompt = `You are a botanist. Return ONLY JSON (no markdown) for the houseplant "${name}" with fields:
+scientific_name (string), description (1-2 sentences), light (short phrase like "Bright indirect"),
+water_frequency_days (integer, typical days between waterings), soil_moisture_min (int 0-100), soil_moisture_max (int 0-100),
+temperature_min_c (number), temperature_max_c (number), humidity_min (int 0-100), humidity_max (int 0-100),
+soil (short), fertilizer (short), toxicity (short), common_pests (string array of 2-4),
+common_diseases (string array of 2-4), care_tips (2-3 sentences). If the plant name is unknown, still return your best general guess.`;
+
+    const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+      body: JSON.stringify({
+        model: "google/gemini-3.6-flash",
+        messages: [{ role: "user", content: prompt }],
+        response_format: { type: "json_object" },
+      }),
+    });
+    if (!resp.ok) {
+      const txt = await resp.text();
+      throw new Error(`AI error ${resp.status}: ${txt}`);
+    }
+    const json = await resp.json();
+    const content = json.choices?.[0]?.message?.content ?? "{}";
+    const parsed = JSON.parse(content);
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: created, error } = await supabaseAdmin.from("plant_species").insert({
+      common_name: name,
+      scientific_name: parsed.scientific_name ?? null,
+      slug,
+      description: parsed.description ?? null,
+      light: parsed.light ?? null,
+      water_frequency_days: parsed.water_frequency_days ?? null,
+      soil_moisture_min: parsed.soil_moisture_min ?? null,
+      soil_moisture_max: parsed.soil_moisture_max ?? null,
+      temperature_min_c: parsed.temperature_min_c ?? null,
+      temperature_max_c: parsed.temperature_max_c ?? null,
+      humidity_min: parsed.humidity_min ?? null,
+      humidity_max: parsed.humidity_max ?? null,
+      soil: parsed.soil ?? null,
+      fertilizer: parsed.fertilizer ?? null,
+      toxicity: parsed.toxicity ?? null,
+      common_pests: parsed.common_pests ?? [],
+      common_diseases: parsed.common_diseases ?? [],
+      care_tips: parsed.care_tips ?? null,
+      source: "ai",
+    }).select().single();
+    if (error) throw new Error(error.message);
+    return created;
+  });
+
+// ============ User plants ============
+export const listUserPlants = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { data, error } = await context.supabase
+      .from("user_plants")
+      .select("*, plant_species(*)")
+      .order("created_at", { ascending: false });
+    if (error) throw new Error(error.message);
+
+    // Attach latest reading per plant
+    const ids = (data ?? []).map((p) => p.id);
+    if (ids.length === 0) return [];
+    const { data: readings } = await context.supabase
+      .from("sensor_readings")
+      .select("*")
+      .in("plant_id", ids)
+      .order("recorded_at", { ascending: false });
+    const latest = new Map<string, typeof readings extends (infer T)[] | null ? T : never>();
+    for (const r of readings ?? []) if (!latest.has(r.plant_id)) latest.set(r.plant_id, r);
+
+    return (data ?? []).map((p) => ({ ...p, latest_reading: latest.get(p.id) ?? null }));
+  });
+
+export const getPlant = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((i: unknown) => z.object({ id: z.string().uuid() }).parse(i))
+  .handler(async ({ data, context }) => {
+    const { data: plant, error } = await context.supabase
+      .from("user_plants").select("*, plant_species(*)").eq("id", data.id).single();
+    if (error) throw new Error(error.message);
+    const { data: readings } = await context.supabase
+      .from("sensor_readings").select("*").eq("plant_id", data.id)
+      .order("recorded_at", { ascending: false }).limit(200);
+    const { data: waterings } = await context.supabase
+      .from("watering_events").select("*").eq("plant_id", data.id)
+      .order("watered_at", { ascending: false }).limit(20);
+    const { data: summaries } = await context.supabase
+      .from("ai_summaries").select("*").eq("plant_id", data.id)
+      .order("created_at", { ascending: false }).limit(5);
+    return { plant, readings: readings ?? [], waterings: waterings ?? [], summaries: summaries ?? [] };
+  });
+
+export const createPlant = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((i: unknown) => z.object({
+    nickname: z.string().min(1),
+    species_id: z.string().uuid().nullable(),
+    location: z.string().nullable(),
+    device_id: z.string().nullable(),
+    notes: z.string().nullable(),
+  }).parse(i))
+  .handler(async ({ data, context }) => {
+    const { data: row, error } = await context.supabase
+      .from("user_plants").insert({ ...data, user_id: context.userId }).select().single();
+    if (error) throw new Error(error.message);
+    return row;
+  });
+
+export const logWatering = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((i: unknown) => z.object({ plant_id: z.string().uuid(), amount_ml: z.number().nullable() }).parse(i))
+  .handler(async ({ data, context }) => {
+    const { error } = await context.supabase.from("watering_events").insert(data);
+    if (error) throw new Error(error.message);
+    await context.supabase.from("user_plants").update({ last_watered_at: new Date().toISOString() }).eq("id", data.plant_id);
+    return { ok: true };
+  });
+
+export const addManualReading = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((i: unknown) => z.object({
+    plant_id: z.string().uuid(),
+    soil_moisture: z.number().nullable(),
+    temperature_c: z.number().nullable(),
+    humidity: z.number().nullable(),
+    light_lux: z.number().nullable(),
+  }).parse(i))
+  .handler(async ({ data, context }) => {
+    // Verify ownership via RLS-friendly select
+    const { data: owned } = await context.supabase.from("user_plants").select("id").eq("id", data.plant_id).maybeSingle();
+    if (!owned) throw new Error("Not found");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin.from("sensor_readings").insert({ ...data, source_device: "manual" });
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export const deletePlant = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((i: unknown) => z.object({ id: z.string().uuid() }).parse(i))
+  .handler(async ({ data, context }) => {
+    const { error } = await context.supabase.from("user_plants").delete().eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+// ============ Profile / notification prefs ============
+export const getProfile = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { data, error } = await context.supabase.from("profiles").select("*").eq("id", context.userId).maybeSingle();
+    if (error) throw new Error(error.message);
+    return data;
+  });
+
+export const updateProfile = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((i: unknown) => z.object({
+    display_name: z.string().nullable(),
+    phone: z.string().nullable(),
+    notify_in_app: z.boolean(),
+    notify_email: z.boolean(),
+    notify_sms: z.boolean(),
+  }).parse(i))
+  .handler(async ({ data, context }) => {
+    const { error } = await context.supabase.from("profiles").upsert({ id: context.userId, ...data });
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+// ============ Notifications feed ============
+export const listNotifications = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { data, error } = await context.supabase
+      .from("notifications").select("*").order("created_at", { ascending: false }).limit(50);
+    if (error) throw new Error(error.message);
+    return data ?? [];
+  });
+
+// ============ AI summary ============
+export const generateSummary = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((i: unknown) => z.object({ plant_id: z.string().uuid() }).parse(i))
+  .handler(async ({ data, context }) => {
+    const { data: plant } = await context.supabase
+      .from("user_plants").select("*, plant_species(*)").eq("id", data.plant_id).single();
+    if (!plant) throw new Error("Plant not found");
+    const { data: readings } = await context.supabase
+      .from("sensor_readings").select("*").eq("plant_id", data.plant_id)
+      .order("recorded_at", { ascending: false }).limit(50);
+
+    const species = (plant as { plant_species: Record<string, unknown> | null }).plant_species;
+    const context_str = JSON.stringify({
+      nickname: plant.nickname,
+      species,
+      last_watered_at: plant.last_watered_at,
+      recent_readings: (readings ?? []).slice(0, 20),
+    }, null, 2);
+
+    const apiKey = process.env.LOVABLE_API_KEY;
+    if (!apiKey) throw new Error("AI unavailable");
+    const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+      body: JSON.stringify({
+        model: "google/gemini-3.6-flash",
+        messages: [
+          { role: "system", content: "You are a warm, expert houseplant care assistant. Return ONLY JSON with keys: status ('healthy'|'attention'|'thirsty'|'unknown'), summary (2-3 friendly sentences addressed to the owner), recommendations (array of 2-5 short action items)." },
+          { role: "user", content: `Plant context:\n${context_str}` },
+        ],
+        response_format: { type: "json_object" },
+      }),
+    });
+    if (!resp.ok) throw new Error(`AI error ${resp.status}`);
+    const json = await resp.json();
+    const content = json.choices?.[0]?.message?.content ?? "{}";
+    const parsed = JSON.parse(content);
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: saved, error } = await supabaseAdmin.from("ai_summaries").insert({
+      plant_id: data.plant_id,
+      status: parsed.status ?? "unknown",
+      summary: parsed.summary ?? "No summary available.",
+      recommendations: parsed.recommendations ?? [],
+    }).select().single();
+    if (error) throw new Error(error.message);
+
+    // Also drop a notification if user has in-app notifications on
+    await supabaseAdmin.from("notifications").insert({
+      user_id: context.userId,
+      plant_id: data.plant_id,
+      title: `${plant.nickname}: ${parsed.status ?? "update"}`,
+      body: parsed.summary ?? "",
+    });
+
+    return saved;
+  });
