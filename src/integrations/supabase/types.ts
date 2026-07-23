@@ -14,7 +14,322 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      ai_summaries: {
+        Row: {
+          created_at: string
+          id: string
+          plant_id: string
+          recommendations: Json | null
+          status: string
+          summary: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          plant_id: string
+          recommendations?: Json | null
+          status: string
+          summary: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          plant_id?: string
+          recommendations?: Json | null
+          status?: string
+          summary?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_summaries_plant_id_fkey"
+            columns: ["plant_id"]
+            isOneToOne: false
+            referencedRelation: "user_plants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          plant_id: string | null
+          read_at: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          plant_id?: string | null
+          read_at?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          plant_id?: string | null
+          read_at?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_plant_id_fkey"
+            columns: ["plant_id"]
+            isOneToOne: false
+            referencedRelation: "user_plants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      plant_species: {
+        Row: {
+          care_tips: string | null
+          common_diseases: string[] | null
+          common_name: string
+          common_pests: string[] | null
+          created_at: string
+          description: string | null
+          fertilizer: string | null
+          humidity_max: number | null
+          humidity_min: number | null
+          id: string
+          image_url: string | null
+          light: string | null
+          scientific_name: string | null
+          slug: string
+          soil: string | null
+          soil_moisture_max: number | null
+          soil_moisture_min: number | null
+          source: string
+          temperature_max_c: number | null
+          temperature_min_c: number | null
+          toxicity: string | null
+          water_frequency_days: number | null
+        }
+        Insert: {
+          care_tips?: string | null
+          common_diseases?: string[] | null
+          common_name: string
+          common_pests?: string[] | null
+          created_at?: string
+          description?: string | null
+          fertilizer?: string | null
+          humidity_max?: number | null
+          humidity_min?: number | null
+          id?: string
+          image_url?: string | null
+          light?: string | null
+          scientific_name?: string | null
+          slug: string
+          soil?: string | null
+          soil_moisture_max?: number | null
+          soil_moisture_min?: number | null
+          source?: string
+          temperature_max_c?: number | null
+          temperature_min_c?: number | null
+          toxicity?: string | null
+          water_frequency_days?: number | null
+        }
+        Update: {
+          care_tips?: string | null
+          common_diseases?: string[] | null
+          common_name?: string
+          common_pests?: string[] | null
+          created_at?: string
+          description?: string | null
+          fertilizer?: string | null
+          humidity_max?: number | null
+          humidity_min?: number | null
+          id?: string
+          image_url?: string | null
+          light?: string | null
+          scientific_name?: string | null
+          slug?: string
+          soil?: string | null
+          soil_moisture_max?: number | null
+          soil_moisture_min?: number | null
+          source?: string
+          temperature_max_c?: number | null
+          temperature_min_c?: number | null
+          toxicity?: string | null
+          water_frequency_days?: number | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          email: string | null
+          id: string
+          notify_email: boolean
+          notify_in_app: boolean
+          notify_sms: boolean
+          phone: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id: string
+          notify_email?: boolean
+          notify_in_app?: boolean
+          notify_sms?: boolean
+          phone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id?: string
+          notify_email?: boolean
+          notify_in_app?: boolean
+          notify_sms?: boolean
+          phone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      sensor_readings: {
+        Row: {
+          extra: Json | null
+          humidity: number | null
+          id: string
+          light_lux: number | null
+          motion_events: number | null
+          plant_id: string
+          recorded_at: string
+          soil_moisture: number | null
+          source_device: string | null
+          temperature_c: number | null
+        }
+        Insert: {
+          extra?: Json | null
+          humidity?: number | null
+          id?: string
+          light_lux?: number | null
+          motion_events?: number | null
+          plant_id: string
+          recorded_at?: string
+          soil_moisture?: number | null
+          source_device?: string | null
+          temperature_c?: number | null
+        }
+        Update: {
+          extra?: Json | null
+          humidity?: number | null
+          id?: string
+          light_lux?: number | null
+          motion_events?: number | null
+          plant_id?: string
+          recorded_at?: string
+          soil_moisture?: number | null
+          source_device?: string | null
+          temperature_c?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sensor_readings_plant_id_fkey"
+            columns: ["plant_id"]
+            isOneToOne: false
+            referencedRelation: "user_plants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_plants: {
+        Row: {
+          created_at: string
+          device_id: string | null
+          id: string
+          image_url: string | null
+          last_watered_at: string | null
+          location: string | null
+          nickname: string
+          notes: string | null
+          species_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          device_id?: string | null
+          id?: string
+          image_url?: string | null
+          last_watered_at?: string | null
+          location?: string | null
+          nickname: string
+          notes?: string | null
+          species_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          device_id?: string | null
+          id?: string
+          image_url?: string | null
+          last_watered_at?: string | null
+          location?: string | null
+          nickname?: string
+          notes?: string | null
+          species_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_plants_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: false
+            referencedRelation: "plant_species"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      watering_events: {
+        Row: {
+          amount_ml: number | null
+          created_at: string
+          id: string
+          notes: string | null
+          plant_id: string
+          watered_at: string
+        }
+        Insert: {
+          amount_ml?: number | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          plant_id: string
+          watered_at?: string
+        }
+        Update: {
+          amount_ml?: number | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          plant_id?: string
+          watered_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "watering_events_plant_id_fkey"
+            columns: ["plant_id"]
+            isOneToOne: false
+            referencedRelation: "user_plants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
