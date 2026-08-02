@@ -170,7 +170,13 @@ def main() -> int:
     interval = int(cfg.get("interval_seconds", 300))
     try:
         while _running:
-            payload = to_payload(cfg["device_id"], collect(sensors))
+            values = collect(sensors)
+            snapshot_path = values.pop("snapshot", None)
+            snapshot_url = upload_snapshot(cfg, snapshot_path) if snapshot_path else None
+
+            payload = to_payload(cfg["device_id"], values)
+            if snapshot_url:
+                payload.setdefault("extra", {})["snapshot_url"] = snapshot_url
             if args.dry_run:
                 log.info("dry-run payload: %s", payload)
             else:
