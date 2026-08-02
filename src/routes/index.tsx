@@ -9,8 +9,8 @@ export const Route = createFileRoute("/")({
     meta: [
       { title: "Verdant — Smart houseplant care with Arduino sensors" },
       { name: "description", content: "Plug in Arduino sensors, track soil moisture, humidity, light and pests, and get AI care summaries for every plant." },
-      { property: "og:title", content: "Verdant" },
-      { property: "og:description", content: "Smart houseplant care powered by your Arduino sensors + AI." },
+      { property: "og:title", content: "Verdant — Smart houseplant care with Arduino sensors" },
+      { property: "og:description", content: "Plug in Arduino sensors, track soil moisture, humidity, light and pests, and get AI care summaries for every plant." },
     ],
   }),
 });
