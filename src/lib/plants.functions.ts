@@ -384,10 +384,14 @@ export const generateSpeciesImageFor = createServerFn({ method: "POST" })
     const helpers = await import("@/lib/plants.server");
     const img = await helpers.generateSpeciesImage(row.common_name, apiKey);
     if (!img) throw new Error("No image returned");
-    const imageUrl = await helpers.uploadCatalogImage(row.slug, img.buffer, img.contentType);
+    const imageUrl = await helpers.uploadCatalogImage(
+      row.slug,
+      img.buffer,
+      img.contentType,
+      context.supabase,
+    );
 
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { error } = await supabaseAdmin
+    const { error } = await context.supabase
       .from("plant_species")
       .update({ image_url: imageUrl })
       .eq("id", row.id);
