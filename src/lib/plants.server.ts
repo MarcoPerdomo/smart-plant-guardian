@@ -1,0 +1,101 @@
+export type SpeciesProfile = {
+  common_aliases?: string[];
+  scientific_name?: string | null;
+  description?: string | null;
+  light?: string | null;
+  water_frequency_days?: number | null;
+  soil_moisture_min?: number | null;
+  soil_moisture_max?: number | null;
+  temperature_min_c?: number | null;
+  temperature_max_c?: number | null;
+  humidity_min?: number | null;
+  humidity_max?: number | null;
+  soil?: string | null;
+  fertilizer?: string | null;
+  toxicity?: string | null;
+  common_pests?: string[];
+  common_diseases?: string[];
+  care_tips?: string | null;
+};
+
+export async function generateSpeciesProfile(name: string, apiKey: string): Promise<SpeciesProfile> {
+  const prompt = `You are a botanist. Return ONLY JSON (no markdown) for the houseplant "${name}" with fields:
+common_aliases (string array of 3-8 common nicknames/aliases),
+scientific_name (string), description (1-2 sentences), light (short phrase like "Bright indirect"),
+water_frequency_days (integer, typical days between waterings), soil_moisture_min (int 0-100), soil_moisture_max (int 0-100),
+temperature_min_c (number), temperature_max_c (number), humidity_min (int 0-100), humidity_max (int 0-100),
+soil (short), fertilizer (short), toxicity (short), common_pests (string array of 2-4),
+common_diseases (string array of 2-4), care_tips (2-3 sentences). If the plant name is unknown, still return your best general guess.`;
+
+  const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+    body: JSON.stringify({
+      model: "google/gemini-3.6-flash",
+      messages: [{ role: "user", content: prompt }],
+      response_format: { type: "json_object" },
+    }),
+  });
+  if (!resp.ok) {
+    const txt = await resp.text();
+    throw new Error(`AI error ${resp.status}: ${txt}`);
+  }
+  const json = await resp.json();
+  const content = json.choices?.[0]?.message?.content ?? "{}";
+  return JSON.parse(content);
+}
+
+export async function generateSpeciesImage(
+  name: string,
+  apiKey: string,
+): Promise<{ buffer: Uint8Array; contentType: string } | null> {
+  const prompt = `A clean, well-lit product-style photo of a healthy potted ${name} houseplant on a simple neutral background. No text, no labels.`;
+  const resp = await fetch("https://ai.gateway.lovable.dev/v1/images/generations", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+    body: JSON.stringify({
+      model: "google/gemini-3-pro-image",
+      messages: [{ role: "user", content: prompt }],
+      modalities: ["image", "text"],
+      stream: false,
+    }),
+  });
+  if (!resp.ok) {
+    const txt = await resp.text();
+    throw new Error(`Image generation error ${resp.status}: ${txt}`);
+  }
+  const json = await resp.json();
+  const item = json.data?.[0];
+  if (!item) return null;
+
+  if (item.url) {
+    const imgResp = await fetch(item.url);
+    if (!imgResp.ok) return null;
+    const buffer = new Uint8Array(await imgResp.arrayBuffer());
+    const contentType = imgResp.headers.get("content-type") || "image/png";
+    return { buffer, contentType };
+  }
+
+  if (item.b64_json) {
+    const binary = atob(item.b64_json);
+    const buffer = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) buffer[i] = binary.charCodeAt(i);
+    return { buffer, contentType: "image/png" };
+  }
+
+  return null;
+}
+
+export async function uploadCatalogImage(slug: string, buffer: Uint8Array, contentType: string): Promise<string | null> {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const path = `catalog/${slug}.png`;
+  const { error: uploadError } = await supabaseAdmin.storage
+    .from("plant-images")
+    .upload(path, buffer, { contentType, upsert: true });
+  if (uploadError) throw uploadError;
+
+  const { data: signed } = await supabaseAdmin.storage
+    .from("plant-images")
+    .createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
+  return signed?.signedUrl || null;
+}
