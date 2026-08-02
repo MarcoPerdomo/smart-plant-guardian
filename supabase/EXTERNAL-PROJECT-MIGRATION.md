@@ -41,28 +41,68 @@ It creates:
 
 ## 3. Auth providers
 
-**Authentication → Providers**
+### 3.1 Enable Email provider
 
-- **Email** — enable. Turn "Confirm email" on or off to taste; the sign-up
-  screen already handles both cases.
-- **Google** — enable, then:
-  1. Google Cloud Console → APIs & Services → Credentials → *Create OAuth
-     client ID* → Web application.
-  2. Authorized redirect URI: the callback URL Supabase shows in the Google
-     provider panel (`https://<your-ref>.supabase.co/auth/v1/callback`).
-  3. Consent screen scopes: `openid`, `userinfo.email`, `userinfo.profile`.
-  4. Paste the client ID + secret into the Supabase Google provider panel.
+In your Verdant Supabase project:
 
-**Authentication → URL Configuration**
+1. Go to **Authentication → Providers**.
+2. Find **Email** in the list and turn it **on**.
+3. Decide on email confirmation:
+   - **Confirm email = ON** (recommended): users receive a confirmation link after signing up. The app's sign-up screen already tells them to check their email.
+   - **Confirm email = OFF**: accounts are active immediately after sign-up.
+4. Save the settings.
 
-- Site URL: your published Verdant URL.
-- Additional redirect URLs: the Lovable preview URL and
-  `<each origin>/auth` (the app returns to `/auth` after Google sign-in and
-  then forwards to the dashboard).
+### 3.2 Set up Google OAuth in Google Cloud
+
+You need a Google Cloud project (you can reuse an existing one or create a new one). This gives you the Client ID and Client Secret to paste into Supabase.
+
+1. Open the [Google Cloud Console](https://console.cloud.google.com/) and select your project.
+2. Go to **APIs & Services → OAuth consent screen**.
+   - Choose **External** (or **Internal** if this is a Google Workspace organization).
+   - Fill in the app name (e.g., "Verdant"), your email, and the developer contact email.
+   - Under **Authorized domains**, add the domains you will use. For now add:
+     - `lovable.app` (covers the Lovable preview URL)
+     - Your future custom domain, if you have one
+   - Add these non-sensitive scopes:
+     - `openid`
+     - `.../auth/userinfo.email`
+     - `.../auth/userinfo.profile`
+   - Finish the consent screen setup.
+3. Go to **APIs & Services → Credentials**.
+   - Click **Create credentials → OAuth client ID**.
+   - Application type: **Web application**.
+   - Name it "Verdant Web".
+   - Under **Authorized redirect URIs**, add the Supabase callback URL. You can find this in Supabase under **Authentication → Providers → Google** — it looks like:
+     ```
+     https://<your-project-ref>.supabase.co/auth/v1/callback
+     ```
+   - Click **Create**.
+4. A popup appears with your **Client ID** and **Client Secret**. Copy both immediately (the secret is only shown once).
+
+### 3.3 Enable Google provider in Supabase
+
+1. In your Verdant Supabase project, go to **Authentication → Providers**.
+2. Find **Google** and turn it **on**.
+3. Paste the **Client ID** and **Client Secret** from Google Cloud into the fields.
+4. Save.
+
+### 3.4 Configure redirect URLs
+
+1. Go to **Authentication → URL Configuration**.
+2. **Site URL**: set this to your published Verdant URL (or the Lovable preview URL for now if you have not published yet).
+3. **Additional redirect URLs**: add every origin the app will use, one per line. At minimum include:
+   - Your Lovable preview URL (e.g., `https://id-preview--...lovable.app`)
+   - Your published URL, once you have one
+   - `http://localhost:8080` if you also run the app locally
+   - The `/auth` path on each origin, e.g.:
+     ```
+     https://id-preview--...lovable.app/auth
+     ```
+   This matters because the Google button redirects back to `/auth`, and the app then forwards the user to `/dashboard`.
 
 The app's Google button now calls `supabase.auth.signInWithOAuth` directly
-(`src/routes/auth.tsx`) instead of the Lovable OAuth broker, because the
-broker only serves Lovable-managed projects.
+(`src/routes/auth.tsx`) instead of the Lovable OAuth broker, because the broker
+only serves Lovable-managed projects.
 
 ## 4. Secrets / environment variables
 
