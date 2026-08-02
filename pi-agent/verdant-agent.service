@@ -1,0 +1,17 @@
+[Unit]
+Description=Verdant plant sensor agent
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/verdant/pi-agent
+ExecStart=/home/pi/verdant/pi-agent/.venv/bin/python /home/pi/verdant/pi-agent/agent.py --config /home/pi/verdant/pi-agent/config.yaml
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
