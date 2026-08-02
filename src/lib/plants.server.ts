@@ -18,14 +18,36 @@ export type SpeciesProfile = {
   care_tips?: string | null;
 };
 
+function normalizeNumber(value: unknown): number | null {
+  if (typeof value === "number") return value;
+  if (typeof value === "string") {
+    // Handle ranges like "7-14" by averaging, or plain numbers
+    const rangeMatch = value.match(/^(\d+(?:\.\d+)?)\s*-\s*(\d+(?:\.\d+)?)$/);
+    if (rangeMatch) {
+      const min = parseFloat(rangeMatch[1]);
+      const max = parseFloat(rangeMatch[2]);
+      return Math.round((min + max) / 2);
+    }
+    const parsed = parseFloat(value.replace(/[^0-9.]/g, ""));
+    return Number.isNaN(parsed) ? null : parsed;
+  }
+  return null;
+}
+
+function normalizeString(value: unknown): string | null {
+  if (typeof value === "string") return value.trim() || null;
+  if (Array.isArray(value)) return value.join(" ").trim() || null;
+  return null;
+}
+
 export async function generateSpeciesProfile(name: string, apiKey: string): Promise<SpeciesProfile> {
   const prompt = `You are a botanist. Return ONLY JSON (no markdown) for the houseplant "${name}" with fields:
 common_aliases (string array of 3-8 common nicknames/aliases),
 scientific_name (string), description (1-2 sentences), light (short phrase like "Bright indirect"),
-water_frequency_days (integer, typical days between waterings), soil_moisture_min (int 0-100), soil_moisture_max (int 0-100),
+water_frequency_days (single integer, average days between waterings), soil_moisture_min (int 0-100), soil_moisture_max (int 0-100),
 temperature_min_c (number), temperature_max_c (number), humidity_min (int 0-100), humidity_max (int 0-100),
 soil (short), fertilizer (short), toxicity (short), common_pests (string array of 2-4),
-common_diseases (string array of 2-4), care_tips (2-3 sentences). If the plant name is unknown, still return your best general guess.`;
+common_diseases (string array of 2-4), care_tips (single string, 2-3 sentences). If the plant name is unknown, still return your best general guess.`;
 
   const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
     method: "POST",
@@ -42,7 +64,27 @@ common_diseases (string array of 2-4), care_tips (2-3 sentences). If the plant n
   }
   const json = await resp.json();
   const content = json.choices?.[0]?.message?.content ?? "{}";
-  return JSON.parse(content);
+  const parsed = JSON.parse(content);
+
+  return {
+    common_aliases: Array.isArray(parsed.common_aliases) ? parsed.common_aliases.map((s: unknown) => String(s)) : [],
+    scientific_name: normalizeString(parsed.scientific_name),
+    description: normalizeString(parsed.description),
+    light: normalizeString(parsed.light),
+    water_frequency_days: normalizeNumber(parsed.water_frequency_days),
+    soil_moisture_min: normalizeNumber(parsed.soil_moisture_min),
+    soil_moisture_max: normalizeNumber(parsed.soil_moisture_max),
+    temperature_min_c: normalizeNumber(parsed.temperature_min_c),
+    temperature_max_c: normalizeNumber(parsed.temperature_max_c),
+    humidity_min: normalizeNumber(parsed.humidity_min),
+    humidity_max: normalizeNumber(parsed.humidity_max),
+    soil: normalizeString(parsed.soil),
+    fertilizer: normalizeString(parsed.fertilizer),
+    toxicity: normalizeString(parsed.toxicity),
+    common_pests: Array.isArray(parsed.common_pests) ? parsed.common_pests.map((s: unknown) => String(s)) : [],
+    common_diseases: Array.isArray(parsed.common_diseases) ? parsed.common_diseases.map((s: unknown) => String(s)) : [],
+    care_tips: normalizeString(parsed.care_tips),
+  };
 }
 
 export async function generateSpeciesImage(
