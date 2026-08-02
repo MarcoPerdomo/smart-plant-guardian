@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable";
+
 import { Leaf } from "lucide-react";
 import { toast } from "sonner";
 
@@ -48,10 +48,13 @@ function AuthPage() {
   }
 
   async function handleGoogle() {
-    const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
-    if (result.error) { toast.error(result.error.message); return; }
-    if (result.redirected) return;
-    navigate({ to: "/dashboard", replace: true });
+    // Standard Supabase OAuth — used when the backend is your own external
+    // Supabase project (the Lovable-managed broker does not apply there).
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: `${window.location.origin}/auth` },
+    });
+    if (error) toast.error(error.message);
   }
 
   return (
