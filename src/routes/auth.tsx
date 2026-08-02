@@ -6,6 +6,7 @@ import { Leaf } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/auth")({
+  ssr: false,
   component: AuthPage,
   head: () => ({ meta: [{ title: "Sign in — Verdant" }, { name: "description", content: "Sign in to Verdant to manage your plants." }] }),
 });

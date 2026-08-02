@@ -1,0 +1,52 @@
+# Copy to config.yaml and edit. Never commit config.yaml (it holds the secret).
+
+# Your Verdant deployment. Use the published URL once you publish,
+# or the preview URL while testing.
+endpoint: "https://project--a4e7f216-3697-4a14-8dd3-320be3ad8cc4.lovable.app/api/public/ingest"
+
+# Must match ARDUINO_INGEST_SECRET stored in the app's backend secrets.
+ingest_secret: "PUT-YOUR-INGEST-SECRET-HERE"
+
+# Must match the device_id you saved on the plant in the Verdant UI.
+device_id: "pi5-monstera-01"
+
+# Seconds between uploads. 300 = every 5 minutes.
+interval_seconds: 300
+
+sensors:
+  # --- HC-SR04 ultrasonic on the BST-4WD board (BCM pin numbers) ---
+  ultrasonic:
+    enabled: true
+    trigger_pin: 27
+    echo_pin: 22
+    max_distance_m: 2.0
+    # Distance is logged as extra.distance_cm; see README on why this is a
+    # proximity/soil-level sensor, not a pest sensor.
+
+  # --- USB camera (the Yahboom 480p cam on the gimbal) ---
+  camera:
+    enabled: true
+    index: 0
+    width: 640
+    height: 480
+    # Counts dark specks on a yellow sticky trap placed in frame.
+    # This is the actual fly counter. Set to false to only save snapshots.
+    pest_trap_counting: true
+    snapshot_dir: "/home/pi/verdant-snapshots"
+    keep_snapshots: 200
+
+  # --- Capacitive soil moisture via ADS1115 ADC (I2C) ---
+  soil_moisture:
+    enabled: false
+    ads_channel: 0        # 0..3
+    # Raw voltages for calibration: probe in air (dry) and in a glass of water.
+    dry_volts: 2.85
+    wet_volts: 1.25
+
+  # --- Temperature + humidity: AHT20 (I2C) ---
+  temp_humidity:
+    enabled: false
+
+  # --- Ambient light: BH1750 (I2C), reported in lux ---
+  light:
+    enabled: false

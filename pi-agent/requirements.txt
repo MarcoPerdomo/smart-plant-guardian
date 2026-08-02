@@ -1,0 +1,11 @@
+requests>=2.31
+PyYAML>=6.0
+gpiozero>=2.0
+lgpio>=0.2.2.0
+opencv-python-headless>=4.9
+numpy>=1.26
+# Optional, only needed if you add the I2C ADC / temp-humidity sensors below:
+adafruit-blinka>=8.0
+adafruit-circuitpython-ads1x15>=2.4
+adafruit-circuitpython-ahtx0>=1.0
+adafruit-circuitpython-bh1750>=1.1
