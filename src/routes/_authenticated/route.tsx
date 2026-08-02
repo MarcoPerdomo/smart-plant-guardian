@@ -38,6 +38,9 @@ function AuthedLayout() {
             <Link to="/settings" className="px-3 py-1.5 rounded-md hover:bg-muted flex items-center gap-1.5">
               <Settings className="w-4 h-4" /> Settings
             </Link>
+            <Link to="/admin/plants/import" className="px-3 py-1.5 rounded-md hover:bg-muted flex items-center gap-1.5">
+              <Database className="w-4 h-4" /> Import
+            </Link>
             <button onClick={signOut} className="px-3 py-1.5 rounded-md hover:bg-muted flex items-center gap-1.5 text-muted-foreground">
               <LogOut className="w-4 h-4" /> Sign out
             </button>
