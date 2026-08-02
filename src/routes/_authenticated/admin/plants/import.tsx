@@ -248,19 +248,36 @@ function ImportPlants() {
 
           <ul className="max-h-72 overflow-y-auto divide-y divide-border text-sm">
             {items.map((i) => (
-              <li key={i.name} className="py-2 flex items-start justify-between gap-3">
-                <span className="truncate">{i.name}</span>
-                <span className={`shrink-0 text-xs ${statusClass[i.status]}`} title={i.error}>
-                  {i.status === "running" ? "working…" : i.status}
-                </span>
+              <li key={i.name} className="py-2">
+                <div className="flex items-start justify-between gap-3">
+                  <span className="truncate">{i.name}</span>
+                  <span className={`shrink-0 text-xs ${statusClass[i.status]}`}>
+                    {i.status === "running" ? "working…" : i.status}
+                  </span>
+                </div>
+                {i.error && (
+                  <p className="mt-1 text-xs text-destructive break-words whitespace-pre-wrap">
+                    {i.error}
+                  </p>
+                )}
               </li>
             ))}
           </ul>
 
           {failed > 0 && (
-            <div className="text-xs text-muted-foreground">
-              Hover a failed row to see the error message.
-            </div>
+            <button
+              onClick={() => {
+                const text = items
+                  .filter((i) => i.status === "failed")
+                  .map((i) => `${i.name}: ${i.error ?? "unknown error"}`)
+                  .join("\n");
+                void navigator.clipboard.writeText(text);
+                toast.success("Error details copied");
+              }}
+              className="text-xs text-muted-foreground underline"
+            >
+              Copy all error details
+            </button>
           )}
         </div>
       )}
