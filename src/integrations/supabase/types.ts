@@ -207,6 +207,7 @@ export type Database = {
           motion_events: number | null
           plant_id: string
           recorded_at: string
+          snapshot_url: string | null
           soil_moisture: number | null
           source_device: string | null
           temperature_c: number | null
@@ -219,6 +220,7 @@ export type Database = {
           motion_events?: number | null
           plant_id: string
           recorded_at?: string
+          snapshot_url?: string | null
           soil_moisture?: number | null
           source_device?: string | null
           temperature_c?: number | null
@@ -231,6 +233,7 @@ export type Database = {
           motion_events?: number | null
           plant_id?: string
           recorded_at?: string
+          snapshot_url?: string | null
           soil_moisture?: number | null
           source_device?: string | null
           temperature_c?: number | null

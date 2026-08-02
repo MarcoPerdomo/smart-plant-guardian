@@ -121,6 +121,29 @@ def upload(cfg: dict, payload: dict) -> bool:
     return True
 
 
+def upload_snapshot(cfg: dict, snapshot_path: str) -> str | None:
+    """Upload a local snapshot to cloud storage and return its storage path."""
+    endpoint = cfg.get("snapshot_endpoint", cfg["endpoint"].replace("/ingest", "/snapshot-upload"))
+    try:
+        with open(snapshot_path, "rb") as fh:
+            resp = requests.post(
+                endpoint,
+                files={"snapshot": fh},
+                data={"device_id": cfg["device_id"]},
+                headers={"X-Ingest-Secret": cfg["ingest_secret"]},
+                timeout=30,
+            )
+    except requests.RequestException as exc:
+        log.error("snapshot upload failed: %s", exc)
+        return None
+    if resp.status_code >= 400:
+        log.error("snapshot upload rejected (%s): %s", resp.status_code, resp.text[:300])
+        return None
+    url = resp.json().get("snapshot_url")
+    log.info("snapshot uploaded: %s", url)
+    return url
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--config", default="config.yaml")
@@ -147,7 +170,13 @@ def main() -> int:
     interval = int(cfg.get("interval_seconds", 300))
     try:
         while _running:
-            payload = to_payload(cfg["device_id"], collect(sensors))
+            values = collect(sensors)
+            snapshot_path = values.pop("snapshot", None)
+            snapshot_url = upload_snapshot(cfg, snapshot_path) if snapshot_path else None
+
+            payload = to_payload(cfg["device_id"], values)
+            if snapshot_url:
+                payload.setdefault("extra", {})["snapshot_url"] = snapshot_url
             if args.dry_run:
                 log.info("dry-run payload: %s", payload)
             else:

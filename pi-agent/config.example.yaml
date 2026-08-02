@@ -3,6 +3,7 @@
 # Your Verdant deployment. Use the published URL once you publish,
 # or the preview URL while testing.
 endpoint: "https://project--a4e7f216-3697-4a14-8dd3-320be3ad8cc4.lovable.app/api/public/ingest"
+snapshot_endpoint: "https://project--a4e7f216-3697-4a14-8dd3-320be3ad8cc4.lovable.app/api/public/snapshot-upload"
 
 # Must match ARDUINO_INGEST_SECRET stored in the app's backend secrets.
 ingest_secret: "PUT-YOUR-INGEST-SECRET-HERE"

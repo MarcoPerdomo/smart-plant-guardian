@@ -50,7 +50,8 @@ class Camera:
         self._cv2.imwrite(str(path), frame)
         self._prune()
 
-        out: dict = {"snapshot": path.name}
+        # Return the full path so the agent can upload the file to cloud storage.
+        out: dict = {"snapshot": str(path)}
         if self._cfg.get("pest_trap_counting", False):
             out["pest_count"] = self._count_trap_specks(frame)
         return out

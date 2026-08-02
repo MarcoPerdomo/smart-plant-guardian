@@ -35,6 +35,12 @@ export const Route = createFileRoute("/api/public/ingest")({
         if (pErr) return jsonError(500, pErr.message);
         if (!plant) return jsonError(404, `No plant registered for device_id "${parsed.data.device_id}"`);
 
+        const extra = parsed.data.extra ?? null;
+        const snapshot_url =
+          extra && typeof extra.snapshot_url === "string" ? extra.snapshot_url : null;
+        const cleanedExtra = extra ? { ...extra } : null;
+        if (cleanedExtra) delete cleanedExtra.snapshot_url;
+
         const { error: insErr } = await supabaseAdmin.from("sensor_readings").insert({
           plant_id: plant.id,
           soil_moisture: parsed.data.soil_moisture ?? null,
@@ -42,7 +48,8 @@ export const Route = createFileRoute("/api/public/ingest")({
           humidity: parsed.data.humidity ?? null,
           light_lux: parsed.data.light_lux ?? null,
           motion_events: parsed.data.motion_events ?? null,
-          extra: (parsed.data.extra as never) ?? null,
+          extra: (cleanedExtra as never) ?? null,
+          snapshot_url,
           source_device: parsed.data.device_id,
         });
         if (insErr) return jsonError(500, insErr.message);

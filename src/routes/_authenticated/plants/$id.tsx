@@ -2,11 +2,12 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getPlant, generateSummary, logWatering, addManualReading, deletePlant } from "@/lib/plants.functions";
 import { computeStatus, predictNextWatering } from "@/lib/plant-status";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { ArrowLeft, Droplets, Sparkles, Trash2, Sun, Thermometer, Bug } from "lucide-react";
+import { ArrowLeft, Droplets, Sparkles, Trash2, Sun, Thermometer, Bug, Camera } from "lucide-react";
 import { formatDistanceToNow, format } from "date-fns";
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/_authenticated/plants/$id")({
   component: PlantDetail,
@@ -99,6 +100,8 @@ function PlantDetail() {
           <div className="font-display text-2xl font-semibold">{nextWater.label}</div>
         </div>
       </div>
+
+      <Snapshot path={latest?.snapshot_url ?? null} alt={`Snapshot of ${plant.nickname}`} />
 
       {readings.length > 0 && (
         <section className="mt-6 rounded-2xl border border-border bg-card p-5">
@@ -235,5 +238,48 @@ function ManualReadingForm({ plantId, onDone }: { plantId: string; onDone: () =>
       <input placeholder="Light lx" value={light} onChange={(e) => setLight(e.target.value)} className="px-3 py-2 rounded-md border border-input bg-background text-sm" />
       <button onClick={() => mut.mutate()} disabled={mut.isPending} className="col-span-2 px-3 py-2 rounded-md bg-primary text-primary-foreground text-sm">Save reading</button>
     </div>
+  );
+}
+
+function Snapshot({ path, alt }: { path: string | null; alt: string }) {
+  const [url, setUrl] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!path) return;
+    let cancelled = false;
+    setLoading(true);
+    supabase.storage
+      .from("plant-snapshots")
+      .createSignedUrl(path, 3600)
+      .then(({ data, error }) => {
+        if (cancelled) return;
+        if (error) {
+          toast.error(`Snapshot error: ${error.message}`);
+        } else if (data?.signedUrl) {
+          setUrl(data.signedUrl);
+        }
+        setLoading(false);
+      });
+    return () => { cancelled = true; };
+  }, [path]);
+
+  if (!path) return null;
+  return (
+    <section className="mt-6 rounded-2xl border border-border bg-card p-5">
+      <h2 className="font-display text-lg font-semibold mb-3 flex items-center gap-2">
+        <Camera className="w-5 h-5 text-primary" /> Latest snapshot
+      </h2>
+      {loading || url ? (
+        <img
+          src={url || undefined}
+          alt={alt}
+          className="rounded-xl w-full max-h-96 object-contain bg-black/5"
+          loading="lazy"
+        />
+      ) : (
+        <p className="text-sm text-muted-foreground">Loading snapshot…</p>
+      )}
+    </section>
   );
 }

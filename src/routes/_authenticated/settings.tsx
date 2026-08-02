@@ -42,6 +42,7 @@ function Settings() {
   });
 
   const ingestUrl = typeof window !== "undefined" ? `${window.location.origin}/api/public/ingest` : "";
+  const snapshotUrl = typeof window !== "undefined" ? `${window.location.origin}/api/public/snapshot-upload` : "";
 
   return (
     <div className="max-w-3xl space-y-6">
@@ -93,6 +94,15 @@ function Settings() {
   "light_lux": 320,
   "motion_events": 0
 }`}</pre>
+          </Field>
+          <Field label="Snapshot upload endpoint">
+            <div className="flex gap-2">
+              <input readOnly value={snapshotUrl} className="flex-1 px-3 py-2 rounded-md border border-input bg-muted font-mono text-xs" />
+              <button onClick={() => { navigator.clipboard.writeText(snapshotUrl); toast.success("Copied"); }} className="px-2 rounded-md border border-border hover:bg-muted">
+                <Copy className="w-4 h-4" />
+              </button>
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">Pi agents POST camera snapshots here as multipart/form-data with fields <code>device_id</code> and <code>snapshot</code>.</p>
           </Field>
         </div>
       </section>
