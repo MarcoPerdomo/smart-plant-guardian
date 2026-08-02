@@ -301,14 +301,19 @@ export const importOneSpecies = createServerFn({ method: "POST" })
     if (data.withImage) {
       try {
         const img = await helpers.generateSpeciesImage(name, apiKey);
-        if (img) imageUrl = await helpers.uploadCatalogImage(slug, img.buffer, img.contentType);
+        if (img)
+          imageUrl = await helpers.uploadCatalogImage(
+            slug,
+            img.buffer,
+            img.contentType,
+            context.supabase,
+          );
       } catch (e) {
         console.warn("Image generation failed for", name, e);
       }
     }
 
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { error } = await supabaseAdmin.from("plant_species").insert({
+    const { error } = await context.supabase.from("plant_species").insert({
       common_name: name,
       scientific_name: parsed.scientific_name ?? null,
       slug,
