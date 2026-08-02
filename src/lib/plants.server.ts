@@ -128,15 +128,37 @@ export async function generateSpeciesImage(
   return null;
 }
 
-export async function uploadCatalogImage(slug: string, buffer: Uint8Array, contentType: string): Promise<string | null> {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+type StorageClient = {
+  storage: {
+    from: (bucket: string) => {
+      upload: (
+        path: string,
+        body: Uint8Array,
+        options?: { contentType?: string; upsert?: boolean },
+      ) => Promise<{ error: unknown }>;
+      createSignedUrl: (
+        path: string,
+        expiresIn: number,
+      ) => Promise<{ data: { signedUrl: string } | null }>;
+    };
+  };
+};
+
+export async function uploadCatalogImage(
+  slug: string,
+  buffer: Uint8Array,
+  contentType: string,
+  client?: StorageClient,
+): Promise<string | null> {
+  const supabase =
+    client ?? (await import("@/integrations/supabase/client.server")).supabaseAdmin;
   const path = `catalog/${slug}.png`;
-  const { error: uploadError } = await supabaseAdmin.storage
+  const { error: uploadError } = await supabase.storage
     .from("plant-images")
     .upload(path, buffer, { contentType, upsert: true });
   if (uploadError) throw uploadError;
 
-  const { data: signed } = await supabaseAdmin.storage
+  const { data: signed } = await supabase.storage
     .from("plant-images")
     .createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
   return signed?.signedUrl || null;
