@@ -267,3 +267,95 @@ export const generateSummary = createServerFn({ method: "POST" })
 
     return saved;
   });
+
+// ============ Batch catalog import ============
+export const batchImportSpecies = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((i: unknown) => z.object({ names: z.array(z.string().min(1)).min(1).max(50) }).parse(i))
+  .handler(async ({ data, context }) => {
+    const { data: isAdmin } = await context.supabase.rpc("has_role", {
+      _user_id: context.userId,
+      _role: "admin",
+    });
+    if (!isAdmin) throw new Error("Forbidden: admin role required");
+
+    const apiKey = process.env.LOVABLE_API_KEY;
+    if (!apiKey) throw new Error("AI unavailable");
+
+    const helpers = await import("@/lib/plants.server");
+    const results: {
+      created: number;
+      skipped: number;
+      failed: number;
+      details: { name: string; status: "created" | "skipped" | "failed"; error?: string }[];
+    } = { created: 0, skipped: 0, failed: 0, details: [] };
+
+    for (const rawName of data.names) {
+      const name = rawName.trim();
+      if (!name) continue;
+      const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
+      try {
+        const { data: existing } = await context.supabase
+          .from("plant_species")
+          .select("id")
+          .eq("slug", slug)
+          .maybeSingle();
+        if (existing) {
+          results.skipped++;
+          results.details.push({ name, status: "skipped" });
+          continue;
+        }
+
+        const parsed = await helpers.generateSpeciesProfile(name, apiKey);
+
+        let imageUrl: string | null = null;
+        try {
+          const img = await helpers.generateSpeciesImage(name, apiKey);
+          if (img) {
+            imageUrl = await helpers.uploadCatalogImage(slug, img.buffer, img.contentType);
+          }
+        } catch (e) {
+          console.warn("Image generation failed for", name, e);
+        }
+
+        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+        const { error } = await supabaseAdmin.from("plant_species").insert({
+          common_name: name,
+          scientific_name: parsed.scientific_name ?? null,
+          slug,
+          aliases: parsed.common_aliases ?? [],
+          description: parsed.description ?? null,
+          light: parsed.light ?? null,
+          water_frequency_days: parsed.water_frequency_days ?? null,
+          soil_moisture_min: parsed.soil_moisture_min ?? null,
+          soil_moisture_max: parsed.soil_moisture_max ?? null,
+          temperature_min_c: parsed.temperature_min_c ?? null,
+          temperature_max_c: parsed.temperature_max_c ?? null,
+          humidity_min: parsed.humidity_min ?? null,
+          humidity_max: parsed.humidity_max ?? null,
+          soil: parsed.soil ?? null,
+          fertilizer: parsed.fertilizer ?? null,
+          toxicity: parsed.toxicity ?? null,
+          common_pests: parsed.common_pests ?? [],
+          common_diseases: parsed.common_diseases ?? [],
+          care_tips: parsed.care_tips ?? null,
+          image_url: imageUrl,
+          source: "batch",
+        });
+        if (error) throw new Error(error.message);
+
+        results.created++;
+        results.details.push({ name, status: "created" });
+      } catch (e) {
+        results.failed++;
+        results.details.push({
+          name,
+          status: "failed",
+          error: e instanceof Error ? e.message : String(e),
+        });
+      }
+    }
+
+    return results;
+  });
