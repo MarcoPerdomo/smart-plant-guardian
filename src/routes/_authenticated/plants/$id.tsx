@@ -101,6 +101,8 @@ function PlantDetail() {
         </div>
       </div>
 
+      <Snapshot path={latest?.snapshot_url ?? null} alt={`Snapshot of ${plant.nickname}`} />
+
       {readings.length > 0 && (
         <section className="mt-6 rounded-2xl border border-border bg-card p-5">
           <h2 className="font-display text-lg font-semibold mb-3">Sensor history</h2>
