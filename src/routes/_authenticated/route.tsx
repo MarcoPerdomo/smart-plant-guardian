@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet, redirect, Link, useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
-import { Leaf, LayoutDashboard, Settings, LogOut, Plus } from "lucide-react";
+import { Leaf, LayoutDashboard, Settings, LogOut, Plus, Database } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,

@@ -18,6 +18,7 @@ import { Route as ApiPublicSnapshotUploadRouteImport } from './routes/api/public
 import { Route as ApiPublicIngestRouteImport } from './routes/api/public/ingest'
 import { Route as AuthenticatedPlantsNewRouteImport } from './routes/_authenticated/plants/new'
 import { Route as AuthenticatedPlantsIdRouteImport } from './routes/_authenticated/plants/$id'
+import { Route as AuthenticatedAdminPlantsImportRouteImport } from './routes/_authenticated/admin/plants/import'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -63,6 +64,12 @@ const AuthenticatedPlantsIdRoute = AuthenticatedPlantsIdRouteImport.update({
   path: '/plants/$id',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminPlantsImportRoute =
+  AuthenticatedAdminPlantsImportRouteImport.update({
+    id: '/admin/plants/import',
+    path: '/admin/plants/import',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -73,6 +80,7 @@ export interface FileRoutesByFullPath {
   '/plants/new': typeof AuthenticatedPlantsNewRoute
   '/api/public/ingest': typeof ApiPublicIngestRoute
   '/api/public/snapshot-upload': typeof ApiPublicSnapshotUploadRoute
+  '/admin/plants/import': typeof AuthenticatedAdminPlantsImportRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -83,6 +91,7 @@ export interface FileRoutesByTo {
   '/plants/new': typeof AuthenticatedPlantsNewRoute
   '/api/public/ingest': typeof ApiPublicIngestRoute
   '/api/public/snapshot-upload': typeof ApiPublicSnapshotUploadRoute
+  '/admin/plants/import': typeof AuthenticatedAdminPlantsImportRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -95,6 +104,7 @@ export interface FileRoutesById {
   '/_authenticated/plants/new': typeof AuthenticatedPlantsNewRoute
   '/api/public/ingest': typeof ApiPublicIngestRoute
   '/api/public/snapshot-upload': typeof ApiPublicSnapshotUploadRoute
+  '/_authenticated/admin/plants/import': typeof AuthenticatedAdminPlantsImportRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -107,6 +117,7 @@ export interface FileRouteTypes {
     | '/plants/new'
     | '/api/public/ingest'
     | '/api/public/snapshot-upload'
+    | '/admin/plants/import'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -117,6 +128,7 @@ export interface FileRouteTypes {
     | '/plants/new'
     | '/api/public/ingest'
     | '/api/public/snapshot-upload'
+    | '/admin/plants/import'
   id:
     | '__root__'
     | '/'
@@ -128,6 +140,7 @@ export interface FileRouteTypes {
     | '/_authenticated/plants/new'
     | '/api/public/ingest'
     | '/api/public/snapshot-upload'
+    | '/_authenticated/admin/plants/import'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -203,6 +216,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPlantsIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/plants/import': {
+      id: '/_authenticated/admin/plants/import'
+      path: '/admin/plants/import'
+      fullPath: '/admin/plants/import'
+      preLoaderRoute: typeof AuthenticatedAdminPlantsImportRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
@@ -211,6 +231,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedPlantsIdRoute: typeof AuthenticatedPlantsIdRoute
   AuthenticatedPlantsNewRoute: typeof AuthenticatedPlantsNewRoute
+  AuthenticatedAdminPlantsImportRoute: typeof AuthenticatedAdminPlantsImportRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -218,6 +239,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedPlantsIdRoute: AuthenticatedPlantsIdRoute,
   AuthenticatedPlantsNewRoute: AuthenticatedPlantsNewRoute,
+  AuthenticatedAdminPlantsImportRoute: AuthenticatedAdminPlantsImportRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
