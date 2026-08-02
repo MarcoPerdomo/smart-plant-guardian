@@ -301,14 +301,19 @@ export const importOneSpecies = createServerFn({ method: "POST" })
     if (data.withImage) {
       try {
         const img = await helpers.generateSpeciesImage(name, apiKey);
-        if (img) imageUrl = await helpers.uploadCatalogImage(slug, img.buffer, img.contentType);
+        if (img)
+          imageUrl = await helpers.uploadCatalogImage(
+            slug,
+            img.buffer,
+            img.contentType,
+            context.supabase,
+          );
       } catch (e) {
         console.warn("Image generation failed for", name, e);
       }
     }
 
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { error } = await supabaseAdmin.from("plant_species").insert({
+    const { error } = await context.supabase.from("plant_species").insert({
       common_name: name,
       scientific_name: parsed.scientific_name ?? null,
       slug,
@@ -379,10 +384,14 @@ export const generateSpeciesImageFor = createServerFn({ method: "POST" })
     const helpers = await import("@/lib/plants.server");
     const img = await helpers.generateSpeciesImage(row.common_name, apiKey);
     if (!img) throw new Error("No image returned");
-    const imageUrl = await helpers.uploadCatalogImage(row.slug, img.buffer, img.contentType);
+    const imageUrl = await helpers.uploadCatalogImage(
+      row.slug,
+      img.buffer,
+      img.contentType,
+      context.supabase,
+    );
 
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { error } = await supabaseAdmin
+    const { error } = await context.supabase
       .from("plant_species")
       .update({ image_url: imageUrl })
       .eq("id", row.id);
