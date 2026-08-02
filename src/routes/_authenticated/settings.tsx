@@ -42,6 +42,7 @@ function Settings() {
   });
 
   const ingestUrl = typeof window !== "undefined" ? `${window.location.origin}/api/public/ingest` : "";
+  const snapshotUrl = typeof window !== "undefined" ? `${window.location.origin}/api/public/snapshot-upload` : "";
 
   return (
     <div className="max-w-3xl space-y-6">
