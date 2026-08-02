@@ -19,8 +19,16 @@ function AuthPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/dashboard", replace: true });
+    const params = new URLSearchParams(window.location.search);
+    const oauthError = params.get("error_description") ?? params.get("error");
+    if (oauthError) {
+      toast.error(oauthError.replaceAll("+", " "));
+      window.history.replaceState({}, "", window.location.pathname);
+      return;
+    }
+
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) navigate({ to: "/dashboard", replace: true });
     });
   }, [navigate]);
 
@@ -31,7 +39,7 @@ function AuthPage() {
       if (mode === "signup") {
         const { error } = await supabase.auth.signUp({
           email, password,
-          options: { emailRedirectTo: window.location.origin },
+          options: { emailRedirectTo: `${window.location.origin}/auth` },
         });
         if (error) throw error;
         toast.success("Check your email to confirm, or sign in if confirmation is off.");
@@ -48,8 +56,6 @@ function AuthPage() {
   }
 
   async function handleGoogle() {
-    // Standard Supabase OAuth — used when the backend is your own external
-    // Supabase project (the Lovable-managed broker does not apply there).
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: { redirectTo: `${window.location.origin}/auth` },
