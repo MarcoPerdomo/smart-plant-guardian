@@ -63,14 +63,29 @@ function NewPlant() {
             />
           </div>
 
-          <div className="mt-3 max-h-56 overflow-y-auto space-y-1">
+          <p className="mt-2 text-xs text-muted-foreground">
+            {isLoading ? "Loading catalog…" : `${results.length} ${results.length === 1 ? "species" : "species"} in catalog`}
+          </p>
+
+          <div className="mt-2 max-h-72 overflow-y-auto space-y-1">
             {results.map((s) => (
               <button
-                key={s.id} onClick={() => setSelectedSpecies({ id: s.id, common_name: s.common_name })}
-                className={`w-full text-left px-3 py-2 rounded-md hover:bg-muted text-sm flex justify-between ${selectedSpecies?.id === s.id ? "bg-muted" : ""}`}
+                key={s.id}
+                onClick={() => setSelectedSpecies({ id: s.id, common_name: s.common_name, scientific_name: s.scientific_name, image_url: s.image_url })}
+                className={`w-full text-left px-2 py-2 rounded-md hover:bg-muted text-sm flex items-center gap-3 ${selectedSpecies?.id === s.id ? "bg-muted" : ""}`}
               >
-                <span><span className="font-medium">{s.common_name}</span> <span className="text-muted-foreground italic">{s.scientific_name}</span></span>
-                {s.source === "ai" && <Sparkles className="w-3.5 h-3.5 text-accent" />}
+                {s.image_url ? (
+                  <img src={s.image_url} alt={s.common_name} loading="lazy" className="w-9 h-9 rounded-md object-cover shrink-0" />
+                ) : (
+                  <span className="w-9 h-9 rounded-md bg-muted flex items-center justify-center shrink-0">
+                    <Leaf className="w-4 h-4 text-muted-foreground" />
+                  </span>
+                )}
+                <span className="min-w-0 flex-1 truncate">
+                  <span className="font-medium">{s.common_name}</span>{" "}
+                  <span className="text-muted-foreground italic">{s.scientific_name}</span>
+                </span>
+                {s.source === "ai" && <Sparkles className="w-3.5 h-3.5 text-accent shrink-0" />}
               </button>
             ))}
             {query.length > 2 && results.length === 0 && (
