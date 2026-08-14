@@ -8,6 +8,8 @@ import { ArrowLeft, Droplets, Sparkles, Trash2, Sun, Thermometer, Bug, Camera } 
 import { formatDistanceToNow, format } from "date-fns";
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
 import { useEffect, useState } from "react";
+import { LatestPhotoCard } from "@/components/plant-photos";
+
 
 export const Route = createFileRoute("/_authenticated/plants/$id")({
   component: PlantDetail,
