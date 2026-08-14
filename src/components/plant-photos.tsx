@@ -28,7 +28,8 @@ export function usePhotoUrls(paths: string[]) {
 
 export function UploadPhotoButton({ plantId, className }: { plantId: string; className?: string }) {
   const qc = useQueryClient();
-  const inputRef = useRef<HTMLInputElement>(null);
+  const cameraRef = useRef<HTMLInputElement>(null);
+  const libraryRef = useRef<HTMLInputElement>(null);
   const [caption, setCaption] = useState("");
   const [pending, setPending] = useState(false);
 
@@ -42,40 +43,55 @@ export function UploadPhotoButton({ plantId, className }: { plantId: string; cla
       setCaption("");
       qc.invalidateQueries({ queryKey: ["plant_photos", plantId] });
     },
-    onError: (e: Error) => toast.error(e.message),
+    onError: (e: Error) => toast.error(e.message || "Could not upload that photo"),
     onSettled: () => setPending(false),
   });
+
+  const onPick = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file || pending) return;
+    setPending(true);
+    mut.mutate(file);
+  };
 
   return (
     <div className={className}>
       <input
-        ref={inputRef}
+        ref={cameraRef}
         type="file"
         accept="image/*"
         capture="environment"
         className="hidden"
-        onChange={(e) => {
-          const file = e.target.files?.[0];
-          e.target.value = "";
-          if (!file) return;
-          setPending(true);
-          mut.mutate(file);
-        }}
+        onChange={onPick}
       />
-      <div className="flex flex-col sm:flex-row gap-2">
+      <input ref={libraryRef} type="file" accept="image/*,.heic,.heif" className="hidden" onChange={onPick} />
+
+      <div className="flex flex-col gap-2 sm:flex-row">
         <input
           value={caption}
           onChange={(e) => setCaption(e.target.value)}
           placeholder="Optional note (e.g. new leaf unfurling)"
-          className="flex-1 px-3 py-2 rounded-md border border-input bg-background text-sm"
+          className="flex-1 w-full px-3 py-3 sm:py-2 rounded-md border border-input bg-background text-base sm:text-sm"
         />
-        <button
-          onClick={() => inputRef.current?.click()}
-          disabled={pending}
-          className="px-3 py-2 rounded-lg bg-primary text-primary-foreground text-sm flex items-center justify-center gap-1.5 disabled:opacity-50"
-        >
-          <ImagePlus className="w-4 h-4" /> {pending ? "Uploading…" : "Upload photo"}
-        </button>
+        <div className="grid grid-cols-2 gap-2 sm:flex sm:shrink-0">
+          <button
+            type="button"
+            onClick={() => cameraRef.current?.click()}
+            disabled={pending}
+            className="px-3 py-3 sm:py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium flex items-center justify-center gap-1.5 disabled:opacity-50"
+          >
+            <Camera className="w-4 h-4" /> {pending ? "Uploading…" : "Take photo"}
+          </button>
+          <button
+            type="button"
+            onClick={() => libraryRef.current?.click()}
+            disabled={pending}
+            className="px-3 py-3 sm:py-2 rounded-lg border border-border text-sm font-medium flex items-center justify-center gap-1.5 hover:bg-muted disabled:opacity-50"
+          >
+            <ImagePlus className="w-4 h-4" /> {pending ? "Uploading…" : "Choose photo"}
+          </button>
+        </div>
       </div>
     </div>
   );
