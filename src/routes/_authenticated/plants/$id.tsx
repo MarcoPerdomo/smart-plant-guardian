@@ -101,7 +101,10 @@ function PlantDetail() {
         </div>
       </div>
 
+      <LatestPhotoCard plantId={plant.id} plantName={plant.nickname} />
+
       <Snapshot path={latest?.snapshot_url ?? null} alt={`Snapshot of ${plant.nickname}`} />
+
 
       {readings.length > 0 && (
         <section className="mt-6 rounded-2xl border border-border bg-card p-5">
