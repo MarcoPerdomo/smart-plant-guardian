@@ -46,7 +46,8 @@ export async function uploadPlantPhotoFile(plantId: string, file: File) {
   const userId = userData.user.id;
 
   const prepared = await prepareImage(file);
-  const path = `photos/${userId}/${plantId}/${Date.now()}.jpg`;
+  const ext = extensionFor(prepared.contentType, file.name);
+  const path = `photos/${userId}/${plantId}/${Date.now()}.${ext}`;
 
   const { error } = await supabase.storage
     .from("plant-images")
@@ -55,8 +56,8 @@ export async function uploadPlantPhotoFile(plantId: string, file: File) {
 
   return {
     storage_path: path,
-    width: prepared.width,
-    height: prepared.height,
+    width: prepared.width || null,
+    height: prepared.height || null,
     bytes: prepared.blob.size,
     content_type: prepared.contentType,
   };
