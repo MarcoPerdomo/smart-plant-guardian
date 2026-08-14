@@ -400,3 +400,113 @@ export const generateSpeciesImageFor = createServerFn({ method: "POST" })
     return { name: row.common_name, status: "created" as const };
   });
 
+
+// ============ Plant photo journal ============
+export const listPlantPhotos = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z.object({ plant_id: z.string().uuid(), limit: z.number().int().positive().max(500).optional() }).parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    let query = context.supabase
+      .from("plant_photos")
+      .select("*")
+      .eq("plant_id", data.plant_id)
+      .order("taken_at", { ascending: false });
+    if (data.limit) query = query.limit(data.limit);
+    const { data: rows, error } = await query;
+    if (error) throw new Error(error.message);
+    return rows ?? [];
+  });
+
+export const createPlantPhoto = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z
+      .object({
+        plant_id: z.string().uuid(),
+        storage_path: z.string().min(1),
+        caption: z.string().max(500).nullable().optional(),
+        taken_at: z.string().nullable().optional(),
+        width: z.number().int().nullable().optional(),
+        height: z.number().int().nullable().optional(),
+        bytes: z.number().int().nullable().optional(),
+        content_type: z.string().nullable().optional(),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { data: plant, error: pErr } = await context.supabase
+      .from("user_plants")
+      .select("id")
+      .eq("id", data.plant_id)
+      .maybeSingle();
+    if (pErr) throw new Error(pErr.message);
+    if (!plant) throw new Error("Plant not found");
+
+    const { data: row, error } = await context.supabase
+      .from("plant_photos")
+      .insert({
+        plant_id: data.plant_id,
+        user_id: context.userId,
+        storage_path: data.storage_path,
+        caption: data.caption ?? null,
+        taken_at: data.taken_at ?? new Date().toISOString(),
+        width: data.width ?? null,
+        height: data.height ?? null,
+        bytes: data.bytes ?? null,
+        content_type: data.content_type ?? null,
+      })
+      .select()
+      .single();
+    if (error) throw new Error(error.message);
+    return row;
+  });
+
+export const updatePlantPhoto = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z.object({ id: z.string().uuid(), caption: z.string().max(500).nullable() }).parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { error } = await context.supabase
+      .from("plant_photos")
+      .update({ caption: data.caption })
+      .eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export const deletePlantPhoto = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }) => {
+    const { data: row, error: sErr } = await context.supabase
+      .from("plant_photos")
+      .select("storage_path")
+      .eq("id", data.id)
+      .maybeSingle();
+    if (sErr) throw new Error(sErr.message);
+    if (!row) throw new Error("Photo not found");
+
+    await context.supabase.storage.from("plant-images").remove([row.storage_path]);
+    const { error } = await context.supabase.from("plant_photos").delete().eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export const getPhotoSignedUrls = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ paths: z.array(z.string()).max(500) }).parse(input))
+  .handler(async ({ data, context }) => {
+    if (data.paths.length === 0) return {} as Record<string, string>;
+    const { data: signed, error } = await context.supabase.storage
+      .from("plant-images")
+      .createSignedUrls(data.paths, 3600);
+    if (error) throw new Error(error.message);
+    const map: Record<string, string> = {};
+    for (const s of signed ?? []) {
+      if (s.path && s.signedUrl) map[s.path] = s.signedUrl;
+    }
+    return map;
+  });
