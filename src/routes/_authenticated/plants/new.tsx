@@ -24,10 +24,22 @@ function NewPlant() {
   const [deviceId, setDeviceId] = useState("");
   const [notes, setNotes] = useState("");
 
-  const { data: results = [], isLoading } = useQuery({
-    queryKey: ["species-search", query],
-    queryFn: () => searchSpecies({ data: { q: query } }),
+  // Load the whole catalog once, then filter locally so typing is instant.
+  const { data: catalog = [], isLoading, isError, error } = useQuery({
+    queryKey: ["species-catalog"],
+    queryFn: () => searchSpecies({ data: { q: "" } }),
+    staleTime: 10 * 60 * 1000,
   });
+
+  const results = (() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return catalog;
+    return catalog.filter((s) => {
+      const hay = [s.common_name, s.scientific_name, ...(s.aliases ?? [])]
+        .filter(Boolean).join(" ").toLowerCase();
+      return hay.includes(q);
+    });
+  })();
 
   const aiLookup = useMutation({
     mutationFn: (name: string) => lookupOrCreateSpecies({ data: { name } }),
@@ -64,8 +76,13 @@ function NewPlant() {
           </div>
 
           <p className="mt-2 text-xs text-muted-foreground">
-            {isLoading ? "Loading catalog…" : `${results.length} ${results.length === 1 ? "species" : "species"} in catalog`}
+            {isLoading
+              ? "Loading catalog…"
+              : isError
+                ? <span className="text-destructive">Couldn't load catalog: {(error as Error)?.message}</span>
+                : `${results.length} of ${catalog.length} species in catalog`}
           </p>
+
 
           <div className="mt-2 max-h-72 overflow-y-auto space-y-1">
             {results.map((s) => (
