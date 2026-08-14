@@ -1,37 +1,26 @@
-## Root cause (confirmed from server logs)
+# Fix plant search (and make it instant)
 
-Every import row fails at the very last step, after the AI work has already succeeded. The published server logs show, once per plant:
+## What's wrong
 
-```
-[error] [Supabase] Missing Supabase environment variable(s): SUPABASE_SERVICE_ROLE_KEY.
-[warn]  Image generation failed for Monstera deliciosa Error: Missing Supabase environment variable(s): SUPABASE_SERVICE_ROLE_KEY.
-```
+Confirmed by running the exact query the app sends: the search request is rejected by the database API with a parse error.
 
-- The AI gateway logs show 90+ successful care-profile calls and a successful image generation — so prompts, model, and credits are all fine.
-- `plant_species` still contains only the 30 seeded rows, source `seed`, nothing from the import.
-- The import writes rows with the privileged (service-role) Supabase client. Since the backend was moved to your external "Verdant" project, that service-role key is not present in the published server runtime, so both the image upload and the row insert throw.
+The search combines three conditions (common name, scientific name, aliases). The aliases part uses a type-cast syntax that the Data API does not accept inside an OR group, so the whole request fails and the UI falls back to an empty list — hence "0 species in catalog" for "African", even though the catalog has 132 species and 5 of them match "African" (4 by name, 5 via aliases).
 
-Secondary problem: the failure message is only in a `title` tooltip, which is why hovering tells you nothing useful.
+It also feels slow because every keystroke triggers a fresh round-trip to the server, with no debounce and no caching.
 
-## Fix
+## The fix
 
-**1. Stop depending on the service-role key for catalog imports**
+1. Make aliases searchable properly
+   - Add a maintained `search_text` column on `plant_species` that concatenates common name, scientific name and aliases, with a trigram index for fast partial matching.
+   - Search becomes a single valid condition against that column instead of the invalid cast.
 
-Add a migration so admins can write the catalog directly under RLS:
-- `plant_species`: add INSERT and UPDATE policies for authenticated users where `public.has_role(auth.uid(), 'admin')`, plus the matching grants.
-- Storage `plant-images` bucket: add INSERT/UPDATE policies for admins so catalog images can be uploaded with the user's own session.
+2. Make search feel instant
+   - Load the catalog once when the Add Plant page opens (cached by the query client), then filter in the browser as you type — zero latency per keystroke.
+   - Keep the server search as the source of truth for the initial load; add a debounce only if a server round-trip is still needed.
+   - Show a proper error state instead of silently rendering "0 species" when the request fails.
 
-Then change `importOneSpecies`, `generateSpeciesImageFor`, and `uploadCatalogImage` to use the request's authenticated client (`context.supabase`) instead of `supabaseAdmin`. This removes the broken dependency entirely and keeps the admin gate intact.
+## Technical details
 
-**2. Re-bind the service-role key anyway**
-
-Other paths still use it (`addManualReading`, `generateSummary`, the Pi ingest endpoints, snapshot uploads). I'll attempt an automatic re-bind of the Supabase secrets; if the external project can't be re-bound automatically, I'll tell you exactly where to paste the Verdant service-role key so those paths work too.
-
-**3. Make errors visible**
-
-In the import page, show the failure text inline under each failed row (and a "copy errors" action) rather than only in a hover tooltip.
-
-## Verification
-
-- Re-run an import of 2–3 names and confirm new rows appear in `plant_species` with source `batch`.
-- Check server logs for the absence of the missing-key error.
+- Migration: add `search_text text` to `public.plant_species`, populated by a trigger (and backfilled) from `common_name || scientific_name || array_to_string(aliases, ' ')`; create `pg_trgm` GIN index on it.
+- `src/lib/plants.functions.ts` → `searchSpecies`: replace the `.or(...aliases::text.ilike...)` clause with `search_text.ilike.%q%` (single filter, no OR group).
+- `src/routes/_authenticated/plants/new.tsx`: fetch the full catalog once (`q: ""`) with `staleTime`, filter locally on `common_name`, `scientific_name`, `aliases`; surface `isError` in the dropdown label.
