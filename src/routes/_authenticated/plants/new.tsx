@@ -13,7 +13,12 @@ export const Route = createFileRoute("/_authenticated/plants/new")({
 function NewPlant() {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
-  const [selectedSpecies, setSelectedSpecies] = useState<{ id: string; common_name: string } | null>(null);
+  const [selectedSpecies, setSelectedSpecies] = useState<{
+    id: string;
+    common_name: string;
+    scientific_name?: string | null;
+    image_url?: string | null;
+  } | null>(null);
   const [nickname, setNickname] = useState("");
   const [location, setLocation] = useState("");
   const [deviceId, setDeviceId] = useState("");
