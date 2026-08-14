@@ -40,6 +40,15 @@ export async function prepareImage(file: File): Promise<PreparedImage> {
   return { blob, width, height, contentType: "image/jpeg" };
 }
 
+function extensionFor(contentType: string, fileName: string): string {
+  if (contentType === "image/jpeg") return "jpg";
+  if (contentType === "image/png") return "png";
+  if (contentType === "image/webp") return "webp";
+  if (contentType === "image/heic" || contentType === "image/heif") return "heic";
+  const fromName = fileName.split(".").pop();
+  return fromName && fromName.length <= 5 ? fromName.toLowerCase() : "jpg";
+}
+
 export async function uploadPlantPhotoFile(plantId: string, file: File) {
   const { data: userData, error: userErr } = await supabase.auth.getUser();
   if (userErr || !userData.user) throw new Error("You must be signed in to upload photos");
