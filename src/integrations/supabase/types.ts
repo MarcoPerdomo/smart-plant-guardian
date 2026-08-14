@@ -103,6 +103,7 @@ export type Database = {
           image_url: string | null
           light: string | null
           scientific_name: string | null
+          search_text: string | null
           slug: string
           soil: string | null
           soil_moisture_max: number | null
@@ -128,6 +129,7 @@ export type Database = {
           image_url?: string | null
           light?: string | null
           scientific_name?: string | null
+          search_text?: string | null
           slug: string
           soil?: string | null
           soil_moisture_max?: number | null
@@ -153,6 +155,7 @@ export type Database = {
           image_url?: string | null
           light?: string | null
           scientific_name?: string | null
+          search_text?: string | null
           slug?: string
           soil?: string | null
           soil_moisture_max?: number | null
@@ -366,6 +369,8 @@ export type Database = {
         }
         Returns: boolean
       }
+      show_limit: { Args: never; Returns: number }
+      show_trgm: { Args: { "": string }; Returns: string[] }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
