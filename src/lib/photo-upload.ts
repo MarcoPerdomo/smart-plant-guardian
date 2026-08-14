@@ -11,7 +11,14 @@ export type PreparedImage = {
 };
 
 export async function prepareImage(file: File): Promise<PreparedImage> {
-  const bitmap = await createImageBitmap(file);
+  // iPhone HEIC/HEIF (and some exotic formats) can't be decoded by every browser.
+  // In that case upload the original bytes untouched instead of failing.
+  let bitmap: ImageBitmap;
+  try {
+    bitmap = await createImageBitmap(file);
+  } catch {
+    return { blob: file, width: 0, height: 0, contentType: file.type || "application/octet-stream" };
+  }
   const scale = Math.min(1, MAX_DIM / Math.max(bitmap.width, bitmap.height));
   const width = Math.round(bitmap.width * scale);
   const height = Math.round(bitmap.height * scale);
@@ -33,13 +40,23 @@ export async function prepareImage(file: File): Promise<PreparedImage> {
   return { blob, width, height, contentType: "image/jpeg" };
 }
 
+function extensionFor(contentType: string, fileName: string): string {
+  if (contentType === "image/jpeg") return "jpg";
+  if (contentType === "image/png") return "png";
+  if (contentType === "image/webp") return "webp";
+  if (contentType === "image/heic" || contentType === "image/heif") return "heic";
+  const fromName = fileName.split(".").pop();
+  return fromName && fromName.length <= 5 ? fromName.toLowerCase() : "jpg";
+}
+
 export async function uploadPlantPhotoFile(plantId: string, file: File) {
   const { data: userData, error: userErr } = await supabase.auth.getUser();
   if (userErr || !userData.user) throw new Error("You must be signed in to upload photos");
   const userId = userData.user.id;
 
   const prepared = await prepareImage(file);
-  const path = `photos/${userId}/${plantId}/${Date.now()}.jpg`;
+  const ext = extensionFor(prepared.contentType, file.name);
+  const path = `photos/${userId}/${plantId}/${Date.now()}.${ext}`;
 
   const { error } = await supabase.storage
     .from("plant-images")
@@ -48,8 +65,8 @@ export async function uploadPlantPhotoFile(plantId: string, file: File) {
 
   return {
     storage_path: path,
-    width: prepared.width,
-    height: prepared.height,
+    width: prepared.width || null,
+    height: prepared.height || null,
     bytes: prepared.blob.size,
     content_type: prepared.contentType,
   };
