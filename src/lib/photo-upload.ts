@@ -11,7 +11,14 @@ export type PreparedImage = {
 };
 
 export async function prepareImage(file: File): Promise<PreparedImage> {
-  const bitmap = await createImageBitmap(file);
+  // iPhone HEIC/HEIF (and some exotic formats) can't be decoded by every browser.
+  // In that case upload the original bytes untouched instead of failing.
+  let bitmap: ImageBitmap;
+  try {
+    bitmap = await createImageBitmap(file);
+  } catch {
+    return { blob: file, width: 0, height: 0, contentType: file.type || "application/octet-stream" };
+  }
   const scale = Math.min(1, MAX_DIM / Math.max(bitmap.width, bitmap.height));
   const width = Math.round(bitmap.width * scale);
   const height = Math.round(bitmap.height * scale);
