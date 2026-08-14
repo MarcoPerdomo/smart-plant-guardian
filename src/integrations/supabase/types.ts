@@ -87,6 +87,62 @@ export type Database = {
           },
         ]
       }
+      plant_photos: {
+        Row: {
+          ai_analysis: Json | null
+          bytes: number | null
+          caption: string | null
+          content_type: string | null
+          created_at: string
+          height: number | null
+          id: string
+          plant_id: string
+          storage_path: string
+          taken_at: string
+          updated_at: string
+          user_id: string
+          width: number | null
+        }
+        Insert: {
+          ai_analysis?: Json | null
+          bytes?: number | null
+          caption?: string | null
+          content_type?: string | null
+          created_at?: string
+          height?: number | null
+          id?: string
+          plant_id: string
+          storage_path: string
+          taken_at?: string
+          updated_at?: string
+          user_id: string
+          width?: number | null
+        }
+        Update: {
+          ai_analysis?: Json | null
+          bytes?: number | null
+          caption?: string | null
+          content_type?: string | null
+          created_at?: string
+          height?: number | null
+          id?: string
+          plant_id?: string
+          storage_path?: string
+          taken_at?: string
+          updated_at?: string
+          user_id?: string
+          width?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plant_photos_plant_id_fkey"
+            columns: ["plant_id"]
+            isOneToOne: false
+            referencedRelation: "user_plants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       plant_species: {
         Row: {
           aliases: string[] | null

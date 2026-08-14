@@ -8,6 +8,8 @@ import { ArrowLeft, Droplets, Sparkles, Trash2, Sun, Thermometer, Bug, Camera } 
 import { formatDistanceToNow, format } from "date-fns";
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
 import { useEffect, useState } from "react";
+import { LatestPhotoCard } from "@/components/plant-photos";
+
 
 export const Route = createFileRoute("/_authenticated/plants/$id")({
   component: PlantDetail,
@@ -101,7 +103,10 @@ function PlantDetail() {
         </div>
       </div>
 
+      <LatestPhotoCard plantId={plant.id} plantName={plant.nickname} />
+
       <Snapshot path={latest?.snapshot_url ?? null} alt={`Snapshot of ${plant.nickname}`} />
+
 
       {readings.length > 0 && (
         <section className="mt-6 rounded-2xl border border-border bg-card p-5">
