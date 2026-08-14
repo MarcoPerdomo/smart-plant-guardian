@@ -8,7 +8,7 @@ export const searchSpecies = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => z.object({ q: z.string().default("") }).parse(input))
   .handler(async ({ data, context }) => {
     const q = data.q.trim();
-    let query = context.supabase.from("plant_species").select("*").order("common_name").limit(30);
+    let query = context.supabase.from("plant_species").select("*").order("common_name").limit(1000);
     if (q) query = query.or(`common_name.ilike.%${q}%,scientific_name.ilike.%${q}%,aliases::text.ilike.%${q}%`);
     const { data: rows, error } = await query;
     if (error) throw new Error(error.message);

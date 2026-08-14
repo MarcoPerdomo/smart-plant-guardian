@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { searchSpecies, lookupOrCreateSpecies, createPlant } from "@/lib/plants.functions";
 import { toast } from "sonner";
-import { ArrowLeft, Search, Sparkles } from "lucide-react";
+import { ArrowLeft, Search, Sparkles, Leaf } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/plants/new")({
   component: NewPlant,
@@ -13,20 +13,25 @@ export const Route = createFileRoute("/_authenticated/plants/new")({
 function NewPlant() {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
-  const [selectedSpecies, setSelectedSpecies] = useState<{ id: string; common_name: string } | null>(null);
+  const [selectedSpecies, setSelectedSpecies] = useState<{
+    id: string;
+    common_name: string;
+    scientific_name?: string | null;
+    image_url?: string | null;
+  } | null>(null);
   const [nickname, setNickname] = useState("");
   const [location, setLocation] = useState("");
   const [deviceId, setDeviceId] = useState("");
   const [notes, setNotes] = useState("");
 
-  const { data: results = [] } = useQuery({
+  const { data: results = [], isLoading } = useQuery({
     queryKey: ["species-search", query],
     queryFn: () => searchSpecies({ data: { q: query } }),
   });
 
   const aiLookup = useMutation({
     mutationFn: (name: string) => lookupOrCreateSpecies({ data: { name } }),
-    onSuccess: (row) => { setSelectedSpecies({ id: row.id, common_name: row.common_name }); toast.success(`Added ${row.common_name} to your catalog`); },
+    onSuccess: (row) => { setSelectedSpecies({ id: row.id, common_name: row.common_name, scientific_name: row.scientific_name, image_url: row.image_url }); toast.success(`Added ${row.common_name} to your catalog`); },
     onError: (e: Error) => toast.error(e.message),
   });
 
@@ -58,14 +63,29 @@ function NewPlant() {
             />
           </div>
 
-          <div className="mt-3 max-h-56 overflow-y-auto space-y-1">
+          <p className="mt-2 text-xs text-muted-foreground">
+            {isLoading ? "Loading catalog…" : `${results.length} ${results.length === 1 ? "species" : "species"} in catalog`}
+          </p>
+
+          <div className="mt-2 max-h-72 overflow-y-auto space-y-1">
             {results.map((s) => (
               <button
-                key={s.id} onClick={() => setSelectedSpecies({ id: s.id, common_name: s.common_name })}
-                className={`w-full text-left px-3 py-2 rounded-md hover:bg-muted text-sm flex justify-between ${selectedSpecies?.id === s.id ? "bg-muted" : ""}`}
+                key={s.id}
+                onClick={() => setSelectedSpecies({ id: s.id, common_name: s.common_name, scientific_name: s.scientific_name, image_url: s.image_url })}
+                className={`w-full text-left px-2 py-2 rounded-md hover:bg-muted text-sm flex items-center gap-3 ${selectedSpecies?.id === s.id ? "bg-muted" : ""}`}
               >
-                <span><span className="font-medium">{s.common_name}</span> <span className="text-muted-foreground italic">{s.scientific_name}</span></span>
-                {s.source === "ai" && <Sparkles className="w-3.5 h-3.5 text-accent" />}
+                {s.image_url ? (
+                  <img src={s.image_url} alt={s.common_name} loading="lazy" className="w-9 h-9 rounded-md object-cover shrink-0" />
+                ) : (
+                  <span className="w-9 h-9 rounded-md bg-muted flex items-center justify-center shrink-0">
+                    <Leaf className="w-4 h-4 text-muted-foreground" />
+                  </span>
+                )}
+                <span className="min-w-0 flex-1 truncate">
+                  <span className="font-medium">{s.common_name}</span>{" "}
+                  <span className="text-muted-foreground italic">{s.scientific_name}</span>
+                </span>
+                {s.source === "ai" && <Sparkles className="w-3.5 h-3.5 text-accent shrink-0" />}
               </button>
             ))}
             {query.length > 2 && results.length === 0 && (
@@ -81,7 +101,22 @@ function NewPlant() {
           </div>
 
           {selectedSpecies && (
-            <div className="mt-3 text-xs text-muted-foreground">Selected: <span className="text-foreground font-medium">{selectedSpecies.common_name}</span></div>
+            <div className="mt-4 flex items-center gap-3 rounded-lg border border-border bg-muted/40 p-3">
+              {selectedSpecies.image_url ? (
+                <img src={selectedSpecies.image_url} alt={selectedSpecies.common_name} className="w-14 h-14 rounded-lg object-cover shrink-0" />
+              ) : (
+                <span className="w-14 h-14 rounded-lg bg-muted flex items-center justify-center shrink-0">
+                  <Leaf className="w-5 h-5 text-muted-foreground" />
+                </span>
+              )}
+              <div className="min-w-0">
+                <p className="text-xs text-muted-foreground">Selected</p>
+                <p className="font-medium truncate">{selectedSpecies.common_name}</p>
+                {selectedSpecies.scientific_name && (
+                  <p className="text-xs text-muted-foreground italic truncate">{selectedSpecies.scientific_name}</p>
+                )}
+              </div>
+            </div>
           )}
         </section>
 
