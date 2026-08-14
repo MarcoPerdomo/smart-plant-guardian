@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { searchSpecies, lookupOrCreateSpecies, createPlant } from "@/lib/plants.functions";
 import { toast } from "sonner";
-import { ArrowLeft, Search, Sparkles } from "lucide-react";
+import { ArrowLeft, Search, Sparkles, Leaf } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/plants/new")({
   component: NewPlant,
@@ -24,14 +24,14 @@ function NewPlant() {
   const [deviceId, setDeviceId] = useState("");
   const [notes, setNotes] = useState("");
 
-  const { data: results = [] } = useQuery({
+  const { data: results = [], isLoading } = useQuery({
     queryKey: ["species-search", query],
     queryFn: () => searchSpecies({ data: { q: query } }),
   });
 
   const aiLookup = useMutation({
     mutationFn: (name: string) => lookupOrCreateSpecies({ data: { name } }),
-    onSuccess: (row) => { setSelectedSpecies({ id: row.id, common_name: row.common_name }); toast.success(`Added ${row.common_name} to your catalog`); },
+    onSuccess: (row) => { setSelectedSpecies({ id: row.id, common_name: row.common_name, scientific_name: row.scientific_name, image_url: row.image_url }); toast.success(`Added ${row.common_name} to your catalog`); },
     onError: (e: Error) => toast.error(e.message),
   });
 
@@ -101,7 +101,22 @@ function NewPlant() {
           </div>
 
           {selectedSpecies && (
-            <div className="mt-3 text-xs text-muted-foreground">Selected: <span className="text-foreground font-medium">{selectedSpecies.common_name}</span></div>
+            <div className="mt-4 flex items-center gap-3 rounded-lg border border-border bg-muted/40 p-3">
+              {selectedSpecies.image_url ? (
+                <img src={selectedSpecies.image_url} alt={selectedSpecies.common_name} className="w-14 h-14 rounded-lg object-cover shrink-0" />
+              ) : (
+                <span className="w-14 h-14 rounded-lg bg-muted flex items-center justify-center shrink-0">
+                  <Leaf className="w-5 h-5 text-muted-foreground" />
+                </span>
+              )}
+              <div className="min-w-0">
+                <p className="text-xs text-muted-foreground">Selected</p>
+                <p className="font-medium truncate">{selectedSpecies.common_name}</p>
+                {selectedSpecies.scientific_name && (
+                  <p className="text-xs text-muted-foreground italic truncate">{selectedSpecies.scientific_name}</p>
+                )}
+              </div>
+            </div>
           )}
         </section>
 
