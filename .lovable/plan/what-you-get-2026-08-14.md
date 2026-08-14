@@ -1,4 +1,4 @@
-# Plant photo journal
+Plant photo journal
 
 Add manual photo uploads per plant, a latest-photo card on the plant page, and a full gallery page ordered by date.
 
@@ -6,13 +6,14 @@ Add manual photo uploads per plant, a latest-photo card on the plant page, and a
 
 - **Upload button** on the plant detail page (`/plants/:id`): pick or take a photo, optionally add a note, and it's stored against that plant.
 - **Latest photo card** on the plant page showing the newest photo, the date it was taken, and any note, with a "View all photos" link.
-- **Gallery page** at `/plants/:id/photos`: all photos for that plant, newest first, grouped by date, each with note and a delete option.
+- **Gallery page** at `/plants/:id/photos`: all photos for that plant, newest first, grouped by date, each with note and a delete option. Make sure you also create a button for edit caption.
 - Photos are private to you — served through short-lived signed links.
 - Structured so a later AI pass (health, yellow leaves, disease, flowering, leaf count) can read each photo and write results back without changing the schema shape.
 
 ## Database
 
 New table `plant_photos`:
+
 - `plant_id` (the plant it belongs to), `user_id` (owner)
 - `storage_path` (file in the `plant-images` bucket)
 - `taken_at` (defaults to upload time; editable later)
