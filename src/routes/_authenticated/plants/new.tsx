@@ -76,8 +76,13 @@ function NewPlant() {
           </div>
 
           <p className="mt-2 text-xs text-muted-foreground">
-            {isLoading ? "Loading catalog…" : `${results.length} ${results.length === 1 ? "species" : "species"} in catalog`}
+            {isLoading
+              ? "Loading catalog…"
+              : isError
+                ? <span className="text-destructive">Couldn't load catalog: {(error as Error)?.message}</span>
+                : `${results.length} of ${catalog.length} species in catalog`}
           </p>
+
 
           <div className="mt-2 max-h-72 overflow-y-auto space-y-1">
             {results.map((s) => (
