@@ -88,6 +88,7 @@ export const getWeatherForMe = createServerFn({ method: "GET" })
     const { data: plants } = await context.supabase
       .from("user_plants")
       .select("id, nickname, plant_species(light, temperature_min_c, temperature_max_c, humidity_min, humidity_max, water_frequency_days)")
+      .eq("user_id", context.userId)
       .is("archived_at", null);
 
     const alerts: PlantWeatherAlert[] = [];
