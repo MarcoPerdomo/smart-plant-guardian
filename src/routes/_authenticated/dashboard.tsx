@@ -88,6 +88,7 @@ function Dashboard() {
             thirsty: "bg-accent/20 text-accent",
             unknown: "bg-muted text-muted-foreground",
           }[status.status];
+          const plantAlerts = (weather?.alerts ?? []).filter((a) => a.plant_id === p.id);
 
           return (
             <div key={p.id} className="rounded-2xl border border-border bg-card p-5 flex flex-col">
@@ -103,6 +104,22 @@ function Dashboard() {
                 </div>
                 <span className={`text-xs font-medium px-2 py-1 rounded-full ${statusColor}`}>{status.label}</span>
               </div>
+
+              {plantAlerts.length > 0 && (
+                <ul className="mt-3 space-y-1.5">
+                  {plantAlerts.map((a) => (
+                    <li
+                      key={a.rule}
+                      title={a.message}
+                      className={`text-[11px] px-2 py-1.5 rounded-md flex items-start gap-1.5 ${a.severity === "warning" ? "bg-warning/15 text-warning-foreground" : "bg-muted text-muted-foreground"}`}
+                    >
+                      <CloudSun className="w-3.5 h-3.5 mt-px shrink-0" />
+                      <span>{a.message}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+
 
               <div className="mt-4 grid grid-cols-3 gap-2 text-center">
                 <Stat icon={Droplets} label="Moisture" value={latest?.soil_moisture != null ? `${Math.round(latest.soil_moisture)}%` : "—"} />
