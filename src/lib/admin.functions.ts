@@ -27,7 +27,7 @@ export const getAdminStats = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     await assertAdmin(context);
     const count = async (table: string, archived?: boolean) => {
-      let q = context.supabase.from(table).select("id", { count: "exact", head: true });
+      let q: any = (context.supabase as any).from(table).select("id", { count: "exact", head: true });
       if (archived === false) q = q.is("archived_at", null);
       const { count: c } = await q;
       return c ?? 0;
