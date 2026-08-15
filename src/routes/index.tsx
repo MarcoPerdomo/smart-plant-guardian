@@ -59,6 +59,9 @@ function Landing() {
               How it works
             </a>
           </div>
+          <div className="mt-6">
+            <VisitorWeatherChip />
+          </div>
         </div>
         <div className="rounded-2xl bg-gradient-to-br from-primary/10 via-accent/10 to-background border border-border p-10 aspect-square flex items-center justify-center">
           <Leaf className="w-40 h-40 text-primary/40" strokeWidth={1} />
