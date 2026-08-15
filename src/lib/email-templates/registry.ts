@@ -1,4 +1,5 @@
 import type { ComponentType } from 'react'
+import { template as weatherDigestTemplate } from './weather-digest'
 
 export interface TemplateEntry {
   component: ComponentType<any>
