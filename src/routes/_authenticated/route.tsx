@@ -16,6 +16,8 @@ export const Route = createFileRoute("/_authenticated")({
 
 function AuthedLayout() {
   const navigate = useNavigate();
+  const { data: admin } = useQuery({ queryKey: ["admin", "me"], queryFn: () => amIAdmin() });
+  const isAdmin = admin?.isAdmin ?? false;
 
   async function signOut() {
     await supabase.auth.signOut();
