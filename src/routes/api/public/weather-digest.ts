@@ -11,8 +11,14 @@ export const Route = createFileRoute("/api/public/weather-digest")({
   server: {
     handlers: {
       POST: async ({ request }) => {
+        // Authorized either by the digest secret (manual/external triggers) or by the
+        // Supabase anon key (the pg_cron scheduled job uses the standard `apikey` header).
         const secret = process.env["WEATHER_DIGEST_SECRET"];
-        if (!secret || request.headers.get("x-digest-secret") !== secret) {
+        const anonKey =
+          process.env["SUPABASE_ANON_KEY"] ?? import.meta.env["VITE_SUPABASE_PUBLISHABLE_KEY"];
+        const bySecret = Boolean(secret) && request.headers.get("x-digest-secret") === secret;
+        const byApiKey = Boolean(anonKey) && request.headers.get("apikey") === anonKey;
+        if (!bySecret && !byApiKey) {
           return new Response("Unauthorized", { status: 401 });
         }
 
