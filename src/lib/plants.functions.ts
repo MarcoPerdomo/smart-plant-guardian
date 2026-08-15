@@ -168,8 +168,9 @@ export const addManualReading = createServerFn({ method: "POST" })
     light_lux: z.number().nullable(),
   }).parse(i))
   .handler(async ({ data, context }) => {
-    // Verify ownership via RLS-friendly select
-    const { data: owned } = await context.supabase.from("user_plants").select("id").eq("id", data.plant_id).maybeSingle();
+    // Verify ownership explicitly (admins can read other users' rows via RLS)
+    const { data: owned } = await context.supabase
+      .from("user_plants").select("id").eq("id", data.plant_id).eq("user_id", context.userId).maybeSingle();
     if (!owned) throw new Error("Not found");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin.from("sensor_readings").insert({ ...data, source_device: "manual" });
