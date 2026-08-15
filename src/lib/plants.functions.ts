@@ -227,7 +227,7 @@ export const generateSummary = createServerFn({ method: "POST" })
   .inputValidator((i: unknown) => z.object({ plant_id: z.string().uuid() }).parse(i))
   .handler(async ({ data, context }) => {
     const { data: plant } = await context.supabase
-      .from("user_plants").select("*, plant_species(*)").eq("id", data.plant_id).single();
+      .from("user_plants").select("*, plant_species(*)").eq("id", data.plant_id).eq("user_id", context.userId).maybeSingle();
     if (!plant) throw new Error("Plant not found");
     const { data: readings } = await context.supabase
       .from("sensor_readings").select("*").eq("plant_id", data.plant_id)
