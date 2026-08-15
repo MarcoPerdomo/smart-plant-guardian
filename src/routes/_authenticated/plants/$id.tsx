@@ -22,6 +22,13 @@ function PlantDetail() {
   const navigate = useNavigate();
   const qc = useQueryClient();
   const { data, isLoading } = useQuery({ queryKey: ["plant", id], queryFn: () => getPlant({ data: { id } }) });
+  const { data: weather } = useQuery({
+    queryKey: ["weather", "me"],
+    queryFn: () => getWeatherForMe(),
+    staleTime: 15 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+  const plantAlerts = (weather?.alerts ?? []).filter((a) => a.plant_id === id);
   const [showManual, setShowManual] = useState(false);
 
   const invalidate = () => qc.invalidateQueries({ queryKey: ["plant", id] });
