@@ -20,6 +20,7 @@ import { Route as ApiPublicSnapshotUploadRouteImport } from './routes/api/public
 import { Route as ApiPublicIngestRouteImport } from './routes/api/public/ingest'
 import { Route as AuthenticatedPlantsNewRouteImport } from './routes/_authenticated/plants/new'
 import { Route as AuthenticatedPlantsIdRouteImport } from './routes/_authenticated/plants/$id'
+import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin/users'
 import { Route as AuthenticatedPlantsIdPhotosRouteImport } from './routes/_authenticated/plants/$id_.photos'
 import { Route as AuthenticatedAdminPlantsImportRouteImport } from './routes/_authenticated/admin/plants/import'
 
@@ -77,6 +78,11 @@ const AuthenticatedPlantsIdRoute = AuthenticatedPlantsIdRouteImport.update({
   path: '/plants/$id',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AuthenticatedAdminRouteRoute,
+} as any)
 const AuthenticatedPlantsIdPhotosRoute =
   AuthenticatedPlantsIdPhotosRouteImport.update({
     id: '/plants/$id_/photos',
@@ -96,6 +102,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRouteRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/plants/$id': typeof AuthenticatedPlantsIdRoute
   '/plants/new': typeof AuthenticatedPlantsNewRoute
   '/api/public/ingest': typeof ApiPublicIngestRoute
@@ -109,6 +116,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/plants/$id': typeof AuthenticatedPlantsIdRoute
   '/plants/new': typeof AuthenticatedPlantsNewRoute
   '/api/public/ingest': typeof ApiPublicIngestRoute
@@ -125,6 +133,7 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRouteRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/plants/$id': typeof AuthenticatedPlantsIdRoute
   '/_authenticated/plants/new': typeof AuthenticatedPlantsNewRoute
   '/api/public/ingest': typeof ApiPublicIngestRoute
@@ -141,6 +150,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/dashboard'
     | '/settings'
+    | '/admin/users'
     | '/plants/$id'
     | '/plants/new'
     | '/api/public/ingest'
@@ -154,6 +164,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/dashboard'
     | '/settings'
+    | '/admin/users'
     | '/plants/$id'
     | '/plants/new'
     | '/api/public/ingest'
@@ -169,6 +180,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/_authenticated/dashboard'
     | '/_authenticated/settings'
+    | '/_authenticated/admin/users'
     | '/_authenticated/plants/$id'
     | '/_authenticated/plants/new'
     | '/api/public/ingest'
@@ -265,6 +277,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPlantsIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/users': {
+      id: '/_authenticated/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AuthenticatedAdminUsersRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
     '/_authenticated/plants/$id_/photos': {
       id: '/_authenticated/plants/$id_/photos'
       path: '/plants/$id/photos'
@@ -283,12 +302,14 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedAdminRouteRouteChildren {
+  AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
   AuthenticatedAdminPlantsImportRoute: typeof AuthenticatedAdminPlantsImportRoute
 }
 
 const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren =
   {
+    AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
     AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
     AuthenticatedAdminPlantsImportRoute: AuthenticatedAdminPlantsImportRoute,
   }
