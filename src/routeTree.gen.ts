@@ -16,6 +16,7 @@ import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAdminRouteRouteImport } from './routes/_authenticated/admin/route'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
+import { Route as ApiPublicWeatherDigestRouteImport } from './routes/api/public/weather-digest'
 import { Route as ApiPublicSnapshotUploadRouteImport } from './routes/api/public/snapshot-upload'
 import { Route as ApiPublicIngestRouteImport } from './routes/api/public/ingest'
 import { Route as AuthenticatedPlantsNewRouteImport } from './routes/_authenticated/plants/new'
@@ -24,6 +25,7 @@ import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAdminSpeciesRouteImport } from './routes/_authenticated/admin/species'
 import { Route as AuthenticatedAdminArchiveRouteImport } from './routes/_authenticated/admin/archive'
 import { Route as AuthenticatedAdminPlantsIndexRouteImport } from './routes/_authenticated/admin/plants/index'
+import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 import { Route as AuthenticatedPlantsIdPhotosRouteImport } from './routes/_authenticated/plants/$id_.photos'
 import { Route as AuthenticatedAdminPlantsImportRouteImport } from './routes/_authenticated/admin/plants/import'
 
@@ -60,6 +62,11 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AuthenticatedAdminRouteRoute,
+} as any)
+const ApiPublicWeatherDigestRoute = ApiPublicWeatherDigestRouteImport.update({
+  id: '/api/public/weather-digest',
+  path: '/api/public/weather-digest',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicSnapshotUploadRoute = ApiPublicSnapshotUploadRouteImport.update({
   id: '/api/public/snapshot-upload',
@@ -104,6 +111,12 @@ const AuthenticatedAdminPlantsIndexRoute =
     path: '/plants/',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
+const LovableEmailTransactionalPreviewRoute =
+  LovableEmailTransactionalPreviewRouteImport.update({
+    id: '/lovable/email/transactional/preview',
+    path: '/lovable/email/transactional/preview',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AuthenticatedPlantsIdPhotosRoute =
   AuthenticatedPlantsIdPhotosRouteImport.update({
     id: '/plants/$id_/photos',
@@ -130,9 +143,11 @@ export interface FileRoutesByFullPath {
   '/plants/new': typeof AuthenticatedPlantsNewRoute
   '/api/public/ingest': typeof ApiPublicIngestRoute
   '/api/public/snapshot-upload': typeof ApiPublicSnapshotUploadRoute
+  '/api/public/weather-digest': typeof ApiPublicWeatherDigestRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/admin/plants/import': typeof AuthenticatedAdminPlantsImportRoute
   '/plants/$id/photos': typeof AuthenticatedPlantsIdPhotosRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/admin/plants/': typeof AuthenticatedAdminPlantsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -147,9 +162,11 @@ export interface FileRoutesByTo {
   '/plants/new': typeof AuthenticatedPlantsNewRoute
   '/api/public/ingest': typeof ApiPublicIngestRoute
   '/api/public/snapshot-upload': typeof ApiPublicSnapshotUploadRoute
+  '/api/public/weather-digest': typeof ApiPublicWeatherDigestRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/admin/plants/import': typeof AuthenticatedAdminPlantsImportRoute
   '/plants/$id/photos': typeof AuthenticatedPlantsIdPhotosRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/admin/plants': typeof AuthenticatedAdminPlantsIndexRoute
 }
 export interface FileRoutesById {
@@ -167,9 +184,11 @@ export interface FileRoutesById {
   '/_authenticated/plants/new': typeof AuthenticatedPlantsNewRoute
   '/api/public/ingest': typeof ApiPublicIngestRoute
   '/api/public/snapshot-upload': typeof ApiPublicSnapshotUploadRoute
+  '/api/public/weather-digest': typeof ApiPublicWeatherDigestRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/admin/plants/import': typeof AuthenticatedAdminPlantsImportRoute
   '/_authenticated/plants/$id_/photos': typeof AuthenticatedPlantsIdPhotosRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/_authenticated/admin/plants/': typeof AuthenticatedAdminPlantsIndexRoute
 }
 export interface FileRouteTypes {
@@ -187,9 +206,11 @@ export interface FileRouteTypes {
     | '/plants/new'
     | '/api/public/ingest'
     | '/api/public/snapshot-upload'
+    | '/api/public/weather-digest'
     | '/admin/'
     | '/admin/plants/import'
     | '/plants/$id/photos'
+    | '/lovable/email/transactional/preview'
     | '/admin/plants/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -204,9 +225,11 @@ export interface FileRouteTypes {
     | '/plants/new'
     | '/api/public/ingest'
     | '/api/public/snapshot-upload'
+    | '/api/public/weather-digest'
     | '/admin'
     | '/admin/plants/import'
     | '/plants/$id/photos'
+    | '/lovable/email/transactional/preview'
     | '/admin/plants'
   id:
     | '__root__'
@@ -223,9 +246,11 @@ export interface FileRouteTypes {
     | '/_authenticated/plants/new'
     | '/api/public/ingest'
     | '/api/public/snapshot-upload'
+    | '/api/public/weather-digest'
     | '/_authenticated/admin/'
     | '/_authenticated/admin/plants/import'
     | '/_authenticated/plants/$id_/photos'
+    | '/lovable/email/transactional/preview'
     | '/_authenticated/admin/plants/'
   fileRoutesById: FileRoutesById
 }
@@ -235,6 +260,8 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   ApiPublicIngestRoute: typeof ApiPublicIngestRoute
   ApiPublicSnapshotUploadRoute: typeof ApiPublicSnapshotUploadRoute
+  ApiPublicWeatherDigestRoute: typeof ApiPublicWeatherDigestRoute
+  LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -287,6 +314,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/'
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/api/public/weather-digest': {
+      id: '/api/public/weather-digest'
+      path: '/api/public/weather-digest'
+      fullPath: '/api/public/weather-digest'
+      preLoaderRoute: typeof ApiPublicWeatherDigestRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/public/snapshot-upload': {
       id: '/api/public/snapshot-upload'
@@ -343,6 +377,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/plants/'
       preLoaderRoute: typeof AuthenticatedAdminPlantsIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/lovable/email/transactional/preview': {
+      id: '/lovable/email/transactional/preview'
+      path: '/lovable/email/transactional/preview'
+      fullPath: '/lovable/email/transactional/preview'
+      preLoaderRoute: typeof LovableEmailTransactionalPreviewRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/plants/$id_/photos': {
       id: '/_authenticated/plants/$id_/photos'
@@ -412,6 +453,8 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   ApiPublicIngestRoute: ApiPublicIngestRoute,
   ApiPublicSnapshotUploadRoute: ApiPublicSnapshotUploadRoute,
+  ApiPublicWeatherDigestRoute: ApiPublicWeatherDigestRoute,
+  LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
