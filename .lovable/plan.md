@@ -36,7 +36,7 @@ Alerts are deduplicated: one alert per plant per rule per day, so a hot week doe
 
 ## Notifications
 
-In-app alerts write to your existing notifications feed and honour the "in-app" toggle in Settings. The email and SMS toggles already exist in Settings, but no email or SMS provider is connected to this project yet — until one is added those alerts stay in-app only. Say the word and I'll wire up email sending as a follow-up.
+In-app alerts write to your existing notifications feed and honour the "in-app" toggle in Settings. The email and SMS toggles already exist in Settings, but no email or SMS provider is connected to this project yet — until one is added those alerts stay in-app only. Email alerts get wired up in this same build: a daily digest of that day's weather alerts, sent to users with the email toggle on. That needs a sender domain you own connected to the project (Project Settings → Domains, then the email setup step) — I'll open that dialog during the build; SMS stays out of scope for now.
 
 ## Technical notes
 
