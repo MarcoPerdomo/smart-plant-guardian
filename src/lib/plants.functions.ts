@@ -90,6 +90,7 @@ export const listUserPlants = createServerFn({ method: "GET" })
     const { data, error } = await context.supabase
       .from("user_plants")
       .select("*, plant_species(*)")
+      .eq("user_id", context.userId)
       .is("archived_at", null)
       .order("created_at", { ascending: false });
     if (error) throw new Error(error.message);
@@ -113,7 +114,7 @@ export const getPlant = createServerFn({ method: "POST" })
   .inputValidator((i: unknown) => z.object({ id: z.string().uuid() }).parse(i))
   .handler(async ({ data, context }) => {
     const { data: plant, error } = await context.supabase
-      .from("user_plants").select("*, plant_species(*)").eq("id", data.id).single();
+      .from("user_plants").select("*, plant_species(*)").eq("id", data.id).eq("user_id", context.userId).single();
     if (error) throw new Error(error.message);
     const { data: readings } = await context.supabase
       .from("sensor_readings").select("*").eq("plant_id", data.id)
@@ -147,9 +148,13 @@ export const logWatering = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((i: unknown) => z.object({ plant_id: z.string().uuid(), amount_ml: z.number().nullable() }).parse(i))
   .handler(async ({ data, context }) => {
+    const { data: owned } = await context.supabase
+      .from("user_plants").select("id").eq("id", data.plant_id).eq("user_id", context.userId).maybeSingle();
+    if (!owned) throw new Error("Plant not found");
     const { error } = await context.supabase.from("watering_events").insert(data);
     if (error) throw new Error(error.message);
-    await context.supabase.from("user_plants").update({ last_watered_at: new Date().toISOString() }).eq("id", data.plant_id);
+    await context.supabase.from("user_plants").update({ last_watered_at: new Date().toISOString() })
+      .eq("id", data.plant_id).eq("user_id", context.userId);
     return { ok: true };
   });
 
@@ -163,8 +168,9 @@ export const addManualReading = createServerFn({ method: "POST" })
     light_lux: z.number().nullable(),
   }).parse(i))
   .handler(async ({ data, context }) => {
-    // Verify ownership via RLS-friendly select
-    const { data: owned } = await context.supabase.from("user_plants").select("id").eq("id", data.plant_id).maybeSingle();
+    // Verify ownership explicitly (admins can read other users' rows via RLS)
+    const { data: owned } = await context.supabase
+      .from("user_plants").select("id").eq("id", data.plant_id).eq("user_id", context.userId).maybeSingle();
     if (!owned) throw new Error("Not found");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin.from("sensor_readings").insert({ ...data, source_device: "manual" });
@@ -176,7 +182,7 @@ export const deletePlant = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((i: unknown) => z.object({ id: z.string().uuid() }).parse(i))
   .handler(async ({ data, context }) => {
-    const { error } = await context.supabase.from("user_plants").delete().eq("id", data.id);
+    const { error } = await context.supabase.from("user_plants").delete().eq("id", data.id).eq("user_id", context.userId);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
@@ -221,7 +227,7 @@ export const generateSummary = createServerFn({ method: "POST" })
   .inputValidator((i: unknown) => z.object({ plant_id: z.string().uuid() }).parse(i))
   .handler(async ({ data, context }) => {
     const { data: plant } = await context.supabase
-      .from("user_plants").select("*, plant_species(*)").eq("id", data.plant_id).single();
+      .from("user_plants").select("*, plant_species(*)").eq("id", data.plant_id).eq("user_id", context.userId).maybeSingle();
     if (!plant) throw new Error("Plant not found");
     const { data: readings } = await context.supabase
       .from("sensor_readings").select("*").eq("plant_id", data.plant_id)
@@ -418,6 +424,7 @@ export const listPlantPhotos = createServerFn({ method: "POST" })
       .from("plant_photos")
       .select("*")
       .eq("plant_id", data.plant_id)
+      .eq("user_id", context.userId)
       .order("taken_at", { ascending: false });
     if (data.limit) query = query.limit(data.limit);
     const { data: rows, error } = await query;
@@ -446,6 +453,7 @@ export const createPlantPhoto = createServerFn({ method: "POST" })
       .from("user_plants")
       .select("id")
       .eq("id", data.plant_id)
+      .eq("user_id", context.userId)
       .maybeSingle();
     if (pErr) throw new Error(pErr.message);
     if (!plant) throw new Error("Plant not found");
@@ -478,7 +486,8 @@ export const updatePlantPhoto = createServerFn({ method: "POST" })
     const { error } = await context.supabase
       .from("plant_photos")
       .update({ caption: data.caption })
-      .eq("id", data.id);
+      .eq("id", data.id)
+      .eq("user_id", context.userId);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
@@ -491,12 +500,13 @@ export const deletePlantPhoto = createServerFn({ method: "POST" })
       .from("plant_photos")
       .select("storage_path")
       .eq("id", data.id)
+      .eq("user_id", context.userId)
       .maybeSingle();
     if (sErr) throw new Error(sErr.message);
     if (!row) throw new Error("Photo not found");
 
     await context.supabase.storage.from("plant-images").remove([row.storage_path]);
-    const { error } = await context.supabase.from("plant_photos").delete().eq("id", data.id);
+    const { error } = await context.supabase.from("plant_photos").delete().eq("id", data.id).eq("user_id", context.userId);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
