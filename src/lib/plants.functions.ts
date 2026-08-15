@@ -486,7 +486,8 @@ export const updatePlantPhoto = createServerFn({ method: "POST" })
     const { error } = await context.supabase
       .from("plant_photos")
       .update({ caption: data.caption })
-      .eq("id", data.id);
+      .eq("id", data.id)
+      .eq("user_id", context.userId);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
@@ -499,12 +500,13 @@ export const deletePlantPhoto = createServerFn({ method: "POST" })
       .from("plant_photos")
       .select("storage_path")
       .eq("id", data.id)
+      .eq("user_id", context.userId)
       .maybeSingle();
     if (sErr) throw new Error(sErr.message);
     if (!row) throw new Error("Photo not found");
 
     await context.supabase.storage.from("plant-images").remove([row.storage_path]);
-    const { error } = await context.supabase.from("plant_photos").delete().eq("id", data.id);
+    const { error } = await context.supabase.from("plant_photos").delete().eq("id", data.id).eq("user_id", context.userId);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
