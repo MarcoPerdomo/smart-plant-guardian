@@ -24,6 +24,7 @@ import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAdminSpeciesRouteImport } from './routes/_authenticated/admin/species'
 import { Route as AuthenticatedAdminArchiveRouteImport } from './routes/_authenticated/admin/archive'
 import { Route as AuthenticatedAdminPlantsIndexRouteImport } from './routes/_authenticated/admin/plants/index'
+import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 import { Route as AuthenticatedPlantsIdPhotosRouteImport } from './routes/_authenticated/plants/$id_.photos'
 import { Route as AuthenticatedAdminPlantsImportRouteImport } from './routes/_authenticated/admin/plants/import'
 
@@ -104,6 +105,12 @@ const AuthenticatedAdminPlantsIndexRoute =
     path: '/plants/',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
+const LovableEmailTransactionalPreviewRoute =
+  LovableEmailTransactionalPreviewRouteImport.update({
+    id: '/lovable/email/transactional/preview',
+    path: '/lovable/email/transactional/preview',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AuthenticatedPlantsIdPhotosRoute =
   AuthenticatedPlantsIdPhotosRouteImport.update({
     id: '/plants/$id_/photos',
@@ -133,6 +140,7 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/admin/plants/import': typeof AuthenticatedAdminPlantsImportRoute
   '/plants/$id/photos': typeof AuthenticatedPlantsIdPhotosRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/admin/plants/': typeof AuthenticatedAdminPlantsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -150,6 +158,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/admin/plants/import': typeof AuthenticatedAdminPlantsImportRoute
   '/plants/$id/photos': typeof AuthenticatedPlantsIdPhotosRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/admin/plants': typeof AuthenticatedAdminPlantsIndexRoute
 }
 export interface FileRoutesById {
@@ -170,6 +179,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/admin/plants/import': typeof AuthenticatedAdminPlantsImportRoute
   '/_authenticated/plants/$id_/photos': typeof AuthenticatedPlantsIdPhotosRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/_authenticated/admin/plants/': typeof AuthenticatedAdminPlantsIndexRoute
 }
 export interface FileRouteTypes {
@@ -190,6 +200,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/admin/plants/import'
     | '/plants/$id/photos'
+    | '/lovable/email/transactional/preview'
     | '/admin/plants/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -207,6 +218,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/admin/plants/import'
     | '/plants/$id/photos'
+    | '/lovable/email/transactional/preview'
     | '/admin/plants'
   id:
     | '__root__'
@@ -226,6 +238,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/'
     | '/_authenticated/admin/plants/import'
     | '/_authenticated/plants/$id_/photos'
+    | '/lovable/email/transactional/preview'
     | '/_authenticated/admin/plants/'
   fileRoutesById: FileRoutesById
 }
@@ -235,6 +248,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   ApiPublicIngestRoute: typeof ApiPublicIngestRoute
   ApiPublicSnapshotUploadRoute: typeof ApiPublicSnapshotUploadRoute
+  LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -344,6 +358,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminPlantsIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
+    '/lovable/email/transactional/preview': {
+      id: '/lovable/email/transactional/preview'
+      path: '/lovable/email/transactional/preview'
+      fullPath: '/lovable/email/transactional/preview'
+      preLoaderRoute: typeof LovableEmailTransactionalPreviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/plants/$id_/photos': {
       id: '/_authenticated/plants/$id_/photos'
       path: '/plants/$id/photos'
@@ -412,6 +433,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   ApiPublicIngestRoute: ApiPublicIngestRoute,
   ApiPublicSnapshotUploadRoute: ApiPublicSnapshotUploadRoute,
+  LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
