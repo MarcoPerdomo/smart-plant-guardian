@@ -148,9 +148,13 @@ export const logWatering = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((i: unknown) => z.object({ plant_id: z.string().uuid(), amount_ml: z.number().nullable() }).parse(i))
   .handler(async ({ data, context }) => {
+    const { data: owned } = await context.supabase
+      .from("user_plants").select("id").eq("id", data.plant_id).eq("user_id", context.userId).maybeSingle();
+    if (!owned) throw new Error("Plant not found");
     const { error } = await context.supabase.from("watering_events").insert(data);
     if (error) throw new Error(error.message);
-    await context.supabase.from("user_plants").update({ last_watered_at: new Date().toISOString() }).eq("id", data.plant_id);
+    await context.supabase.from("user_plants").update({ last_watered_at: new Date().toISOString() })
+      .eq("id", data.plant_id).eq("user_id", context.userId);
     return { ok: true };
   });
 
