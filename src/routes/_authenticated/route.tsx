@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { amIAdmin } from "@/lib/admin.functions";
 import { Leaf, LayoutDashboard, Settings, LogOut, Plus, Shield } from "lucide-react";
+import { WeatherChip } from "@/components/weather-chip";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
