@@ -49,6 +49,51 @@ export type Database = {
           },
         ]
       }
+      archived_records: {
+        Row: {
+          archived_at: string
+          archived_by: string
+          created_at: string
+          entity_id: string
+          entity_type: string
+          id: string
+          owner_id: string | null
+          reason: string | null
+          restored_at: string | null
+          restored_by: string | null
+          snapshot: Json
+          updated_at: string
+        }
+        Insert: {
+          archived_at?: string
+          archived_by: string
+          created_at?: string
+          entity_id: string
+          entity_type: string
+          id?: string
+          owner_id?: string | null
+          reason?: string | null
+          restored_at?: string | null
+          restored_by?: string | null
+          snapshot: Json
+          updated_at?: string
+        }
+        Update: {
+          archived_at?: string
+          archived_by?: string
+          created_at?: string
+          entity_id?: string
+          entity_type?: string
+          id?: string
+          owner_id?: string | null
+          reason?: string | null
+          restored_at?: string | null
+          restored_by?: string | null
+          snapshot?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           body: string | null
@@ -146,6 +191,8 @@ export type Database = {
       plant_species: {
         Row: {
           aliases: string[] | null
+          archived_at: string | null
+          archived_by: string | null
           care_tips: string | null
           common_diseases: string[] | null
           common_name: string
@@ -172,6 +219,8 @@ export type Database = {
         }
         Insert: {
           aliases?: string[] | null
+          archived_at?: string | null
+          archived_by?: string | null
           care_tips?: string | null
           common_diseases?: string[] | null
           common_name: string
@@ -198,6 +247,8 @@ export type Database = {
         }
         Update: {
           aliases?: string[] | null
+          archived_at?: string | null
+          archived_by?: string | null
           care_tips?: string | null
           common_diseases?: string[] | null
           common_name?: string
@@ -312,6 +363,8 @@ export type Database = {
       }
       user_plants: {
         Row: {
+          archived_at: string | null
+          archived_by: string | null
           created_at: string
           device_id: string | null
           id: string
@@ -325,6 +378,8 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          archived_at?: string | null
+          archived_by?: string | null
           created_at?: string
           device_id?: string | null
           id?: string
@@ -338,6 +393,8 @@ export type Database = {
           user_id: string
         }
         Update: {
+          archived_at?: string | null
+          archived_by?: string | null
           created_at?: string
           device_id?: string | null
           id?: string

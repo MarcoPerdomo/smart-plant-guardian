@@ -14,10 +14,16 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedAdminRouteRouteImport } from './routes/_authenticated/admin/route'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
 import { Route as ApiPublicSnapshotUploadRouteImport } from './routes/api/public/snapshot-upload'
 import { Route as ApiPublicIngestRouteImport } from './routes/api/public/ingest'
 import { Route as AuthenticatedPlantsNewRouteImport } from './routes/_authenticated/plants/new'
 import { Route as AuthenticatedPlantsIdRouteImport } from './routes/_authenticated/plants/$id'
+import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin/users'
+import { Route as AuthenticatedAdminSpeciesRouteImport } from './routes/_authenticated/admin/species'
+import { Route as AuthenticatedAdminArchiveRouteImport } from './routes/_authenticated/admin/archive'
+import { Route as AuthenticatedAdminPlantsIndexRouteImport } from './routes/_authenticated/admin/plants/index'
 import { Route as AuthenticatedPlantsIdPhotosRouteImport } from './routes/_authenticated/plants/$id_.photos'
 import { Route as AuthenticatedAdminPlantsImportRouteImport } from './routes/_authenticated/admin/plants/import'
 
@@ -45,6 +51,16 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminRouteRoute = AuthenticatedAdminRouteRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedAdminRouteRoute,
+} as any)
 const ApiPublicSnapshotUploadRoute = ApiPublicSnapshotUploadRouteImport.update({
   id: '/api/public/snapshot-upload',
   path: '/api/public/snapshot-upload',
@@ -65,6 +81,29 @@ const AuthenticatedPlantsIdRoute = AuthenticatedPlantsIdRouteImport.update({
   path: '/plants/$id',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AuthenticatedAdminRouteRoute,
+} as any)
+const AuthenticatedAdminSpeciesRoute =
+  AuthenticatedAdminSpeciesRouteImport.update({
+    id: '/species',
+    path: '/species',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminArchiveRoute =
+  AuthenticatedAdminArchiveRouteImport.update({
+    id: '/archive',
+    path: '/archive',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminPlantsIndexRoute =
+  AuthenticatedAdminPlantsIndexRouteImport.update({
+    id: '/plants/',
+    path: '/plants/',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
 const AuthenticatedPlantsIdPhotosRoute =
   AuthenticatedPlantsIdPhotosRouteImport.update({
     id: '/plants/$id_/photos',
@@ -73,87 +112,121 @@ const AuthenticatedPlantsIdPhotosRoute =
   } as any)
 const AuthenticatedAdminPlantsImportRoute =
   AuthenticatedAdminPlantsImportRouteImport.update({
-    id: '/admin/plants/import',
-    path: '/admin/plants/import',
-    getParentRoute: () => AuthenticatedRouteRoute,
+    id: '/plants/import',
+    path: '/plants/import',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/admin': typeof AuthenticatedAdminRouteRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/admin/archive': typeof AuthenticatedAdminArchiveRoute
+  '/admin/species': typeof AuthenticatedAdminSpeciesRoute
+  '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/plants/$id': typeof AuthenticatedPlantsIdRoute
   '/plants/new': typeof AuthenticatedPlantsNewRoute
   '/api/public/ingest': typeof ApiPublicIngestRoute
   '/api/public/snapshot-upload': typeof ApiPublicSnapshotUploadRoute
+  '/admin/': typeof AuthenticatedAdminIndexRoute
   '/admin/plants/import': typeof AuthenticatedAdminPlantsImportRoute
   '/plants/$id/photos': typeof AuthenticatedPlantsIdPhotosRoute
+  '/admin/plants/': typeof AuthenticatedAdminPlantsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/admin/archive': typeof AuthenticatedAdminArchiveRoute
+  '/admin/species': typeof AuthenticatedAdminSpeciesRoute
+  '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/plants/$id': typeof AuthenticatedPlantsIdRoute
   '/plants/new': typeof AuthenticatedPlantsNewRoute
   '/api/public/ingest': typeof ApiPublicIngestRoute
   '/api/public/snapshot-upload': typeof ApiPublicSnapshotUploadRoute
+  '/admin': typeof AuthenticatedAdminIndexRoute
   '/admin/plants/import': typeof AuthenticatedAdminPlantsImportRoute
   '/plants/$id/photos': typeof AuthenticatedPlantsIdPhotosRoute
+  '/admin/plants': typeof AuthenticatedAdminPlantsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRouteRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/admin/archive': typeof AuthenticatedAdminArchiveRoute
+  '/_authenticated/admin/species': typeof AuthenticatedAdminSpeciesRoute
+  '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/plants/$id': typeof AuthenticatedPlantsIdRoute
   '/_authenticated/plants/new': typeof AuthenticatedPlantsNewRoute
   '/api/public/ingest': typeof ApiPublicIngestRoute
   '/api/public/snapshot-upload': typeof ApiPublicSnapshotUploadRoute
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/admin/plants/import': typeof AuthenticatedAdminPlantsImportRoute
   '/_authenticated/plants/$id_/photos': typeof AuthenticatedPlantsIdPhotosRoute
+  '/_authenticated/admin/plants/': typeof AuthenticatedAdminPlantsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/auth'
+    | '/admin'
     | '/dashboard'
     | '/settings'
+    | '/admin/archive'
+    | '/admin/species'
+    | '/admin/users'
     | '/plants/$id'
     | '/plants/new'
     | '/api/public/ingest'
     | '/api/public/snapshot-upload'
+    | '/admin/'
     | '/admin/plants/import'
     | '/plants/$id/photos'
+    | '/admin/plants/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
     | '/dashboard'
     | '/settings'
+    | '/admin/archive'
+    | '/admin/species'
+    | '/admin/users'
     | '/plants/$id'
     | '/plants/new'
     | '/api/public/ingest'
     | '/api/public/snapshot-upload'
+    | '/admin'
     | '/admin/plants/import'
     | '/plants/$id/photos'
+    | '/admin/plants'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/_authenticated/admin'
     | '/_authenticated/dashboard'
     | '/_authenticated/settings'
+    | '/_authenticated/admin/archive'
+    | '/_authenticated/admin/species'
+    | '/_authenticated/admin/users'
     | '/_authenticated/plants/$id'
     | '/_authenticated/plants/new'
     | '/api/public/ingest'
     | '/api/public/snapshot-upload'
+    | '/_authenticated/admin/'
     | '/_authenticated/admin/plants/import'
     | '/_authenticated/plants/$id_/photos'
+    | '/_authenticated/admin/plants/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -201,6 +274,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
     '/api/public/snapshot-upload': {
       id: '/api/public/snapshot-upload'
       path: '/api/public/snapshot-upload'
@@ -229,6 +316,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPlantsIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/users': {
+      id: '/_authenticated/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AuthenticatedAdminUsersRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/species': {
+      id: '/_authenticated/admin/species'
+      path: '/species'
+      fullPath: '/admin/species'
+      preLoaderRoute: typeof AuthenticatedAdminSpeciesRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/archive': {
+      id: '/_authenticated/admin/archive'
+      path: '/archive'
+      fullPath: '/admin/archive'
+      preLoaderRoute: typeof AuthenticatedAdminArchiveRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/plants/': {
+      id: '/_authenticated/admin/plants/'
+      path: '/plants'
+      fullPath: '/admin/plants/'
+      preLoaderRoute: typeof AuthenticatedAdminPlantsIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
     '/_authenticated/plants/$id_/photos': {
       id: '/_authenticated/plants/$id_/photos'
       path: '/plants/$id/photos'
@@ -238,29 +353,53 @@ declare module '@tanstack/react-router' {
     }
     '/_authenticated/admin/plants/import': {
       id: '/_authenticated/admin/plants/import'
-      path: '/admin/plants/import'
+      path: '/plants/import'
       fullPath: '/admin/plants/import'
       preLoaderRoute: typeof AuthenticatedAdminPlantsImportRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      parentRoute: typeof AuthenticatedAdminRouteRoute
     }
   }
 }
 
+interface AuthenticatedAdminRouteRouteChildren {
+  AuthenticatedAdminArchiveRoute: typeof AuthenticatedAdminArchiveRoute
+  AuthenticatedAdminSpeciesRoute: typeof AuthenticatedAdminSpeciesRoute
+  AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+  AuthenticatedAdminPlantsImportRoute: typeof AuthenticatedAdminPlantsImportRoute
+  AuthenticatedAdminPlantsIndexRoute: typeof AuthenticatedAdminPlantsIndexRoute
+}
+
+const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren =
+  {
+    AuthenticatedAdminArchiveRoute: AuthenticatedAdminArchiveRoute,
+    AuthenticatedAdminSpeciesRoute: AuthenticatedAdminSpeciesRoute,
+    AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
+    AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+    AuthenticatedAdminPlantsImportRoute: AuthenticatedAdminPlantsImportRoute,
+    AuthenticatedAdminPlantsIndexRoute: AuthenticatedAdminPlantsIndexRoute,
+  }
+
+const AuthenticatedAdminRouteRouteWithChildren =
+  AuthenticatedAdminRouteRoute._addFileChildren(
+    AuthenticatedAdminRouteRouteChildren,
+  )
+
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRouteRoute: typeof AuthenticatedAdminRouteRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedPlantsIdRoute: typeof AuthenticatedPlantsIdRoute
   AuthenticatedPlantsNewRoute: typeof AuthenticatedPlantsNewRoute
-  AuthenticatedAdminPlantsImportRoute: typeof AuthenticatedAdminPlantsImportRoute
   AuthenticatedPlantsIdPhotosRoute: typeof AuthenticatedPlantsIdPhotosRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRouteRoute: AuthenticatedAdminRouteRouteWithChildren,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedPlantsIdRoute: AuthenticatedPlantsIdRoute,
   AuthenticatedPlantsNewRoute: AuthenticatedPlantsNewRoute,
-  AuthenticatedAdminPlantsImportRoute: AuthenticatedAdminPlantsImportRoute,
   AuthenticatedPlantsIdPhotosRoute: AuthenticatedPlantsIdPhotosRoute,
 }
 

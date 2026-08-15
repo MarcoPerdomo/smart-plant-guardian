@@ -8,7 +8,12 @@ export const searchSpecies = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => z.object({ q: z.string().default("") }).parse(input))
   .handler(async ({ data, context }) => {
     const q = data.q.trim();
-    let query = context.supabase.from("plant_species").select("*").order("common_name").limit(1000);
+    let query = context.supabase
+      .from("plant_species")
+      .select("*")
+      .is("archived_at", null)
+      .order("common_name")
+      .limit(1000);
     if (q) query = query.ilike("search_text", `%${q.toLowerCase()}%`);
     const { data: rows, error } = await query;
     if (error) throw new Error(error.message);
@@ -85,6 +90,7 @@ export const listUserPlants = createServerFn({ method: "GET" })
     const { data, error } = await context.supabase
       .from("user_plants")
       .select("*, plant_species(*)")
+      .is("archived_at", null)
       .order("created_at", { ascending: false });
     if (error) throw new Error(error.message);
 

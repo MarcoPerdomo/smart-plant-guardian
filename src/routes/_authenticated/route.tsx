@@ -1,6 +1,8 @@
 import { createFileRoute, Outlet, redirect, Link, useNavigate } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Leaf, LayoutDashboard, Settings, LogOut, Plus, Database } from "lucide-react";
+import { amIAdmin } from "@/lib/admin.functions";
+import { Leaf, LayoutDashboard, Settings, LogOut, Plus, Shield } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
@@ -14,6 +16,8 @@ export const Route = createFileRoute("/_authenticated")({
 
 function AuthedLayout() {
   const navigate = useNavigate();
+  const { data: admin } = useQuery({ queryKey: ["admin", "me"], queryFn: () => amIAdmin() });
+  const isAdmin = admin?.isAdmin ?? false;
 
   async function signOut() {
     await supabase.auth.signOut();
@@ -38,9 +42,11 @@ function AuthedLayout() {
             <Link to="/settings" className="px-3 py-1.5 rounded-md hover:bg-muted flex items-center gap-1.5">
               <Settings className="w-4 h-4" /> Settings
             </Link>
-            <Link to="/admin/plants/import" className="px-3 py-1.5 rounded-md hover:bg-muted flex items-center gap-1.5">
-              <Database className="w-4 h-4" /> Import
-            </Link>
+            {isAdmin && (
+              <Link to="/admin" className="px-3 py-1.5 rounded-md hover:bg-muted flex items-center gap-1.5">
+                <Shield className="w-4 h-4" /> Admin
+              </Link>
+            )}
             <button onClick={signOut} className="px-3 py-1.5 rounded-md hover:bg-muted flex items-center gap-1.5 text-muted-foreground">
               <LogOut className="w-4 h-4" /> Sign out
             </button>
