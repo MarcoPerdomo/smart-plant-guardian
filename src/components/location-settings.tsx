@@ -44,7 +44,8 @@ export function LocationSettings() {
       setResults(null);
       setQ("");
       qc.invalidateQueries({ queryKey: ["profile"] });
-      qc.invalidateQueries({ queryKey: ["weather"] });
+      qc.removeQueries({ queryKey: ["weather"] });
+      void qc.refetchQueries({ queryKey: ["weather"], type: "all" });
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -54,7 +55,8 @@ export function LocationSettings() {
     onSuccess: () => {
       toast.success("Location cleared");
       qc.invalidateQueries({ queryKey: ["profile"] });
-      qc.invalidateQueries({ queryKey: ["weather"] });
+      qc.removeQueries({ queryKey: ["weather"] });
+      void qc.refetchQueries({ queryKey: ["weather"], type: "all" });
     },
     onError: (e: Error) => toast.error(e.message),
   });
