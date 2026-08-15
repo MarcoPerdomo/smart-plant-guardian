@@ -127,7 +127,7 @@ export async function fetchWeather(lat: number, lon: number): Promise<WeatherSna
   await supabaseAdmin
     .from("weather_cache")
     .upsert(
-      { lat: rLat, lon: rLon, payload: snapshot as unknown as Record<string, unknown>, fetched_at: new Date().toISOString() },
+      { lat: rLat, lon: rLon, payload: JSON.parse(JSON.stringify(snapshot)), fetched_at: new Date().toISOString() },
       { onConflict: "lat,lon" },
     );
 
