@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Leaf, Droplets, Sun, Bug, Cpu, Sparkles } from "lucide-react";
+import { VisitorWeatherChip } from "@/components/weather-chip";
 
 export const Route = createFileRoute("/")({
   component: Landing,
