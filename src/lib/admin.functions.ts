@@ -246,7 +246,7 @@ export const archiveRecord = createServerFn({ method: "POST" })
     const { error: archiveError } = await context.supabase.from("archived_records").insert({
       entity_type: data.entity_type,
       entity_id: data.id,
-      owner_id: data.entity_type === "plant" ? row.user_id : null,
+      owner_id: data.entity_type === "plant" ? ((row as any).user_id as string) : null,
       snapshot: snapshot as any,
       reason: data.reason,
       archived_by: context.userId,
