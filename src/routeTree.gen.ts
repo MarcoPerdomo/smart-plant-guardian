@@ -22,6 +22,7 @@ import { Route as AuthenticatedPlantsNewRouteImport } from './routes/_authentica
 import { Route as AuthenticatedPlantsIdRouteImport } from './routes/_authenticated/plants/$id'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin/users'
 import { Route as AuthenticatedAdminSpeciesRouteImport } from './routes/_authenticated/admin/species'
+import { Route as AuthenticatedAdminArchiveRouteImport } from './routes/_authenticated/admin/archive'
 import { Route as AuthenticatedAdminPlantsIndexRouteImport } from './routes/_authenticated/admin/plants/index'
 import { Route as AuthenticatedPlantsIdPhotosRouteImport } from './routes/_authenticated/plants/$id_.photos'
 import { Route as AuthenticatedAdminPlantsImportRouteImport } from './routes/_authenticated/admin/plants/import'
@@ -91,6 +92,12 @@ const AuthenticatedAdminSpeciesRoute =
     path: '/species',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
+const AuthenticatedAdminArchiveRoute =
+  AuthenticatedAdminArchiveRouteImport.update({
+    id: '/archive',
+    path: '/archive',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
 const AuthenticatedAdminPlantsIndexRoute =
   AuthenticatedAdminPlantsIndexRouteImport.update({
     id: '/plants/',
@@ -116,6 +123,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRouteRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/admin/archive': typeof AuthenticatedAdminArchiveRoute
   '/admin/species': typeof AuthenticatedAdminSpeciesRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/plants/$id': typeof AuthenticatedPlantsIdRoute
@@ -132,6 +140,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/admin/archive': typeof AuthenticatedAdminArchiveRoute
   '/admin/species': typeof AuthenticatedAdminSpeciesRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/plants/$id': typeof AuthenticatedPlantsIdRoute
@@ -151,6 +160,7 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRouteRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/admin/archive': typeof AuthenticatedAdminArchiveRoute
   '/_authenticated/admin/species': typeof AuthenticatedAdminSpeciesRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/plants/$id': typeof AuthenticatedPlantsIdRoute
@@ -170,6 +180,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/dashboard'
     | '/settings'
+    | '/admin/archive'
     | '/admin/species'
     | '/admin/users'
     | '/plants/$id'
@@ -186,6 +197,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/dashboard'
     | '/settings'
+    | '/admin/archive'
     | '/admin/species'
     | '/admin/users'
     | '/plants/$id'
@@ -204,6 +216,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/_authenticated/dashboard'
     | '/_authenticated/settings'
+    | '/_authenticated/admin/archive'
     | '/_authenticated/admin/species'
     | '/_authenticated/admin/users'
     | '/_authenticated/plants/$id'
@@ -317,6 +330,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminSpeciesRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
+    '/_authenticated/admin/archive': {
+      id: '/_authenticated/admin/archive'
+      path: '/archive'
+      fullPath: '/admin/archive'
+      preLoaderRoute: typeof AuthenticatedAdminArchiveRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
     '/_authenticated/admin/plants/': {
       id: '/_authenticated/admin/plants/'
       path: '/plants'
@@ -342,6 +362,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedAdminRouteRouteChildren {
+  AuthenticatedAdminArchiveRoute: typeof AuthenticatedAdminArchiveRoute
   AuthenticatedAdminSpeciesRoute: typeof AuthenticatedAdminSpeciesRoute
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
@@ -351,6 +372,7 @@ interface AuthenticatedAdminRouteRouteChildren {
 
 const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren =
   {
+    AuthenticatedAdminArchiveRoute: AuthenticatedAdminArchiveRoute,
     AuthenticatedAdminSpeciesRoute: AuthenticatedAdminSpeciesRoute,
     AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
     AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
