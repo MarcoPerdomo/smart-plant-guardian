@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Copy, Bell, Mail, MessageSquare, Cpu } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { LocationSettings } from "@/components/location-settings";
 
 export const Route = createFileRoute("/_authenticated/settings")({
   component: Settings,
