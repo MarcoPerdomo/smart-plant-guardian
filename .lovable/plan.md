@@ -41,6 +41,11 @@ Two layers, both required:
 - Database migration needed: `user_roles` currently has no insert/update/delete policies at all, so role changes are impossible. Add admin-only insert/delete policies (writes still go through the verified server functions), and admin-scoped read/delete policies on `user_plants`, `plant_species`, and `profiles` so the panel can operate. Roles stay in `user_roles` — never on `profiles`.
 - User search reads `profiles` (email, display_name) rather than `auth.users`, so a user only appears after their profile row is created by the existing signup trigger.
 
-## Open question
+## Deletion = soft delete + archive
 
-Deleting a plant also removes all its sensor history and photos permanently. I'll add a typed confirmation ("delete") for that action unless you'd prefer a soft-delete/archive flag instead.
+Admin deletes never destroy data. The action keeps its typed confirmation (you type "delete"), then:
+
+- The row is marked archived (`archived_at`, `archived_by`) instead of being removed, so it disappears from the user's dashboard and all normal queries but stays intact.
+- A copy of the record plus its related data is written to an archive table (`archived_records`: entity type, original id, owner, full JSON snapshot, who archived it, when, optional reason) — usable later for audit trail, reporting, compliance, or restoring a user's data.
+- The admin panel gets an "Archived" view listing archived plants/species with a Restore action.
+- Sensor readings, photos and summaries stay in place (their parent is just hidden); storage files are not deleted.
