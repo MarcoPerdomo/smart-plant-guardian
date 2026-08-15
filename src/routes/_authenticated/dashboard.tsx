@@ -17,6 +17,12 @@ function Dashboard() {
     queryKey: ["user_plants"],
     queryFn: () => listUserPlants(),
   });
+  const { data: weather } = useQuery({
+    queryKey: ["weather", "me"],
+    queryFn: () => getWeatherForMe(),
+    staleTime: 15 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
 
   const summaryMut = useMutation({
     mutationFn: (plant_id: string) => generateSummary({ data: { plant_id } }),
