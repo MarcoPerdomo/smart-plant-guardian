@@ -114,7 +114,7 @@ export const getPlant = createServerFn({ method: "POST" })
   .inputValidator((i: unknown) => z.object({ id: z.string().uuid() }).parse(i))
   .handler(async ({ data, context }) => {
     const { data: plant, error } = await context.supabase
-      .from("user_plants").select("*, plant_species(*)").eq("id", data.id).single();
+      .from("user_plants").select("*, plant_species(*)").eq("id", data.id).eq("user_id", context.userId).single();
     if (error) throw new Error(error.message);
     const { data: readings } = await context.supabase
       .from("sensor_readings").select("*").eq("plant_id", data.id)
