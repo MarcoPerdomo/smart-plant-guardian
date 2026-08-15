@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { listUserPlants, generateSummary, logWatering } from "@/lib/plants.functions";
+import { getWeatherForMe } from "@/lib/weather.functions";
 import { computeStatus, predictNextWatering } from "@/lib/plant-status";
 import { Droplets, Sparkles, Sun, Leaf, Plus, Thermometer } from "lucide-react";
 import { toast } from "sonner";
