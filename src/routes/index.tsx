@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Leaf, Droplets, Sun, Bug, Cpu, Sparkles } from "lucide-react";
+import { VisitorWeatherChip } from "@/components/weather-chip";
 
 export const Route = createFileRoute("/")({
   component: Landing,
@@ -58,6 +59,9 @@ function Landing() {
             <a href="#how" className="px-5 py-3 rounded-lg border border-border font-medium hover:bg-muted">
               How it works
             </a>
+          </div>
+          <div className="mt-6">
+            <VisitorWeatherChip />
           </div>
         </div>
         <div className="rounded-2xl bg-gradient-to-br from-primary/10 via-accent/10 to-background border border-border p-10 aspect-square flex items-center justify-center">

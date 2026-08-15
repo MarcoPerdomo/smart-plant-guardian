@@ -275,38 +275,106 @@ export type Database = {
         }
         Relationships: []
       }
+      plant_weather_alerts: {
+        Row: {
+          created_at: string
+          emailed_at: string | null
+          for_date: string
+          id: string
+          message: string
+          plant_id: string
+          rule: string
+          severity: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          emailed_at?: string | null
+          for_date?: string
+          id?: string
+          message: string
+          plant_id: string
+          rule: string
+          severity?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          emailed_at?: string | null
+          for_date?: string
+          id?: string
+          message?: string
+          plant_id?: string
+          rule?: string
+          severity?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plant_weather_alerts_plant_id_fkey"
+            columns: ["plant_id"]
+            isOneToOne: false
+            referencedRelation: "user_plants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
+          city: string | null
+          country_code: string | null
           created_at: string
           display_name: string | null
           email: string | null
           id: string
+          latitude: number | null
+          longitude: number | null
           notify_email: boolean
           notify_in_app: boolean
           notify_sms: boolean
           phone: string | null
+          region: string | null
+          timezone: string | null
           updated_at: string
         }
         Insert: {
+          city?: string | null
+          country_code?: string | null
           created_at?: string
           display_name?: string | null
           email?: string | null
           id: string
+          latitude?: number | null
+          longitude?: number | null
           notify_email?: boolean
           notify_in_app?: boolean
           notify_sms?: boolean
           phone?: string | null
+          region?: string | null
+          timezone?: string | null
           updated_at?: string
         }
         Update: {
+          city?: string | null
+          country_code?: string | null
           created_at?: string
           display_name?: string | null
           email?: string | null
           id?: string
+          latitude?: number | null
+          longitude?: number | null
           notify_email?: boolean
           notify_in_app?: boolean
           notify_sms?: boolean
           phone?: string | null
+          region?: string | null
+          timezone?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -469,6 +537,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      weather_cache: {
+        Row: {
+          created_at: string
+          fetched_at: string
+          id: string
+          lat: number
+          lon: number
+          payload: Json
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          fetched_at?: string
+          id?: string
+          lat: number
+          lon: number
+          payload: Json
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          fetched_at?: string
+          id?: string
+          lat?: number
+          lon?: number
+          payload?: Json
+          updated_at?: string
+        }
+        Relationships: []
       }
     }
     Views: {

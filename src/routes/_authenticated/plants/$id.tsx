@@ -4,7 +4,8 @@ import { getPlant, generateSummary, logWatering, addManualReading, deletePlant }
 import { computeStatus, predictNextWatering } from "@/lib/plant-status";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { ArrowLeft, Droplets, Sparkles, Trash2, Sun, Thermometer, Bug, Camera } from "lucide-react";
+import { ArrowLeft, Droplets, Sparkles, Trash2, Sun, Thermometer, Bug, Camera, CloudSun } from "lucide-react";
+import { getWeatherForMe } from "@/lib/weather.functions";
 import { formatDistanceToNow, format } from "date-fns";
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
 import { useEffect, useState } from "react";
@@ -21,6 +22,13 @@ function PlantDetail() {
   const navigate = useNavigate();
   const qc = useQueryClient();
   const { data, isLoading } = useQuery({ queryKey: ["plant", id], queryFn: () => getPlant({ data: { id } }) });
+  const { data: weather } = useQuery({
+    queryKey: ["weather", "me"],
+    queryFn: () => getWeatherForMe(),
+    staleTime: 15 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+  const plantAlerts = (weather?.alerts ?? []).filter((a) => a.plant_id === id);
   const [showManual, setShowManual] = useState(false);
 
   const invalidate = () => qc.invalidateQueries({ queryKey: ["plant", id] });
@@ -102,6 +110,25 @@ function PlantDetail() {
           <div className="font-display text-2xl font-semibold">{nextWater.label}</div>
         </div>
       </div>
+
+      {plantAlerts.length > 0 && (
+        <section className="mt-4 rounded-2xl border border-border bg-card p-5">
+          <h2 className="font-display text-lg font-semibold flex items-center gap-2">
+            <CloudSun className="w-5 h-5 text-primary" /> Weather watch today
+          </h2>
+          <ul className="mt-3 space-y-2">
+            {plantAlerts.map((a) => (
+              <li
+                key={a.rule}
+                className={`text-sm px-3 py-2 rounded-lg ${a.severity === "warning" ? "bg-warning/15 text-warning-foreground" : "bg-muted text-muted-foreground"}`}
+              >
+                <span className="font-medium">{a.title}</span>
+                <p className="mt-0.5">{a.message}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <LatestPhotoCard plantId={plant.id} plantName={plant.nickname} />
 

@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { amIAdmin } from "@/lib/admin.functions";
 import { Leaf, LayoutDashboard, Settings, LogOut, Plus, Shield } from "lucide-react";
+import { WeatherChip } from "@/components/weather-chip";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
@@ -33,6 +34,7 @@ function AuthedLayout() {
             Verdant
           </Link>
           <nav className="flex items-center gap-1 text-sm">
+            <WeatherChip />
             <Link to="/dashboard" className="px-3 py-1.5 rounded-md hover:bg-muted flex items-center gap-1.5" activeProps={{ className: "px-3 py-1.5 rounded-md bg-muted flex items-center gap-1.5 text-primary" }}>
               <LayoutDashboard className="w-4 h-4" /> Dashboard
             </Link>

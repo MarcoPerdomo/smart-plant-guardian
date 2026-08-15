@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Copy, Bell, Mail, MessageSquare, Cpu } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { LocationSettings } from "@/components/location-settings";
 
 export const Route = createFileRoute("/_authenticated/settings")({
   component: Settings,
@@ -55,6 +56,10 @@ function Settings() {
           <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Phone (E.164, e.g. +14155551234) — for SMS" className="w-full px-3 py-2.5 rounded-lg border border-input bg-background text-sm" />
         </div>
       </section>
+
+      <LocationSettings />
+
+
 
       <section className="rounded-2xl border border-border bg-card p-5">
         <h2 className="font-display text-lg font-semibold">Notifications</h2>
