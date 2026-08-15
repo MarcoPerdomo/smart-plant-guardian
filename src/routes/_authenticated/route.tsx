@@ -34,6 +34,7 @@ function AuthedLayout() {
             Verdant
           </Link>
           <nav className="flex items-center gap-1 text-sm">
+            <WeatherChip />
             <Link to="/dashboard" className="px-3 py-1.5 rounded-md hover:bg-muted flex items-center gap-1.5" activeProps={{ className: "px-3 py-1.5 rounded-md bg-muted flex items-center gap-1.5 text-primary" }}>
               <LayoutDashboard className="w-4 h-4" /> Dashboard
             </Link>
