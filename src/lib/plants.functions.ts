@@ -424,6 +424,7 @@ export const listPlantPhotos = createServerFn({ method: "POST" })
       .from("plant_photos")
       .select("*")
       .eq("plant_id", data.plant_id)
+      .eq("user_id", context.userId)
       .order("taken_at", { ascending: false });
     if (data.limit) query = query.limit(data.limit);
     const { data: rows, error } = await query;
