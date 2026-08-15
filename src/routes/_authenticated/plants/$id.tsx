@@ -103,6 +103,25 @@ function PlantDetail() {
         </div>
       </div>
 
+      {plantAlerts.length > 0 && (
+        <section className="mt-4 rounded-2xl border border-border bg-card p-5">
+          <h2 className="font-display text-lg font-semibold flex items-center gap-2">
+            <CloudSun className="w-5 h-5 text-primary" /> Weather watch today
+          </h2>
+          <ul className="mt-3 space-y-2">
+            {plantAlerts.map((a) => (
+              <li
+                key={a.rule}
+                className={`text-sm px-3 py-2 rounded-lg ${a.severity === "warning" ? "bg-warning/15 text-warning-foreground" : "bg-muted text-muted-foreground"}`}
+              >
+                <span className="font-medium">{a.title}</span>
+                <p className="mt-0.5">{a.message}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       <LatestPhotoCard plantId={plant.id} plantName={plant.nickname} />
 
       <Snapshot path={latest?.snapshot_url ?? null} alt={`Snapshot of ${plant.nickname}`} />
