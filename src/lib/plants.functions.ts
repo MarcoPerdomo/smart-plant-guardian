@@ -453,6 +453,7 @@ export const createPlantPhoto = createServerFn({ method: "POST" })
       .from("user_plants")
       .select("id")
       .eq("id", data.plant_id)
+      .eq("user_id", context.userId)
       .maybeSingle();
     if (pErr) throw new Error(pErr.message);
     if (!plant) throw new Error("Plant not found");
