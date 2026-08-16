@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-const USERNAME_RE = /^[a-z0-9_.]{3,24}$/;
+const USERNAME_RE = /^[a-z0-9_.-]{3,24}$/;
 
 export type PublicProfile = {
   id: string;
@@ -33,7 +33,7 @@ export const checkUsername = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const username = data.username.trim().toLowerCase();
     if (!USERNAME_RE.test(username)) {
-      return { available: false, reason: "3-24 characters, letters, numbers, dot or underscore" };
+      return { available: false, reason: "3-24 characters, letters, numbers, dot, hyphen or underscore" };
     }
     const { data: rows, error } = await context.supabase.rpc("search_profiles", { _q: username, _limit: 50 });
     if (error) throw new Error(error.message);
@@ -53,7 +53,7 @@ export const setUsername = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const username = data.username.trim().toLowerCase();
-    if (!USERNAME_RE.test(username)) throw new Error("Usernames are 3-24 characters: letters, numbers, dot or underscore");
+    if (!USERNAME_RE.test(username)) throw new Error("Usernames are 3-24 characters: letters, numbers, dot, hyphen or underscore");
 
     const patch: { username: string; username_set_at: string; bio?: string | null } = {
       username,
