@@ -69,7 +69,9 @@ function AuthedLayout() {
   const plantsNewActive = !!useMatch({ from: "/_authenticated/plants/new", shouldThrow: false });
   const feedActive = !!useMatch({ from: "/_authenticated/feed", shouldThrow: false });
   const friendsActive = !!useMatch({ from: "/_authenticated/friends", shouldThrow: false });
-  const messagesActive = !!useMatch({ from: "/_authenticated/messages", shouldThrow: false });
+  const messagesIndexActive = !!useMatch({ from: "/_authenticated/messages/", shouldThrow: false });
+  const messagesThreadActive = !!useMatch({ from: "/_authenticated/messages/$id", shouldThrow: false });
+  const messagesActive = messagesIndexActive || messagesThreadActive;
   const settingsActive = !!useMatch({ from: "/_authenticated/settings", shouldThrow: false });
   const adminActive = !!useMatch({ from: "/_authenticated/admin", shouldThrow: false });
 
