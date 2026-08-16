@@ -3,6 +3,9 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { amIAdmin } from "@/lib/admin.functions";
 import { getUnreadCount } from "@/lib/chat.functions";
+import { getBadgeCounts } from "@/lib/notifications.functions";
+import { NotificationBell } from "@/components/notifications/notification-bell";
+import { CountBadge } from "@/components/ui/count-badge";
 import {
   Leaf,
   LayoutDashboard,
@@ -17,6 +20,7 @@ import {
   ChevronDown,
   User,
 } from "lucide-react";
+
 import { WeatherChip } from "@/components/weather-chip";
 import { UsernameGate } from "@/components/social/username-gate";
 import { Button } from "@/components/ui/button";
