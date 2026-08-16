@@ -1,11 +1,40 @@
-import { createFileRoute, Outlet, redirect, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Outlet, redirect, Link, useNavigate, useMatch } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { amIAdmin } from "@/lib/admin.functions";
 import { getUnreadCount } from "@/lib/chat.functions";
-import { Leaf, LayoutDashboard, Settings, LogOut, Plus, Shield, Users, MessageCircle, Sprout } from "lucide-react";
+import {
+  Leaf,
+  LayoutDashboard,
+  Settings,
+  LogOut,
+  Plus,
+  Shield,
+  Users,
+  MessageCircle,
+  Sprout,
+  Menu,
+  ChevronDown,
+  User,
+} from "lucide-react";
 import { WeatherChip } from "@/components/weather-chip";
 import { UsernameGate } from "@/components/social/username-gate";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
@@ -36,6 +65,15 @@ function AuthedLayout() {
     navigate({ to: "/auth", replace: true });
   }
 
+  const dashboardActive = !!useMatch({ from: "/dashboard", shouldThrow: false });
+  const plantsNewActive = !!useMatch({ from: "/plants/new", shouldThrow: false });
+  const feedActive = !!useMatch({ from: "/feed", shouldThrow: false });
+  const friendsActive = !!useMatch({ from: "/friends", shouldThrow: false });
+  const messagesActive = !!useMatch({ from: "/messages", shouldThrow: false });
+  const settingsActive = !!useMatch({ from: "/settings", shouldThrow: false });
+  const adminActive = !!useMatch({ from: "/admin", shouldThrow: false });
+
+  const activeItem = (active: boolean) => (active ? "bg-muted text-primary" : "");
 
   return (
     <div className="min-h-screen bg-background">
@@ -45,40 +83,263 @@ function AuthedLayout() {
             <Leaf className="w-5 h-5 text-primary" />
             Verdant
           </Link>
-          <nav className="flex items-center gap-1 text-sm flex-wrap justify-end">
+
+          <div className="flex items-center gap-1">
             <WeatherChip />
-            <Link to="/dashboard" className="px-3 py-1.5 rounded-md hover:bg-muted flex items-center gap-1.5" activeProps={{ className: "px-3 py-1.5 rounded-md bg-muted flex items-center gap-1.5 text-primary" }}>
-              <LayoutDashboard className="w-4 h-4" /> Dashboard
-            </Link>
-            <Link to="/feed" className="px-3 py-1.5 rounded-md hover:bg-muted flex items-center gap-1.5" activeProps={{ className: "px-3 py-1.5 rounded-md bg-muted flex items-center gap-1.5 text-primary" }}>
-              <Sprout className="w-4 h-4" /> Feed
-            </Link>
-            <Link to="/friends" className="px-3 py-1.5 rounded-md hover:bg-muted flex items-center gap-1.5" activeProps={{ className: "px-3 py-1.5 rounded-md bg-muted flex items-center gap-1.5 text-primary" }}>
-              <Users className="w-4 h-4" /> Friends
-            </Link>
-            <Link to="/messages" className="px-3 py-1.5 rounded-md hover:bg-muted flex items-center gap-1.5 relative" activeProps={{ className: "px-3 py-1.5 rounded-md bg-muted flex items-center gap-1.5 text-primary relative" }}>
-              <MessageCircle className="w-4 h-4" /> Messages
-              {unreadCount > 0 && (
-                <span className="ml-0.5 text-[10px] px-1.5 py-0.5 rounded-full bg-primary text-primary-foreground">
-                  {unreadCount}
-                </span>
-              )}
-            </Link>
-            <Link to="/plants/new" className="px-3 py-1.5 rounded-md hover:bg-muted flex items-center gap-1.5">
-              <Plus className="w-4 h-4" /> Add plant
-            </Link>
-            <Link to="/settings" className="px-3 py-1.5 rounded-md hover:bg-muted flex items-center gap-1.5">
-              <Settings className="w-4 h-4" /> Settings
-            </Link>
-            {isAdmin && (
-              <Link to="/admin" className="px-3 py-1.5 rounded-md hover:bg-muted flex items-center gap-1.5">
-                <Shield className="w-4 h-4" /> Admin
-              </Link>
-            )}
-            <button onClick={signOut} className="px-3 py-1.5 rounded-md hover:bg-muted flex items-center gap-1.5 text-muted-foreground">
-              <LogOut className="w-4 h-4" /> Sign out
-            </button>
-          </nav>
+
+            {/* Desktop grouped navigation */}
+            <nav className="hidden md:flex items-center gap-1 text-sm">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={cn("gap-1.5", (dashboardActive || plantsNewActive) && "bg-muted text-primary")}
+                  >
+                    <Leaf className="w-4 h-4" />
+                    My plants
+                    <ChevronDown className="w-3 h-3 opacity-60" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem
+                    asChild
+                    className={cn("flex items-center gap-2 cursor-pointer", activeItem(dashboardActive))}
+                  >
+                    <Link to="/dashboard">
+                      <LayoutDashboard className="w-4 h-4" /> Dashboard
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    asChild
+                    className={cn("flex items-center gap-2 cursor-pointer", activeItem(plantsNewActive))}
+                  >
+                    <Link to="/plants/new">
+                      <Plus className="w-4 h-4" /> Add plant
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={cn("gap-1.5", (feedActive || friendsActive || messagesActive) && "bg-muted text-primary")}
+                  >
+                    <Users className="w-4 h-4" />
+                    Social
+                    <ChevronDown className="w-3 h-3 opacity-60" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem
+                    asChild
+                    className={cn("flex items-center gap-2 cursor-pointer", activeItem(feedActive))}
+                  >
+                    <Link to="/feed">
+                      <Sprout className="w-4 h-4" /> Feed
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    asChild
+                    className={cn("flex items-center gap-2 cursor-pointer", activeItem(friendsActive))}
+                  >
+                    <Link to="/friends">
+                      <Users className="w-4 h-4" /> Friends
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    asChild
+                    className={cn("flex items-center gap-2 cursor-pointer", activeItem(messagesActive))}
+                  >
+                    <Link to="/messages" className="justify-between">
+                      <span className="flex items-center gap-2">
+                        <MessageCircle className="w-4 h-4" /> Messages
+                      </span>
+                      {unreadCount > 0 && (
+                        <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-primary text-primary-foreground">
+                          {unreadCount}
+                        </span>
+                      )}
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={cn("gap-1.5", (settingsActive || adminActive) && "bg-muted text-primary")}
+                  >
+                    <User className="w-4 h-4" />
+                    Account
+                    <ChevronDown className="w-3 h-3 opacity-60" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem
+                    asChild
+                    className={cn("flex items-center gap-2 cursor-pointer", activeItem(settingsActive))}
+                  >
+                    <Link to="/settings">
+                      <Settings className="w-4 h-4" /> Settings
+                    </Link>
+                  </DropdownMenuItem>
+                  {isAdmin && (
+                    <DropdownMenuItem
+                      asChild
+                      className={cn("flex items-center gap-2 cursor-pointer", activeItem(adminActive))}
+                    >
+                      <Link to="/admin">
+                        <Shield className="w-4 h-4" /> Admin
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuItem
+                    onClick={signOut}
+                    className="flex items-center gap-2 cursor-pointer text-muted-foreground"
+                  >
+                    <LogOut className="w-4 h-4" /> Sign out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </nav>
+
+            {/* Mobile hamburger menu */}
+            <Sheet>
+              <SheetTrigger asChild className="md:hidden">
+                <Button variant="ghost" size="icon" aria-label="Open menu">
+                  <Menu className="w-5 h-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[280px]">
+                <SheetHeader>
+                  <SheetTitle>Menu</SheetTitle>
+                </SheetHeader>
+                <div className="mt-6 space-y-6">
+                  <section>
+                    <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                      My plants
+                    </h3>
+                    <div className="space-y-1">
+                      <SheetClose asChild>
+                        <Link
+                          to="/dashboard"
+                          className={cn(
+                            "flex items-center gap-2 px-3 py-2 rounded-md hover:bg-muted text-sm",
+                            dashboardActive && "bg-muted text-primary"
+                          )}
+                        >
+                          <LayoutDashboard className="w-4 h-4" /> Dashboard
+                        </Link>
+                      </SheetClose>
+                      <SheetClose asChild>
+                        <Link
+                          to="/plants/new"
+                          className={cn(
+                            "flex items-center gap-2 px-3 py-2 rounded-md hover:bg-muted text-sm",
+                            plantsNewActive && "bg-muted text-primary"
+                          )}
+                        >
+                          <Plus className="w-4 h-4" /> Add plant
+                        </Link>
+                      </SheetClose>
+                    </div>
+                  </section>
+
+                  <section>
+                    <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                      Social
+                    </h3>
+                    <div className="space-y-1">
+                      <SheetClose asChild>
+                        <Link
+                          to="/feed"
+                          className={cn(
+                            "flex items-center gap-2 px-3 py-2 rounded-md hover:bg-muted text-sm",
+                            feedActive && "bg-muted text-primary"
+                          )}
+                        >
+                          <Sprout className="w-4 h-4" /> Feed
+                        </Link>
+                      </SheetClose>
+                      <SheetClose asChild>
+                        <Link
+                          to="/friends"
+                          className={cn(
+                            "flex items-center gap-2 px-3 py-2 rounded-md hover:bg-muted text-sm",
+                            friendsActive && "bg-muted text-primary"
+                          )}
+                        >
+                          <Users className="w-4 h-4" /> Friends
+                        </Link>
+                      </SheetClose>
+                      <SheetClose asChild>
+                        <Link
+                          to="/messages"
+                          className={cn(
+                            "flex items-center gap-2 px-3 py-2 rounded-md hover:bg-muted text-sm justify-between",
+                            messagesActive && "bg-muted text-primary"
+                          )}
+                        >
+                          <span className="flex items-center gap-2">
+                            <MessageCircle className="w-4 h-4" /> Messages
+                          </span>
+                          {unreadCount > 0 && (
+                            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-primary text-primary-foreground">
+                              {unreadCount}
+                            </span>
+                          )}
+                        </Link>
+                      </SheetClose>
+                    </div>
+                  </section>
+
+                  <section>
+                    <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                      Account
+                    </h3>
+                    <div className="space-y-1">
+                      <SheetClose asChild>
+                        <Link
+                          to="/settings"
+                          className={cn(
+                            "flex items-center gap-2 px-3 py-2 rounded-md hover:bg-muted text-sm",
+                            settingsActive && "bg-muted text-primary"
+                          )}
+                        >
+                          <Settings className="w-4 h-4" /> Settings
+                        </Link>
+                      </SheetClose>
+                      {isAdmin && (
+                        <SheetClose asChild>
+                          <Link
+                            to="/admin"
+                            className={cn(
+                              "flex items-center gap-2 px-3 py-2 rounded-md hover:bg-muted text-sm",
+                              adminActive && "bg-muted text-primary"
+                            )}
+                          >
+                            <Shield className="w-4 h-4" /> Admin
+                          </Link>
+                        </SheetClose>
+                      )}
+                      <button
+                        onClick={signOut}
+                        className="w-full flex items-center gap-2 px-3 py-2 rounded-md hover:bg-muted text-sm text-muted-foreground"
+                      >
+                        <LogOut className="w-4 h-4" /> Sign out
+                      </button>
+                    </div>
+                  </section>
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
       </header>
       <main className="mx-auto max-w-6xl px-4 py-8">
@@ -87,5 +348,4 @@ function AuthedLayout() {
       <UsernameGate />
     </div>
   );
-
 }
