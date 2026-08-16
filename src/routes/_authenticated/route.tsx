@@ -170,12 +170,9 @@ function AuthedLayout() {
                       <span className="flex items-center gap-2">
                         <MessageCircle className="w-4 h-4" /> Messages
                       </span>
-                      {unreadCount > 0 && (
-                        <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-primary text-primary-foreground">
-                          {unreadCount}
-                        </span>
-                      )}
+                      <CountBadge count={unreadMessages} />
                     </Link>
+
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
