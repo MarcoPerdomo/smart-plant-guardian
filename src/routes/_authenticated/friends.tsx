@@ -40,7 +40,9 @@ function FriendsPage() {
     qc.invalidateQueries({ queryKey: ["friendships"] });
     qc.invalidateQueries({ queryKey: ["user_search"] });
     qc.invalidateQueries({ queryKey: ["feed"] });
+    qc.invalidateQueries({ queryKey: ["badge_counts"] });
   };
+
 
   const request = useMutation({
     mutationFn: (userId: string) => sendFriendRequest({ data: { user_id: userId } }),
