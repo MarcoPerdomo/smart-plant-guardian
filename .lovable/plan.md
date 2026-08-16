@@ -10,7 +10,7 @@ Add an always-visible bell in the top bar plus small count badges on Social, Fri
 - Click opens a panel listing your latest notifications: actor name, title, body and relative time ("2 hours ago"), unread ones highlighted.
 - Clicking a notification marks it read and navigates to its link (feed, friends, or the message thread).
 - "Mark all as read" at the top of the panel.
-- Empty state: "Nothing new — your plants are behaving."
+- Empty state rotates through friendly phrases such as: "Nothing new — your plants are behaving.", "Nothing new, go outside!", "Nothing to report, enjoy your day!", "All quiet in the greenhouse.", "No news is good news.", "Your plants are thriving in silence.", "Go touch some grass (or a fern).", "The garden is calm today.", "Zero alerts, full serenity.", "Nothing to water here.", "Sit back and watch them grow."
 
 **Badges on the navigation items**
 - **Friends**: number of incoming pending friend requests.
