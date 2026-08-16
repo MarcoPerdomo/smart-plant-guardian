@@ -99,7 +99,8 @@ export async function fetchWeather(lat: number, lon: number): Promise<WeatherSna
 
   // The cache is a nice-to-have: never let it break live weather.
   let admin: typeof import("@/integrations/supabase/client.server")["supabaseAdmin"] | null = null;
-  let cached: { payload: unknown; fetched_at: string | null } | null = null;
+  type CacheRow = { payload: unknown; fetched_at: string | null };
+  let cached: CacheRow | null = null;
   try {
     admin = (await import("@/integrations/supabase/client.server")).supabaseAdmin;
     const { data } = await admin
@@ -108,7 +109,8 @@ export async function fetchWeather(lat: number, lon: number): Promise<WeatherSna
       .eq("lat", rLat)
       .eq("lon", rLon)
       .maybeSingle();
-    cached = data as typeof cached;
+    cached = (data as CacheRow | null) ?? null;
+
   } catch (e) {
     console.error("weather_cache unavailable:", e);
   }
