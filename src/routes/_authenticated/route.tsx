@@ -286,13 +286,17 @@ function AuthedLayout() {
                         <Link
                           to="/feed"
                           className={cn(
-                            "flex items-center gap-2 px-3 py-2 rounded-md hover:bg-muted text-sm",
+                            "flex items-center gap-2 px-3 py-2 rounded-md hover:bg-muted text-sm justify-between",
                             feedActive && "bg-muted text-primary"
                           )}
                         >
-                          <Sprout className="w-4 h-4" /> Feed
+                          <span className="flex items-center gap-2">
+                            <Sprout className="w-4 h-4" /> Feed
+                          </span>
+                          <CountBadge count={feedUnread} />
                         </Link>
                       </SheetClose>
+
                       <SheetClose asChild>
                         <Link
                           to="/friends"
