@@ -13,14 +13,19 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedFriendsRouteImport } from './routes/_authenticated/friends'
+import { Route as AuthenticatedFeedRouteImport } from './routes/_authenticated/feed'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAdminRouteRouteImport } from './routes/_authenticated/admin/route'
+import { Route as AuthenticatedMessagesIndexRouteImport } from './routes/_authenticated/messages.index'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
 import { Route as ApiPublicWeatherDigestRouteImport } from './routes/api/public/weather-digest'
 import { Route as ApiPublicSnapshotUploadRouteImport } from './routes/api/public/snapshot-upload'
 import { Route as ApiPublicIngestRouteImport } from './routes/api/public/ingest'
+import { Route as AuthenticatedUUsernameRouteImport } from './routes/_authenticated/u.$username'
 import { Route as AuthenticatedPlantsNewRouteImport } from './routes/_authenticated/plants/new'
 import { Route as AuthenticatedPlantsIdRouteImport } from './routes/_authenticated/plants/$id'
+import { Route as AuthenticatedMessagesIdRouteImport } from './routes/_authenticated/messages.$id'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin/users'
 import { Route as AuthenticatedAdminSpeciesRouteImport } from './routes/_authenticated/admin/species'
 import { Route as AuthenticatedAdminArchiveRouteImport } from './routes/_authenticated/admin/archive'
@@ -48,6 +53,16 @@ const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedFriendsRoute = AuthenticatedFriendsRouteImport.update({
+  id: '/friends',
+  path: '/friends',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedFeedRoute = AuthenticatedFeedRouteImport.update({
+  id: '/feed',
+  path: '/feed',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -58,6 +73,12 @@ const AuthenticatedAdminRouteRoute = AuthenticatedAdminRouteRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedMessagesIndexRoute =
+  AuthenticatedMessagesIndexRouteImport.update({
+    id: '/messages/',
+    path: '/messages/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -78,6 +99,11 @@ const ApiPublicIngestRoute = ApiPublicIngestRouteImport.update({
   path: '/api/public/ingest',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedUUsernameRoute = AuthenticatedUUsernameRouteImport.update({
+  id: '/u/$username',
+  path: '/u/$username',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedPlantsNewRoute = AuthenticatedPlantsNewRouteImport.update({
   id: '/plants/new',
   path: '/plants/new',
@@ -86,6 +112,11 @@ const AuthenticatedPlantsNewRoute = AuthenticatedPlantsNewRouteImport.update({
 const AuthenticatedPlantsIdRoute = AuthenticatedPlantsIdRouteImport.update({
   id: '/plants/$id',
   path: '/plants/$id',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedMessagesIdRoute = AuthenticatedMessagesIdRouteImport.update({
+  id: '/messages/$id',
+  path: '/messages/$id',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
@@ -135,16 +166,21 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/admin': typeof AuthenticatedAdminRouteRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/feed': typeof AuthenticatedFeedRoute
+  '/friends': typeof AuthenticatedFriendsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/admin/archive': typeof AuthenticatedAdminArchiveRoute
   '/admin/species': typeof AuthenticatedAdminSpeciesRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
+  '/messages/$id': typeof AuthenticatedMessagesIdRoute
   '/plants/$id': typeof AuthenticatedPlantsIdRoute
   '/plants/new': typeof AuthenticatedPlantsNewRoute
+  '/u/$username': typeof AuthenticatedUUsernameRoute
   '/api/public/ingest': typeof ApiPublicIngestRoute
   '/api/public/snapshot-upload': typeof ApiPublicSnapshotUploadRoute
   '/api/public/weather-digest': typeof ApiPublicWeatherDigestRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/messages/': typeof AuthenticatedMessagesIndexRoute
   '/admin/plants/import': typeof AuthenticatedAdminPlantsImportRoute
   '/plants/$id/photos': typeof AuthenticatedPlantsIdPhotosRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -154,16 +190,21 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/feed': typeof AuthenticatedFeedRoute
+  '/friends': typeof AuthenticatedFriendsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/admin/archive': typeof AuthenticatedAdminArchiveRoute
   '/admin/species': typeof AuthenticatedAdminSpeciesRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
+  '/messages/$id': typeof AuthenticatedMessagesIdRoute
   '/plants/$id': typeof AuthenticatedPlantsIdRoute
   '/plants/new': typeof AuthenticatedPlantsNewRoute
+  '/u/$username': typeof AuthenticatedUUsernameRoute
   '/api/public/ingest': typeof ApiPublicIngestRoute
   '/api/public/snapshot-upload': typeof ApiPublicSnapshotUploadRoute
   '/api/public/weather-digest': typeof ApiPublicWeatherDigestRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
+  '/messages': typeof AuthenticatedMessagesIndexRoute
   '/admin/plants/import': typeof AuthenticatedAdminPlantsImportRoute
   '/plants/$id/photos': typeof AuthenticatedPlantsIdPhotosRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -176,16 +217,21 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/feed': typeof AuthenticatedFeedRoute
+  '/_authenticated/friends': typeof AuthenticatedFriendsRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/admin/archive': typeof AuthenticatedAdminArchiveRoute
   '/_authenticated/admin/species': typeof AuthenticatedAdminSpeciesRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
+  '/_authenticated/messages/$id': typeof AuthenticatedMessagesIdRoute
   '/_authenticated/plants/$id': typeof AuthenticatedPlantsIdRoute
   '/_authenticated/plants/new': typeof AuthenticatedPlantsNewRoute
+  '/_authenticated/u/$username': typeof AuthenticatedUUsernameRoute
   '/api/public/ingest': typeof ApiPublicIngestRoute
   '/api/public/snapshot-upload': typeof ApiPublicSnapshotUploadRoute
   '/api/public/weather-digest': typeof ApiPublicWeatherDigestRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/_authenticated/messages/': typeof AuthenticatedMessagesIndexRoute
   '/_authenticated/admin/plants/import': typeof AuthenticatedAdminPlantsImportRoute
   '/_authenticated/plants/$id_/photos': typeof AuthenticatedPlantsIdPhotosRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -198,16 +244,21 @@ export interface FileRouteTypes {
     | '/auth'
     | '/admin'
     | '/dashboard'
+    | '/feed'
+    | '/friends'
     | '/settings'
     | '/admin/archive'
     | '/admin/species'
     | '/admin/users'
+    | '/messages/$id'
     | '/plants/$id'
     | '/plants/new'
+    | '/u/$username'
     | '/api/public/ingest'
     | '/api/public/snapshot-upload'
     | '/api/public/weather-digest'
     | '/admin/'
+    | '/messages/'
     | '/admin/plants/import'
     | '/plants/$id/photos'
     | '/lovable/email/transactional/preview'
@@ -217,16 +268,21 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/dashboard'
+    | '/feed'
+    | '/friends'
     | '/settings'
     | '/admin/archive'
     | '/admin/species'
     | '/admin/users'
+    | '/messages/$id'
     | '/plants/$id'
     | '/plants/new'
+    | '/u/$username'
     | '/api/public/ingest'
     | '/api/public/snapshot-upload'
     | '/api/public/weather-digest'
     | '/admin'
+    | '/messages'
     | '/admin/plants/import'
     | '/plants/$id/photos'
     | '/lovable/email/transactional/preview'
@@ -238,16 +294,21 @@ export interface FileRouteTypes {
     | '/auth'
     | '/_authenticated/admin'
     | '/_authenticated/dashboard'
+    | '/_authenticated/feed'
+    | '/_authenticated/friends'
     | '/_authenticated/settings'
     | '/_authenticated/admin/archive'
     | '/_authenticated/admin/species'
     | '/_authenticated/admin/users'
+    | '/_authenticated/messages/$id'
     | '/_authenticated/plants/$id'
     | '/_authenticated/plants/new'
+    | '/_authenticated/u/$username'
     | '/api/public/ingest'
     | '/api/public/snapshot-upload'
     | '/api/public/weather-digest'
     | '/_authenticated/admin/'
+    | '/_authenticated/messages/'
     | '/_authenticated/admin/plants/import'
     | '/_authenticated/plants/$id_/photos'
     | '/lovable/email/transactional/preview'
@@ -294,6 +355,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/friends': {
+      id: '/_authenticated/friends'
+      path: '/friends'
+      fullPath: '/friends'
+      preLoaderRoute: typeof AuthenticatedFriendsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/feed': {
+      id: '/_authenticated/feed'
+      path: '/feed'
+      fullPath: '/feed'
+      preLoaderRoute: typeof AuthenticatedFeedRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -306,6 +381,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AuthenticatedAdminRouteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/messages/': {
+      id: '/_authenticated/messages/'
+      path: '/messages'
+      fullPath: '/messages/'
+      preLoaderRoute: typeof AuthenticatedMessagesIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/admin/': {
@@ -336,6 +418,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicIngestRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/u/$username': {
+      id: '/_authenticated/u/$username'
+      path: '/u/$username'
+      fullPath: '/u/$username'
+      preLoaderRoute: typeof AuthenticatedUUsernameRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/plants/new': {
       id: '/_authenticated/plants/new'
       path: '/plants/new'
@@ -348,6 +437,13 @@ declare module '@tanstack/react-router' {
       path: '/plants/$id'
       fullPath: '/plants/$id'
       preLoaderRoute: typeof AuthenticatedPlantsIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/messages/$id': {
+      id: '/_authenticated/messages/$id'
+      path: '/messages/$id'
+      fullPath: '/messages/$id'
+      preLoaderRoute: typeof AuthenticatedMessagesIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/admin/users': {
@@ -429,18 +525,28 @@ const AuthenticatedAdminRouteRouteWithChildren =
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRouteRoute: typeof AuthenticatedAdminRouteRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedFeedRoute: typeof AuthenticatedFeedRoute
+  AuthenticatedFriendsRoute: typeof AuthenticatedFriendsRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedMessagesIdRoute: typeof AuthenticatedMessagesIdRoute
   AuthenticatedPlantsIdRoute: typeof AuthenticatedPlantsIdRoute
   AuthenticatedPlantsNewRoute: typeof AuthenticatedPlantsNewRoute
+  AuthenticatedUUsernameRoute: typeof AuthenticatedUUsernameRoute
+  AuthenticatedMessagesIndexRoute: typeof AuthenticatedMessagesIndexRoute
   AuthenticatedPlantsIdPhotosRoute: typeof AuthenticatedPlantsIdPhotosRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRouteRoute: AuthenticatedAdminRouteRouteWithChildren,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedFeedRoute: AuthenticatedFeedRoute,
+  AuthenticatedFriendsRoute: AuthenticatedFriendsRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedMessagesIdRoute: AuthenticatedMessagesIdRoute,
   AuthenticatedPlantsIdRoute: AuthenticatedPlantsIdRoute,
   AuthenticatedPlantsNewRoute: AuthenticatedPlantsNewRoute,
+  AuthenticatedUUsernameRoute: AuthenticatedUUsernameRoute,
+  AuthenticatedMessagesIndexRoute: AuthenticatedMessagesIndexRoute,
   AuthenticatedPlantsIdPhotosRoute: AuthenticatedPlantsIdPhotosRoute,
 }
 

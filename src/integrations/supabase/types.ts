@@ -861,39 +861,24 @@ export type Database = {
       }
     }
     Views: {
-      profiles_public: {
-        Row: {
-          avatar_url: string | null
-          bio: string | null
-          country_code: string | null
-          created_at: string | null
-          display_name: string | null
-          id: string | null
-          username: string | null
-        }
-        Insert: {
-          avatar_url?: string | null
-          bio?: string | null
-          country_code?: string | null
-          created_at?: string | null
-          display_name?: string | null
-          id?: string | null
-          username?: string | null
-        }
-        Update: {
-          avatar_url?: string | null
-          bio?: string | null
-          country_code?: string | null
-          created_at?: string | null
-          display_name?: string | null
-          id?: string | null
-          username?: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       are_friends: { Args: { _a: string; _b: string }; Returns: boolean }
+      get_profile_by_username: {
+        Args: { _username: string }
+        Returns: {
+          avatar_url: string
+          bio: string
+          country_code: string
+          created_at: string
+          display_name: string
+          friend_count: number
+          id: string
+          plant_count: number
+          username: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -905,6 +890,30 @@ export type Database = {
       is_conversation_participant: {
         Args: { _conversation: string; _user: string }
         Returns: boolean
+      }
+      profiles_public_by_ids: {
+        Args: { _ids: string[] }
+        Returns: {
+          avatar_url: string
+          bio: string
+          country_code: string
+          created_at: string
+          display_name: string
+          id: string
+          username: string
+        }[]
+      }
+      search_profiles: {
+        Args: { _limit?: number; _q: string }
+        Returns: {
+          avatar_url: string
+          bio: string
+          country_code: string
+          created_at: string
+          display_name: string
+          id: string
+          username: string
+        }[]
       }
       user_friend_count: { Args: { _user: string }; Returns: number }
       user_plant_count: { Args: { _user: string }; Returns: number }
