@@ -52,10 +52,12 @@ function Settings() {
       <section className="rounded-2xl border border-border bg-card p-5">
         <h2 className="font-display text-lg font-semibold">Profile</h2>
         <div className="mt-3 space-y-3">
+          <UsernameField />
           <input value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder="Display name" className="w-full px-3 py-2.5 rounded-lg border border-input bg-background text-sm" />
           <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Phone (E.164, e.g. +14155551234) — for SMS" className="w-full px-3 py-2.5 rounded-lg border border-input bg-background text-sm" />
         </div>
       </section>
+
 
       <LocationSettings />
 
