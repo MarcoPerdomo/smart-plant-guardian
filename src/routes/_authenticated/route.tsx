@@ -65,13 +65,13 @@ function AuthedLayout() {
     navigate({ to: "/auth", replace: true });
   }
 
-  const dashboardActive = !!useMatch({ from: "/dashboard", shouldThrow: false });
-  const plantsNewActive = !!useMatch({ from: "/plants/new", shouldThrow: false });
-  const feedActive = !!useMatch({ from: "/feed", shouldThrow: false });
-  const friendsActive = !!useMatch({ from: "/friends", shouldThrow: false });
-  const messagesActive = !!useMatch({ from: "/messages", shouldThrow: false });
-  const settingsActive = !!useMatch({ from: "/settings", shouldThrow: false });
-  const adminActive = !!useMatch({ from: "/admin", shouldThrow: false });
+  const dashboardActive = !!useMatch({ from: "/_authenticated/dashboard", shouldThrow: false });
+  const plantsNewActive = !!useMatch({ from: "/_authenticated/plants/new", shouldThrow: false });
+  const feedActive = !!useMatch({ from: "/_authenticated/feed", shouldThrow: false });
+  const friendsActive = !!useMatch({ from: "/_authenticated/friends", shouldThrow: false });
+  const messagesActive = !!useMatch({ from: "/_authenticated/messages", shouldThrow: false });
+  const settingsActive = !!useMatch({ from: "/_authenticated/settings", shouldThrow: false });
+  const adminActive = !!useMatch({ from: "/_authenticated/admin", shouldThrow: false });
 
   const activeItem = (active: boolean) => (active ? "bg-muted text-primary" : "");
 
