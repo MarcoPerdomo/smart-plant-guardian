@@ -145,9 +145,11 @@ function AuthedLayout() {
                   >
                     <Users className="w-4 h-4" />
                     Social
+                    <CountBadge count={socialUnread} />
                     <ChevronDown className="w-3 h-3 opacity-60" />
                   </Button>
                 </DropdownMenuTrigger>
+
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem
                     asChild
