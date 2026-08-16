@@ -45,10 +45,24 @@ function AuthedLayout() {
             <Leaf className="w-5 h-5 text-primary" />
             Verdant
           </Link>
-          <nav className="flex items-center gap-1 text-sm">
+          <nav className="flex items-center gap-1 text-sm flex-wrap justify-end">
             <WeatherChip />
             <Link to="/dashboard" className="px-3 py-1.5 rounded-md hover:bg-muted flex items-center gap-1.5" activeProps={{ className: "px-3 py-1.5 rounded-md bg-muted flex items-center gap-1.5 text-primary" }}>
               <LayoutDashboard className="w-4 h-4" /> Dashboard
+            </Link>
+            <Link to="/feed" className="px-3 py-1.5 rounded-md hover:bg-muted flex items-center gap-1.5" activeProps={{ className: "px-3 py-1.5 rounded-md bg-muted flex items-center gap-1.5 text-primary" }}>
+              <Sprout className="w-4 h-4" /> Feed
+            </Link>
+            <Link to="/friends" className="px-3 py-1.5 rounded-md hover:bg-muted flex items-center gap-1.5" activeProps={{ className: "px-3 py-1.5 rounded-md bg-muted flex items-center gap-1.5 text-primary" }}>
+              <Users className="w-4 h-4" /> Friends
+            </Link>
+            <Link to="/messages" className="px-3 py-1.5 rounded-md hover:bg-muted flex items-center gap-1.5 relative" activeProps={{ className: "px-3 py-1.5 rounded-md bg-muted flex items-center gap-1.5 text-primary relative" }}>
+              <MessageCircle className="w-4 h-4" /> Messages
+              {unreadCount > 0 && (
+                <span className="ml-0.5 text-[10px] px-1.5 py-0.5 rounded-full bg-primary text-primary-foreground">
+                  {unreadCount}
+                </span>
+              )}
             </Link>
             <Link to="/plants/new" className="px-3 py-1.5 rounded-md hover:bg-muted flex items-center gap-1.5">
               <Plus className="w-4 h-4" /> Add plant
@@ -70,6 +84,8 @@ function AuthedLayout() {
       <main className="mx-auto max-w-6xl px-4 py-8">
         <Outlet />
       </main>
+      <UsernameGate />
     </div>
   );
+
 }
