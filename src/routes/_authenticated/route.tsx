@@ -301,13 +301,17 @@ function AuthedLayout() {
                         <Link
                           to="/friends"
                           className={cn(
-                            "flex items-center gap-2 px-3 py-2 rounded-md hover:bg-muted text-sm",
+                            "flex items-center gap-2 px-3 py-2 rounded-md hover:bg-muted text-sm justify-between",
                             friendsActive && "bg-muted text-primary"
                           )}
                         >
-                          <Users className="w-4 h-4" /> Friends
+                          <span className="flex items-center gap-2">
+                            <Users className="w-4 h-4" /> Friends
+                          </span>
+                          <CountBadge count={friendRequests} />
                         </Link>
                       </SheetClose>
+
                       <SheetClose asChild>
                         <Link
                           to="/messages"
