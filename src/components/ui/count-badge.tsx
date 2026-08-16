@@ -1,6 +1,6 @@
 export function CountBadge({ count, label }: { count: number; label?: string }) {
   if (count <= 0) return null;
-  const text = count > 9 ? "10+" : String(count);
+  const text = count > 9 ? "9+" : String(count);
   return (
     <span
       aria-label={label ? `${label}: ${text}` : text}
