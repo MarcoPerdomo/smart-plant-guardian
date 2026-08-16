@@ -613,6 +613,7 @@ export type Database = {
           created_at: string
           display_name: string | null
           email: string | null
+          feed_last_seen_at: string | null
           id: string
           latitude: number | null
           longitude: number | null
@@ -634,6 +635,7 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           email?: string | null
+          feed_last_seen_at?: string | null
           id: string
           latitude?: number | null
           longitude?: number | null
@@ -655,6 +657,7 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           email?: string | null
+          feed_last_seen_at?: string | null
           id?: string
           latitude?: number | null
           longitude?: number | null
