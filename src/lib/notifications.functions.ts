@@ -97,8 +97,17 @@ export const getBadgeCounts = createServerFn({ method: "GET" })
       .eq("id", context.userId)
       .maybeSingle();
     const lastSeen = profile?.feed_last_seen_at;
-    const { data: accepted } = await context.supabase.rpc("friend_ids", { _user_id: context.userId });
-    const friendIds = (accepted ?? []) as string[];
+
+    const { data: accepted, error: friendErr } = await context.supabase
+      .from("friendships")
+      .select("requester_id, addressee_id")
+      .eq("status", "accepted")
+      .or(`requester_id.eq.${context.userId},addressee_id.eq.${context.userId}`);
+    if (friendErr) throw new Error(friendErr.message);
+    const friendIds = (accepted ?? [])
+      .map((f) => (f.requester_id === context.userId ? f.addressee_id : f.requester_id))
+      .filter((id) => id !== context.userId);
+
     if (friendIds.length > 0) {
       let q = context.supabase
         .from("posts")
@@ -110,6 +119,7 @@ export const getBadgeCounts = createServerFn({ method: "GET" })
       if (feedErr) throw new Error(feedErr.message);
       feed = feedCount ?? 0;
     }
+
 
     return {
       notifications: unreadNotifications ?? 0,
