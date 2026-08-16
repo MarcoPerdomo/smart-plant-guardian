@@ -22,10 +22,16 @@ export const Route = createFileRoute("/_authenticated/messages/")({
 });
 
 function MessagesPage() {
+  const qc = useQueryClient();
   const { data: conversations = [], isLoading } = useQuery({
     queryKey: ["conversations"],
     queryFn: () => listConversations(),
   });
+
+  useEffect(() => {
+    qc.invalidateQueries({ queryKey: ["badge_counts"] });
+  }, [qc]);
+
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
