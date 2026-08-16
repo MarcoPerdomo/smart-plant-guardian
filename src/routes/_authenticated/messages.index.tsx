@@ -1,9 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
 import { MessageCircle } from "lucide-react";
 import { listConversations } from "@/lib/chat.functions";
 import { UserAvatar, displayNameOf } from "@/components/social/user-avatar";
+
 
 export const Route = createFileRoute("/_authenticated/messages/")({
   component: MessagesPage,
