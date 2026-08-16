@@ -55,12 +55,18 @@ function AuthedLayout() {
   const qc = useQueryClient();
   const { data: admin } = useQuery({ queryKey: ["admin", "me"], queryFn: () => amIAdmin() });
   const isAdmin = admin?.isAdmin ?? false;
-  const { data: unread } = useQuery({
-    queryKey: ["unread_messages"],
-    queryFn: () => getUnreadCount(),
-    refetchInterval: 60_000,
+  const { data: badges } = useQuery({
+    queryKey: ["badge_counts"],
+    queryFn: () => getBadgeCounts(),
+    refetchInterval: 30_000,
+    refetchOnWindowFocus: true,
   });
-  const unreadCount = unread?.count ?? 0;
+  const unreadMessages = badges?.messages ?? 0;
+  const unreadNotifications = badges?.notifications ?? 0;
+  const friendRequests = badges?.friendRequests ?? 0;
+  const feedUnread = badges?.feed ?? 0;
+  const socialUnread = unreadNotifications + friendRequests + unreadMessages + feedUnread;
+
 
   async function signOut() {
     await qc.cancelQueries();
