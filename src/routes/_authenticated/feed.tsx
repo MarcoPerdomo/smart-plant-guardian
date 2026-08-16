@@ -1,11 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { HelpCircle, Users, Sprout } from "lucide-react";
 import { createPost, getFeed, listFriendships } from "@/lib/social.functions";
 import { listUserPlants } from "@/lib/plants.functions";
+import { markFeedSeen } from "@/lib/notifications.functions";
 import { PostCard, type FeedPost } from "@/components/social/post-card";
+
 
 export const Route = createFileRoute("/_authenticated/feed")({
   component: FeedPage,
@@ -25,6 +27,14 @@ function FeedPage() {
   const { data, isLoading } = useQuery({ queryKey: ["feed"], queryFn: () => getFeed({ data: {} }) });
   const { data: friendships } = useQuery({ queryKey: ["friendships"], queryFn: () => listFriendships() });
   const friendCount = friendships?.friends.length ?? 0;
+  const qc = useQueryClient();
+
+  useEffect(() => {
+    markFeedSeen()
+      .then(() => qc.invalidateQueries({ queryKey: ["badge_counts"] }))
+      .catch(() => {});
+  }, [qc]);
+
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">

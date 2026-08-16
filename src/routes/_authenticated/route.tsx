@@ -3,6 +3,9 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { amIAdmin } from "@/lib/admin.functions";
 import { getUnreadCount } from "@/lib/chat.functions";
+import { getBadgeCounts } from "@/lib/notifications.functions";
+import { NotificationBell } from "@/components/notifications/notification-bell";
+import { CountBadge } from "@/components/ui/count-badge";
 import {
   Leaf,
   LayoutDashboard,
@@ -17,6 +20,7 @@ import {
   ChevronDown,
   User,
 } from "lucide-react";
+
 import { WeatherChip } from "@/components/weather-chip";
 import { UsernameGate } from "@/components/social/username-gate";
 import { Button } from "@/components/ui/button";
@@ -51,12 +55,18 @@ function AuthedLayout() {
   const qc = useQueryClient();
   const { data: admin } = useQuery({ queryKey: ["admin", "me"], queryFn: () => amIAdmin() });
   const isAdmin = admin?.isAdmin ?? false;
-  const { data: unread } = useQuery({
-    queryKey: ["unread_messages"],
-    queryFn: () => getUnreadCount(),
-    refetchInterval: 60_000,
+  const { data: badges } = useQuery({
+    queryKey: ["badge_counts"],
+    queryFn: () => getBadgeCounts(),
+    refetchInterval: 30_000,
+    refetchOnWindowFocus: true,
   });
-  const unreadCount = unread?.count ?? 0;
+  const unreadMessages = badges?.messages ?? 0;
+  const unreadNotifications = badges?.notifications ?? 0;
+  const friendRequests = badges?.friendRequests ?? 0;
+  const feedUnread = badges?.feed ?? 0;
+  const socialUnread = unreadNotifications + friendRequests + unreadMessages + feedUnread;
+
 
   async function signOut() {
     await qc.cancelQueries();
@@ -88,6 +98,9 @@ function AuthedLayout() {
 
           <div className="flex items-center gap-1">
             <WeatherChip />
+            <NotificationBell />
+
+
 
             {/* Desktop grouped navigation */}
             <nav className="hidden md:flex items-center gap-1 text-sm">
@@ -132,26 +145,36 @@ function AuthedLayout() {
                   >
                     <Users className="w-4 h-4" />
                     Social
+                    <CountBadge count={socialUnread} />
                     <ChevronDown className="w-3 h-3 opacity-60" />
                   </Button>
                 </DropdownMenuTrigger>
+
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem
                     asChild
                     className={cn("flex items-center gap-2 cursor-pointer", activeItem(feedActive))}
                   >
-                    <Link to="/feed">
-                      <Sprout className="w-4 h-4" /> Feed
+                    <Link to="/feed" className="justify-between">
+                      <span className="flex items-center gap-2">
+                        <Sprout className="w-4 h-4" /> Feed
+                      </span>
+                      <CountBadge count={feedUnread} />
                     </Link>
                   </DropdownMenuItem>
+
                   <DropdownMenuItem
                     asChild
                     className={cn("flex items-center gap-2 cursor-pointer", activeItem(friendsActive))}
                   >
-                    <Link to="/friends">
-                      <Users className="w-4 h-4" /> Friends
+                    <Link to="/friends" className="justify-between">
+                      <span className="flex items-center gap-2">
+                        <Users className="w-4 h-4" /> Friends
+                      </span>
+                      <CountBadge count={friendRequests} />
                     </Link>
                   </DropdownMenuItem>
+
                   <DropdownMenuItem
                     asChild
                     className={cn("flex items-center gap-2 cursor-pointer", activeItem(messagesActive))}
@@ -160,12 +183,9 @@ function AuthedLayout() {
                       <span className="flex items-center gap-2">
                         <MessageCircle className="w-4 h-4" /> Messages
                       </span>
-                      {unreadCount > 0 && (
-                        <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-primary text-primary-foreground">
-                          {unreadCount}
-                        </span>
-                      )}
+                      <CountBadge count={unreadMessages} />
                     </Link>
+
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -214,10 +234,14 @@ function AuthedLayout() {
             {/* Mobile hamburger menu */}
             <Sheet>
               <SheetTrigger asChild className="md:hidden">
-                <Button variant="ghost" size="icon" aria-label="Open menu">
+                <Button variant="ghost" size="icon" aria-label="Open menu" className="relative">
                   <Menu className="w-5 h-5" />
+                  {socialUnread > 0 && (
+                    <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-primary" aria-hidden />
+                  )}
                 </Button>
               </SheetTrigger>
+
               <SheetContent side="right" className="w-[280px]">
                 <SheetHeader>
                   <SheetTitle>Menu</SheetTitle>
@@ -262,24 +286,32 @@ function AuthedLayout() {
                         <Link
                           to="/feed"
                           className={cn(
-                            "flex items-center gap-2 px-3 py-2 rounded-md hover:bg-muted text-sm",
+                            "flex items-center gap-2 px-3 py-2 rounded-md hover:bg-muted text-sm justify-between",
                             feedActive && "bg-muted text-primary"
                           )}
                         >
-                          <Sprout className="w-4 h-4" /> Feed
+                          <span className="flex items-center gap-2">
+                            <Sprout className="w-4 h-4" /> Feed
+                          </span>
+                          <CountBadge count={feedUnread} />
                         </Link>
                       </SheetClose>
+
                       <SheetClose asChild>
                         <Link
                           to="/friends"
                           className={cn(
-                            "flex items-center gap-2 px-3 py-2 rounded-md hover:bg-muted text-sm",
+                            "flex items-center gap-2 px-3 py-2 rounded-md hover:bg-muted text-sm justify-between",
                             friendsActive && "bg-muted text-primary"
                           )}
                         >
-                          <Users className="w-4 h-4" /> Friends
+                          <span className="flex items-center gap-2">
+                            <Users className="w-4 h-4" /> Friends
+                          </span>
+                          <CountBadge count={friendRequests} />
                         </Link>
                       </SheetClose>
+
                       <SheetClose asChild>
                         <Link
                           to="/messages"
@@ -291,12 +323,9 @@ function AuthedLayout() {
                           <span className="flex items-center gap-2">
                             <MessageCircle className="w-4 h-4" /> Messages
                           </span>
-                          {unreadCount > 0 && (
-                            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-primary text-primary-foreground">
-                              {unreadCount}
-                            </span>
-                          )}
+                          <CountBadge count={unreadMessages} />
                         </Link>
+
                       </SheetClose>
                     </div>
                   </section>

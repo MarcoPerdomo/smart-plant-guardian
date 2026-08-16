@@ -37,10 +37,11 @@ function ConversationPage() {
     markConversationRead({ data: { conversation_id: id } })
       .then(() => {
         qc.invalidateQueries({ queryKey: ["conversations"] });
-        qc.invalidateQueries({ queryKey: ["unread_messages"] });
+        qc.invalidateQueries({ queryKey: ["badge_counts"] });
       })
       .catch(() => undefined);
   }, [id, data?.messages.length, qc]);
+
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ block: "end" });
