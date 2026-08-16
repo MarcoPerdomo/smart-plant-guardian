@@ -167,10 +167,14 @@ function AuthedLayout() {
                     asChild
                     className={cn("flex items-center gap-2 cursor-pointer", activeItem(friendsActive))}
                   >
-                    <Link to="/friends">
-                      <Users className="w-4 h-4" /> Friends
+                    <Link to="/friends" className="justify-between">
+                      <span className="flex items-center gap-2">
+                        <Users className="w-4 h-4" /> Friends
+                      </span>
+                      <CountBadge count={friendRequests} />
                     </Link>
                   </DropdownMenuItem>
+
                   <DropdownMenuItem
                     asChild
                     className={cn("flex items-center gap-2 cursor-pointer", activeItem(messagesActive))}
