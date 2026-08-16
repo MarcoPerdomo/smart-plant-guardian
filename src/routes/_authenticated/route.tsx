@@ -234,10 +234,14 @@ function AuthedLayout() {
             {/* Mobile hamburger menu */}
             <Sheet>
               <SheetTrigger asChild className="md:hidden">
-                <Button variant="ghost" size="icon" aria-label="Open menu">
+                <Button variant="ghost" size="icon" aria-label="Open menu" className="relative">
                   <Menu className="w-5 h-5" />
+                  {socialUnread > 0 && (
+                    <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-primary" aria-hidden />
+                  )}
                 </Button>
               </SheetTrigger>
+
               <SheetContent side="right" className="w-[280px]">
                 <SheetHeader>
                   <SheetTitle>Menu</SheetTitle>
