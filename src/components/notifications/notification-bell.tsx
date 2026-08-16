@@ -54,8 +54,9 @@ export function NotificationBell() {
       qc.invalidateQueries({ queryKey: ["notifications"] });
     }
     setOpen(false);
-    if (n.link) navigate({ to: n.link as "./" });
+    if (n.link) window.location.href = n.link;
   }
+
 
   const emptyPhrase = EMPTY_PHRASES[Math.floor(Math.random() * EMPTY_PHRASES.length)];
 
