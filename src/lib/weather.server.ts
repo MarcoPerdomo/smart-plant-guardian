@@ -96,14 +96,24 @@ function mapForecast(json: Record<string, any>): WeatherSnapshot {
 export async function fetchWeather(lat: number, lon: number): Promise<WeatherSnapshot> {
   const rLat = roundCoord(lat);
   const rLon = roundCoord(lon);
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-  const { data: cached } = await supabaseAdmin
-    .from("weather_cache")
-    .select("payload, fetched_at")
-    .eq("lat", rLat)
-    .eq("lon", rLon)
-    .maybeSingle();
+  // The cache is a nice-to-have: never let it break live weather.
+  let admin: typeof import("@/integrations/supabase/client.server")["supabaseAdmin"] | null = null;
+  type CacheRow = { payload: unknown; fetched_at: string | null };
+  let cached: CacheRow | null = null;
+  try {
+    admin = (await import("@/integrations/supabase/client.server")).supabaseAdmin;
+    const { data } = await admin
+      .from("weather_cache")
+      .select("payload, fetched_at")
+      .eq("lat", rLat)
+      .eq("lon", rLon)
+      .maybeSingle();
+    cached = (data as CacheRow | null) ?? null;
+
+  } catch (e) {
+    console.error("weather_cache unavailable:", e);
+  }
 
   if (cached?.fetched_at) {
     const ageMin = (Date.now() - new Date(cached.fetched_at).getTime()) / 60000;
@@ -124,12 +134,19 @@ export async function fetchWeather(lat: number, lon: number): Promise<WeatherSna
   }
   const snapshot = mapForecast(await resp.json());
 
-  await supabaseAdmin
-    .from("weather_cache")
-    .upsert(
-      { lat: rLat, lon: rLon, payload: JSON.parse(JSON.stringify(snapshot)), fetched_at: new Date().toISOString() },
-      { onConflict: "lat,lon" },
-    );
+  if (admin) {
+    try {
+      await admin
+        .from("weather_cache")
+        .upsert(
+          { lat: rLat, lon: rLon, payload: JSON.parse(JSON.stringify(snapshot)), fetched_at: new Date().toISOString() },
+          { onConflict: "lat,lon" },
+        );
+    } catch (e) {
+      console.error("weather_cache write failed:", e);
+    }
+  }
 
   return snapshot;
 }
+
