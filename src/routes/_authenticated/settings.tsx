@@ -6,6 +6,9 @@ import { toast } from "sonner";
 import { Copy, Bell, Mail, MessageSquare, Cpu } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { LocationSettings } from "@/components/location-settings";
+import { getMyUsername, setUsername as setUsernameFn, checkUsername } from "@/lib/social.functions";
+import { AtSign, Check, Pencil } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_authenticated/settings")({
   component: Settings,
