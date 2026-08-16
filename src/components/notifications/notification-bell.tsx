@@ -65,8 +65,8 @@ export function NotificationBell() {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" className="relative" aria-label="Notifications">
           <Bell className="w-5 h-5" />
-          <span className="absolute top-1 right-1">
-            <CountBadge count={unread} />
+          <span className="absolute -top-0.5 -right-0.5">
+            <CountBadge count={unread} size="sm" />
           </span>
         </Button>
       </DropdownMenuTrigger>
