@@ -27,6 +27,14 @@ function FeedPage() {
   const { data, isLoading } = useQuery({ queryKey: ["feed"], queryFn: () => getFeed({ data: {} }) });
   const { data: friendships } = useQuery({ queryKey: ["friendships"], queryFn: () => listFriendships() });
   const friendCount = friendships?.friends.length ?? 0;
+  const qc = useQueryClient();
+
+  useEffect(() => {
+    markFeedSeen()
+      .then(() => qc.invalidateQueries({ queryKey: ["badge_counts"] }))
+      .catch(() => {});
+  }, [qc]);
+
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
