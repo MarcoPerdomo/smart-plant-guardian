@@ -6,6 +6,9 @@ import { toast } from "sonner";
 import { Copy, Bell, Mail, MessageSquare, Cpu } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { LocationSettings } from "@/components/location-settings";
+import { getMyUsername, setUsername as setUsernameFn, checkUsername } from "@/lib/social.functions";
+import { AtSign, Check, Pencil } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_authenticated/settings")({
   component: Settings,
@@ -52,10 +55,12 @@ function Settings() {
       <section className="rounded-2xl border border-border bg-card p-5">
         <h2 className="font-display text-lg font-semibold">Profile</h2>
         <div className="mt-3 space-y-3">
+          <UsernameField />
           <input value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder="Display name" className="w-full px-3 py-2.5 rounded-lg border border-input bg-background text-sm" />
           <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Phone (E.164, e.g. +14155551234) — for SMS" className="w-full px-3 py-2.5 rounded-lg border border-input bg-background text-sm" />
         </div>
       </section>
+
 
       <LocationSettings />
 
@@ -152,6 +157,91 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
     <div>
       <div className="text-xs uppercase tracking-wide text-muted-foreground mb-1">{label}</div>
       {children}
+    </div>
+  );
+}
+
+function UsernameField() {
+  const qc = useQueryClient();
+  const { data: social } = useQuery({ queryKey: ["my_username"], queryFn: () => getMyUsername() });
+  const [editing, setEditing] = useState(false);
+  const [value, setValue] = useState("");
+  const [status, setStatus] = useState<{ available: boolean; reason: string | null } | null>(null);
+
+  useEffect(() => {
+    const v = value.trim().toLowerCase();
+    if (!editing || v.length < 3 || v === (social?.username ?? "")) { setStatus(null); return; }
+    const t = setTimeout(() => {
+      checkUsername({ data: { username: v } }).then(setStatus).catch(() => setStatus(null));
+    }, 350);
+    return () => clearTimeout(t);
+  }, [value, editing, social?.username]);
+
+  const save = useMutation({
+    mutationFn: () => setUsernameFn({ data: { username: value.trim().toLowerCase() } }),
+    onSuccess: () => {
+      toast.success("Username updated");
+      setEditing(false);
+      qc.invalidateQueries({ queryKey: ["my_username"] });
+      qc.invalidateQueries({ queryKey: ["profile"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  if (!editing) {
+    return (
+      <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg border border-input bg-muted/30">
+        <AtSign className="w-4 h-4 text-muted-foreground" />
+        <div className="flex-1 text-sm">
+          {social?.username ? (
+            <Link to="/u/$username" params={{ username: social.username }} className="font-medium hover:underline">
+              @{social.username}
+            </Link>
+          ) : (
+            <span className="text-muted-foreground">No username yet</span>
+          )}
+        </div>
+        <button
+          type="button"
+          onClick={() => { setValue(social?.username ?? ""); setEditing(true); }}
+          className="text-xs px-2 py-1 rounded-md border border-border hover:bg-muted flex items-center gap-1"
+        >
+          <Pencil className="w-3 h-3" /> {social?.username ? "Change" : "Pick one"}
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center gap-2 px-3 py-2.5 rounded-lg border border-input bg-background">
+        <AtSign className="w-4 h-4 text-muted-foreground" />
+        <input
+          value={value}
+          onChange={(e) => setValue(e.target.value.replace(/\s/g, "").toLowerCase())}
+          maxLength={24}
+          placeholder="fern-friend"
+          className="flex-1 bg-transparent text-sm outline-none"
+        />
+      </div>
+      {status && (
+        <p className={`text-xs ${status.available ? "text-primary" : "text-destructive"}`}>
+          {status.available ? "Available" : status.reason}
+        </p>
+      )}
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={() => save.mutate()}
+          disabled={!status?.available || save.isPending}
+          className="px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium disabled:opacity-50 flex items-center gap-1"
+        >
+          <Check className="w-4 h-4" /> {save.isPending ? "Saving…" : "Save username"}
+        </button>
+        <button type="button" onClick={() => setEditing(false)} className="px-3 py-1.5 rounded-lg border border-border text-sm hover:bg-muted">
+          Cancel
+        </button>
+      </div>
     </div>
   );
 }
