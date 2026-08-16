@@ -1,9 +1,11 @@
 import { createFileRoute, Outlet, redirect, Link, useNavigate } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { amIAdmin } from "@/lib/admin.functions";
-import { Leaf, LayoutDashboard, Settings, LogOut, Plus, Shield } from "lucide-react";
+import { getUnreadCount } from "@/lib/chat.functions";
+import { Leaf, LayoutDashboard, Settings, LogOut, Plus, Shield, Users, MessageCircle, Sprout } from "lucide-react";
 import { WeatherChip } from "@/components/weather-chip";
+import { UsernameGate } from "@/components/social/username-gate";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
@@ -17,13 +19,23 @@ export const Route = createFileRoute("/_authenticated")({
 
 function AuthedLayout() {
   const navigate = useNavigate();
+  const qc = useQueryClient();
   const { data: admin } = useQuery({ queryKey: ["admin", "me"], queryFn: () => amIAdmin() });
   const isAdmin = admin?.isAdmin ?? false;
+  const { data: unread } = useQuery({
+    queryKey: ["unread_messages"],
+    queryFn: () => getUnreadCount(),
+    refetchInterval: 60_000,
+  });
+  const unreadCount = unread?.count ?? 0;
 
   async function signOut() {
+    await qc.cancelQueries();
+    qc.clear();
     await supabase.auth.signOut();
     navigate({ to: "/auth", replace: true });
   }
+
 
   return (
     <div className="min-h-screen bg-background">
