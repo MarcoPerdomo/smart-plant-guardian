@@ -155,10 +155,14 @@ function AuthedLayout() {
                     asChild
                     className={cn("flex items-center gap-2 cursor-pointer", activeItem(feedActive))}
                   >
-                    <Link to="/feed">
-                      <Sprout className="w-4 h-4" /> Feed
+                    <Link to="/feed" className="justify-between">
+                      <span className="flex items-center gap-2">
+                        <Sprout className="w-4 h-4" /> Feed
+                      </span>
+                      <CountBadge count={feedUnread} />
                     </Link>
                   </DropdownMenuItem>
+
                   <DropdownMenuItem
                     asChild
                     className={cn("flex items-center gap-2 cursor-pointer", activeItem(friendsActive))}
