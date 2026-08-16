@@ -98,6 +98,9 @@ function AuthedLayout() {
 
           <div className="flex items-center gap-1">
             <WeatherChip />
+            <NotificationBell />
+
+
 
             {/* Desktop grouped navigation */}
             <nav className="hidden md:flex items-center gap-1 text-sm">
