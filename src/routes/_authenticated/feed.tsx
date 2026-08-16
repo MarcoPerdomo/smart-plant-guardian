@@ -1,11 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { HelpCircle, Users, Sprout } from "lucide-react";
 import { createPost, getFeed, listFriendships } from "@/lib/social.functions";
 import { listUserPlants } from "@/lib/plants.functions";
+import { markFeedSeen } from "@/lib/notifications.functions";
 import { PostCard, type FeedPost } from "@/components/social/post-card";
+
 
 export const Route = createFileRoute("/_authenticated/feed")({
   component: FeedPage,
