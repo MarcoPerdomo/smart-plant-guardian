@@ -62,10 +62,10 @@ function AuthedLayout() {
     refetchOnWindowFocus: true,
   });
   const unreadMessages = badges?.messages ?? 0;
-  const unreadNotifications = badges?.notifications ?? 0;
+  
   const friendRequests = badges?.friendRequests ?? 0;
   const feedUnread = badges?.feed ?? 0;
-  const socialUnread = unreadNotifications + friendRequests + unreadMessages + feedUnread;
+  const socialUnread = friendRequests + unreadMessages + feedUnread;
 
 
   async function signOut() {
