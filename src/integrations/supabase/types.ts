@@ -1275,6 +1275,7 @@ export type Database = {
     }
     Functions: {
       are_friends: { Args: { _a: string; _b: string }; Returns: boolean }
+      can_view_post: { Args: { _post_id: string }; Returns: boolean }
       get_profile_by_username: {
         Args: { _username: string }
         Returns: {
