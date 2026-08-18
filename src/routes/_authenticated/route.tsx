@@ -19,6 +19,9 @@ import {
   Menu,
   ChevronDown,
   User,
+  Store,
+  Wallet,
+  PackageCheck,
 } from "lucide-react";
 
 import { WeatherChip } from "@/components/weather-chip";
@@ -82,10 +85,20 @@ function AuthedLayout() {
   const messagesIndexActive = !!useMatch({ from: "/_authenticated/messages/", shouldThrow: false });
   const messagesThreadActive = !!useMatch({ from: "/_authenticated/messages/$id", shouldThrow: false });
   const messagesActive = messagesIndexActive || messagesThreadActive;
+  const marketplaceIndexActive = !!useMatch({ from: "/_authenticated/marketplace/", shouldThrow: false });
+  const marketplaceNewActive = !!useMatch({ from: "/_authenticated/marketplace/new", shouldThrow: false });
+  const marketplaceMineActive = !!useMatch({ from: "/_authenticated/marketplace/mine", shouldThrow: false });
+  const ordersActive =
+    !!useMatch({ from: "/_authenticated/marketplace/orders/", shouldThrow: false }) ||
+    !!useMatch({ from: "/_authenticated/marketplace/orders/$id", shouldThrow: false });
+  const walletActive = !!useMatch({ from: "/_authenticated/wallet", shouldThrow: false });
+  const marketplaceActive =
+    marketplaceIndexActive || marketplaceNewActive || marketplaceMineActive || ordersActive || walletActive;
   const settingsActive = !!useMatch({ from: "/_authenticated/settings", shouldThrow: false });
   const adminActive = !!useMatch({ from: "/_authenticated/admin", shouldThrow: false });
 
   const activeItem = (active: boolean) => (active ? "bg-muted text-primary" : "");
+  const mobileItem = "flex items-center gap-2 px-3 py-2 rounded-md hover:bg-muted text-sm";
 
   return (
     <div className="min-h-screen bg-background">
@@ -186,6 +199,43 @@ function AuthedLayout() {
                       <CountBadge count={unreadMessages} />
                     </Link>
 
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className={cn("gap-1.5", marketplaceActive && "bg-muted text-primary")}>
+                    <Store className="w-4 h-4" />
+                    Marketplace
+                    <ChevronDown className="w-3 h-3 opacity-60" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem asChild className={cn("flex items-center gap-2 cursor-pointer", activeItem(marketplaceIndexActive))}>
+                    <Link to="/marketplace">
+                      <Store className="w-4 h-4" /> Browse plants
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild className={cn("flex items-center gap-2 cursor-pointer", activeItem(marketplaceMineActive))}>
+                    <Link to="/marketplace/mine">
+                      <Leaf className="w-4 h-4" /> My listings
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild className={cn("flex items-center gap-2 cursor-pointer", activeItem(marketplaceNewActive))}>
+                    <Link to="/marketplace/new" search={{}}>
+                      <Plus className="w-4 h-4" /> Sell a plant
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild className={cn("flex items-center gap-2 cursor-pointer", activeItem(ordersActive))}>
+                    <Link to="/marketplace/orders">
+                      <PackageCheck className="w-4 h-4" /> Orders
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild className={cn("flex items-center gap-2 cursor-pointer", activeItem(walletActive))}>
+                    <Link to="/wallet">
+                      <Wallet className="w-4 h-4" /> Wallet
+                    </Link>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -326,6 +376,39 @@ function AuthedLayout() {
                           <CountBadge count={unreadMessages} />
                         </Link>
 
+                      </SheetClose>
+                    </div>
+                  </section>
+
+                  <section>
+                    <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                      Marketplace
+                    </h3>
+                    <div className="space-y-1">
+                      <SheetClose asChild>
+                        <Link to="/marketplace" className={cn(mobileItem, marketplaceIndexActive && "bg-muted text-primary")}>
+                          <Store className="w-4 h-4" /> Browse plants
+                        </Link>
+                      </SheetClose>
+                      <SheetClose asChild>
+                        <Link to="/marketplace/mine" className={cn(mobileItem, marketplaceMineActive && "bg-muted text-primary")}>
+                          <Leaf className="w-4 h-4" /> My listings
+                        </Link>
+                      </SheetClose>
+                      <SheetClose asChild>
+                        <Link to="/marketplace/new" search={{}} className={cn(mobileItem, marketplaceNewActive && "bg-muted text-primary")}>
+                          <Plus className="w-4 h-4" /> Sell a plant
+                        </Link>
+                      </SheetClose>
+                      <SheetClose asChild>
+                        <Link to="/marketplace/orders" className={cn(mobileItem, ordersActive && "bg-muted text-primary")}>
+                          <PackageCheck className="w-4 h-4" /> Orders
+                        </Link>
+                      </SheetClose>
+                      <SheetClose asChild>
+                        <Link to="/wallet" className={cn(mobileItem, walletActive && "bg-muted text-primary")}>
+                          <Wallet className="w-4 h-4" /> Wallet
+                        </Link>
                       </SheetClose>
                     </div>
                   </section>
