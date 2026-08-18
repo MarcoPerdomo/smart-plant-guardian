@@ -12,14 +12,12 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthenticatedWalletRouteImport } from './routes/_authenticated/wallet'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedFriendsRouteImport } from './routes/_authenticated/friends'
 import { Route as AuthenticatedFeedRouteImport } from './routes/_authenticated/feed'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAdminRouteRouteImport } from './routes/_authenticated/admin/route'
 import { Route as AuthenticatedMessagesIndexRouteImport } from './routes/_authenticated/messages.index'
-import { Route as AuthenticatedMarketplaceIndexRouteImport } from './routes/_authenticated/marketplace/index'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
 import { Route as ApiPublicWeatherDigestRouteImport } from './routes/api/public/weather-digest'
 import { Route as ApiPublicSnapshotUploadRouteImport } from './routes/api/public/snapshot-upload'
@@ -28,18 +26,12 @@ import { Route as AuthenticatedUUsernameRouteImport } from './routes/_authentica
 import { Route as AuthenticatedPlantsNewRouteImport } from './routes/_authenticated/plants/new'
 import { Route as AuthenticatedPlantsIdRouteImport } from './routes/_authenticated/plants/$id'
 import { Route as AuthenticatedMessagesIdRouteImport } from './routes/_authenticated/messages.$id'
-import { Route as AuthenticatedMarketplaceNewRouteImport } from './routes/_authenticated/marketplace/new'
-import { Route as AuthenticatedMarketplaceMineRouteImport } from './routes/_authenticated/marketplace/mine'
-import { Route as AuthenticatedMarketplaceIdRouteImport } from './routes/_authenticated/marketplace/$id'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin/users'
 import { Route as AuthenticatedAdminSpeciesRouteImport } from './routes/_authenticated/admin/species'
-import { Route as AuthenticatedAdminPayoutsRouteImport } from './routes/_authenticated/admin/payouts'
 import { Route as AuthenticatedAdminArchiveRouteImport } from './routes/_authenticated/admin/archive'
-import { Route as AuthenticatedMarketplaceOrdersIndexRouteImport } from './routes/_authenticated/marketplace/orders/index'
 import { Route as AuthenticatedAdminPlantsIndexRouteImport } from './routes/_authenticated/admin/plants/index'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 import { Route as AuthenticatedPlantsIdPhotosRouteImport } from './routes/_authenticated/plants/$id_.photos'
-import { Route as AuthenticatedMarketplaceOrdersIdRouteImport } from './routes/_authenticated/marketplace/orders/$id'
 import { Route as AuthenticatedAdminPlantsImportRouteImport } from './routes/_authenticated/admin/plants/import'
 
 const AuthRoute = AuthRouteImport.update({
@@ -55,11 +47,6 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
-} as any)
-const AuthenticatedWalletRoute = AuthenticatedWalletRouteImport.update({
-  id: '/wallet',
-  path: '/wallet',
-  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   id: '/settings',
@@ -90,12 +77,6 @@ const AuthenticatedMessagesIndexRoute =
   AuthenticatedMessagesIndexRouteImport.update({
     id: '/messages/',
     path: '/messages/',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
-const AuthenticatedMarketplaceIndexRoute =
-  AuthenticatedMarketplaceIndexRouteImport.update({
-    id: '/marketplace/',
-    path: '/marketplace/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
@@ -138,24 +119,6 @@ const AuthenticatedMessagesIdRoute = AuthenticatedMessagesIdRouteImport.update({
   path: '/messages/$id',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedMarketplaceNewRoute =
-  AuthenticatedMarketplaceNewRouteImport.update({
-    id: '/marketplace/new',
-    path: '/marketplace/new',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
-const AuthenticatedMarketplaceMineRoute =
-  AuthenticatedMarketplaceMineRouteImport.update({
-    id: '/marketplace/mine',
-    path: '/marketplace/mine',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
-const AuthenticatedMarketplaceIdRoute =
-  AuthenticatedMarketplaceIdRouteImport.update({
-    id: '/marketplace/$id',
-    path: '/marketplace/$id',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
 const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
   id: '/users',
   path: '/users',
@@ -167,23 +130,11 @@ const AuthenticatedAdminSpeciesRoute =
     path: '/species',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
-const AuthenticatedAdminPayoutsRoute =
-  AuthenticatedAdminPayoutsRouteImport.update({
-    id: '/payouts',
-    path: '/payouts',
-    getParentRoute: () => AuthenticatedAdminRouteRoute,
-  } as any)
 const AuthenticatedAdminArchiveRoute =
   AuthenticatedAdminArchiveRouteImport.update({
     id: '/archive',
     path: '/archive',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
-  } as any)
-const AuthenticatedMarketplaceOrdersIndexRoute =
-  AuthenticatedMarketplaceOrdersIndexRouteImport.update({
-    id: '/marketplace/orders/',
-    path: '/marketplace/orders/',
-    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedAdminPlantsIndexRoute =
   AuthenticatedAdminPlantsIndexRouteImport.update({
@@ -203,12 +154,6 @@ const AuthenticatedPlantsIdPhotosRoute =
     path: '/plants/$id/photos',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
-const AuthenticatedMarketplaceOrdersIdRoute =
-  AuthenticatedMarketplaceOrdersIdRouteImport.update({
-    id: '/marketplace/orders/$id',
-    path: '/marketplace/orders/$id',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
 const AuthenticatedAdminPlantsImportRoute =
   AuthenticatedAdminPlantsImportRouteImport.update({
     id: '/plants/import',
@@ -224,14 +169,9 @@ export interface FileRoutesByFullPath {
   '/feed': typeof AuthenticatedFeedRoute
   '/friends': typeof AuthenticatedFriendsRoute
   '/settings': typeof AuthenticatedSettingsRoute
-  '/wallet': typeof AuthenticatedWalletRoute
   '/admin/archive': typeof AuthenticatedAdminArchiveRoute
-  '/admin/payouts': typeof AuthenticatedAdminPayoutsRoute
   '/admin/species': typeof AuthenticatedAdminSpeciesRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
-  '/marketplace/$id': typeof AuthenticatedMarketplaceIdRoute
-  '/marketplace/mine': typeof AuthenticatedMarketplaceMineRoute
-  '/marketplace/new': typeof AuthenticatedMarketplaceNewRoute
   '/messages/$id': typeof AuthenticatedMessagesIdRoute
   '/plants/$id': typeof AuthenticatedPlantsIdRoute
   '/plants/new': typeof AuthenticatedPlantsNewRoute
@@ -240,14 +180,11 @@ export interface FileRoutesByFullPath {
   '/api/public/snapshot-upload': typeof ApiPublicSnapshotUploadRoute
   '/api/public/weather-digest': typeof ApiPublicWeatherDigestRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
-  '/marketplace/': typeof AuthenticatedMarketplaceIndexRoute
   '/messages/': typeof AuthenticatedMessagesIndexRoute
   '/admin/plants/import': typeof AuthenticatedAdminPlantsImportRoute
-  '/marketplace/orders/$id': typeof AuthenticatedMarketplaceOrdersIdRoute
   '/plants/$id/photos': typeof AuthenticatedPlantsIdPhotosRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/admin/plants/': typeof AuthenticatedAdminPlantsIndexRoute
-  '/marketplace/orders/': typeof AuthenticatedMarketplaceOrdersIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -256,14 +193,9 @@ export interface FileRoutesByTo {
   '/feed': typeof AuthenticatedFeedRoute
   '/friends': typeof AuthenticatedFriendsRoute
   '/settings': typeof AuthenticatedSettingsRoute
-  '/wallet': typeof AuthenticatedWalletRoute
   '/admin/archive': typeof AuthenticatedAdminArchiveRoute
-  '/admin/payouts': typeof AuthenticatedAdminPayoutsRoute
   '/admin/species': typeof AuthenticatedAdminSpeciesRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
-  '/marketplace/$id': typeof AuthenticatedMarketplaceIdRoute
-  '/marketplace/mine': typeof AuthenticatedMarketplaceMineRoute
-  '/marketplace/new': typeof AuthenticatedMarketplaceNewRoute
   '/messages/$id': typeof AuthenticatedMessagesIdRoute
   '/plants/$id': typeof AuthenticatedPlantsIdRoute
   '/plants/new': typeof AuthenticatedPlantsNewRoute
@@ -272,14 +204,11 @@ export interface FileRoutesByTo {
   '/api/public/snapshot-upload': typeof ApiPublicSnapshotUploadRoute
   '/api/public/weather-digest': typeof ApiPublicWeatherDigestRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
-  '/marketplace': typeof AuthenticatedMarketplaceIndexRoute
   '/messages': typeof AuthenticatedMessagesIndexRoute
   '/admin/plants/import': typeof AuthenticatedAdminPlantsImportRoute
-  '/marketplace/orders/$id': typeof AuthenticatedMarketplaceOrdersIdRoute
   '/plants/$id/photos': typeof AuthenticatedPlantsIdPhotosRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/admin/plants': typeof AuthenticatedAdminPlantsIndexRoute
-  '/marketplace/orders': typeof AuthenticatedMarketplaceOrdersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -291,14 +220,9 @@ export interface FileRoutesById {
   '/_authenticated/feed': typeof AuthenticatedFeedRoute
   '/_authenticated/friends': typeof AuthenticatedFriendsRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
-  '/_authenticated/wallet': typeof AuthenticatedWalletRoute
   '/_authenticated/admin/archive': typeof AuthenticatedAdminArchiveRoute
-  '/_authenticated/admin/payouts': typeof AuthenticatedAdminPayoutsRoute
   '/_authenticated/admin/species': typeof AuthenticatedAdminSpeciesRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
-  '/_authenticated/marketplace/$id': typeof AuthenticatedMarketplaceIdRoute
-  '/_authenticated/marketplace/mine': typeof AuthenticatedMarketplaceMineRoute
-  '/_authenticated/marketplace/new': typeof AuthenticatedMarketplaceNewRoute
   '/_authenticated/messages/$id': typeof AuthenticatedMessagesIdRoute
   '/_authenticated/plants/$id': typeof AuthenticatedPlantsIdRoute
   '/_authenticated/plants/new': typeof AuthenticatedPlantsNewRoute
@@ -307,14 +231,11 @@ export interface FileRoutesById {
   '/api/public/snapshot-upload': typeof ApiPublicSnapshotUploadRoute
   '/api/public/weather-digest': typeof ApiPublicWeatherDigestRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
-  '/_authenticated/marketplace/': typeof AuthenticatedMarketplaceIndexRoute
   '/_authenticated/messages/': typeof AuthenticatedMessagesIndexRoute
   '/_authenticated/admin/plants/import': typeof AuthenticatedAdminPlantsImportRoute
-  '/_authenticated/marketplace/orders/$id': typeof AuthenticatedMarketplaceOrdersIdRoute
   '/_authenticated/plants/$id_/photos': typeof AuthenticatedPlantsIdPhotosRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/_authenticated/admin/plants/': typeof AuthenticatedAdminPlantsIndexRoute
-  '/_authenticated/marketplace/orders/': typeof AuthenticatedMarketplaceOrdersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -326,14 +247,9 @@ export interface FileRouteTypes {
     | '/feed'
     | '/friends'
     | '/settings'
-    | '/wallet'
     | '/admin/archive'
-    | '/admin/payouts'
     | '/admin/species'
     | '/admin/users'
-    | '/marketplace/$id'
-    | '/marketplace/mine'
-    | '/marketplace/new'
     | '/messages/$id'
     | '/plants/$id'
     | '/plants/new'
@@ -342,14 +258,11 @@ export interface FileRouteTypes {
     | '/api/public/snapshot-upload'
     | '/api/public/weather-digest'
     | '/admin/'
-    | '/marketplace/'
     | '/messages/'
     | '/admin/plants/import'
-    | '/marketplace/orders/$id'
     | '/plants/$id/photos'
     | '/lovable/email/transactional/preview'
     | '/admin/plants/'
-    | '/marketplace/orders/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -358,14 +271,9 @@ export interface FileRouteTypes {
     | '/feed'
     | '/friends'
     | '/settings'
-    | '/wallet'
     | '/admin/archive'
-    | '/admin/payouts'
     | '/admin/species'
     | '/admin/users'
-    | '/marketplace/$id'
-    | '/marketplace/mine'
-    | '/marketplace/new'
     | '/messages/$id'
     | '/plants/$id'
     | '/plants/new'
@@ -374,14 +282,11 @@ export interface FileRouteTypes {
     | '/api/public/snapshot-upload'
     | '/api/public/weather-digest'
     | '/admin'
-    | '/marketplace'
     | '/messages'
     | '/admin/plants/import'
-    | '/marketplace/orders/$id'
     | '/plants/$id/photos'
     | '/lovable/email/transactional/preview'
     | '/admin/plants'
-    | '/marketplace/orders'
   id:
     | '__root__'
     | '/'
@@ -392,14 +297,9 @@ export interface FileRouteTypes {
     | '/_authenticated/feed'
     | '/_authenticated/friends'
     | '/_authenticated/settings'
-    | '/_authenticated/wallet'
     | '/_authenticated/admin/archive'
-    | '/_authenticated/admin/payouts'
     | '/_authenticated/admin/species'
     | '/_authenticated/admin/users'
-    | '/_authenticated/marketplace/$id'
-    | '/_authenticated/marketplace/mine'
-    | '/_authenticated/marketplace/new'
     | '/_authenticated/messages/$id'
     | '/_authenticated/plants/$id'
     | '/_authenticated/plants/new'
@@ -408,14 +308,11 @@ export interface FileRouteTypes {
     | '/api/public/snapshot-upload'
     | '/api/public/weather-digest'
     | '/_authenticated/admin/'
-    | '/_authenticated/marketplace/'
     | '/_authenticated/messages/'
     | '/_authenticated/admin/plants/import'
-    | '/_authenticated/marketplace/orders/$id'
     | '/_authenticated/plants/$id_/photos'
     | '/lovable/email/transactional/preview'
     | '/_authenticated/admin/plants/'
-    | '/_authenticated/marketplace/orders/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -450,13 +347,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/wallet': {
-      id: '/_authenticated/wallet'
-      path: '/wallet'
-      fullPath: '/wallet'
-      preLoaderRoute: typeof AuthenticatedWalletRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/settings': {
       id: '/_authenticated/settings'
@@ -498,13 +388,6 @@ declare module '@tanstack/react-router' {
       path: '/messages'
       fullPath: '/messages/'
       preLoaderRoute: typeof AuthenticatedMessagesIndexRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/marketplace/': {
-      id: '/_authenticated/marketplace/'
-      path: '/marketplace'
-      fullPath: '/marketplace/'
-      preLoaderRoute: typeof AuthenticatedMarketplaceIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/admin/': {
@@ -563,27 +446,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedMessagesIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/marketplace/new': {
-      id: '/_authenticated/marketplace/new'
-      path: '/marketplace/new'
-      fullPath: '/marketplace/new'
-      preLoaderRoute: typeof AuthenticatedMarketplaceNewRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/marketplace/mine': {
-      id: '/_authenticated/marketplace/mine'
-      path: '/marketplace/mine'
-      fullPath: '/marketplace/mine'
-      preLoaderRoute: typeof AuthenticatedMarketplaceMineRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/marketplace/$id': {
-      id: '/_authenticated/marketplace/$id'
-      path: '/marketplace/$id'
-      fullPath: '/marketplace/$id'
-      preLoaderRoute: typeof AuthenticatedMarketplaceIdRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
     '/_authenticated/admin/users': {
       id: '/_authenticated/admin/users'
       path: '/users'
@@ -598,26 +460,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminSpeciesRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
-    '/_authenticated/admin/payouts': {
-      id: '/_authenticated/admin/payouts'
-      path: '/payouts'
-      fullPath: '/admin/payouts'
-      preLoaderRoute: typeof AuthenticatedAdminPayoutsRouteImport
-      parentRoute: typeof AuthenticatedAdminRouteRoute
-    }
     '/_authenticated/admin/archive': {
       id: '/_authenticated/admin/archive'
       path: '/archive'
       fullPath: '/admin/archive'
       preLoaderRoute: typeof AuthenticatedAdminArchiveRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
-    }
-    '/_authenticated/marketplace/orders/': {
-      id: '/_authenticated/marketplace/orders/'
-      path: '/marketplace/orders'
-      fullPath: '/marketplace/orders/'
-      preLoaderRoute: typeof AuthenticatedMarketplaceOrdersIndexRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/admin/plants/': {
       id: '/_authenticated/admin/plants/'
@@ -640,13 +488,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPlantsIdPhotosRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/marketplace/orders/$id': {
-      id: '/_authenticated/marketplace/orders/$id'
-      path: '/marketplace/orders/$id'
-      fullPath: '/marketplace/orders/$id'
-      preLoaderRoute: typeof AuthenticatedMarketplaceOrdersIdRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
     '/_authenticated/admin/plants/import': {
       id: '/_authenticated/admin/plants/import'
       path: '/plants/import'
@@ -659,7 +500,6 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedAdminRouteRouteChildren {
   AuthenticatedAdminArchiveRoute: typeof AuthenticatedAdminArchiveRoute
-  AuthenticatedAdminPayoutsRoute: typeof AuthenticatedAdminPayoutsRoute
   AuthenticatedAdminSpeciesRoute: typeof AuthenticatedAdminSpeciesRoute
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
@@ -670,7 +510,6 @@ interface AuthenticatedAdminRouteRouteChildren {
 const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren =
   {
     AuthenticatedAdminArchiveRoute: AuthenticatedAdminArchiveRoute,
-    AuthenticatedAdminPayoutsRoute: AuthenticatedAdminPayoutsRoute,
     AuthenticatedAdminSpeciesRoute: AuthenticatedAdminSpeciesRoute,
     AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
     AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
@@ -689,19 +528,12 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedFeedRoute: typeof AuthenticatedFeedRoute
   AuthenticatedFriendsRoute: typeof AuthenticatedFriendsRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
-  AuthenticatedWalletRoute: typeof AuthenticatedWalletRoute
-  AuthenticatedMarketplaceIdRoute: typeof AuthenticatedMarketplaceIdRoute
-  AuthenticatedMarketplaceMineRoute: typeof AuthenticatedMarketplaceMineRoute
-  AuthenticatedMarketplaceNewRoute: typeof AuthenticatedMarketplaceNewRoute
   AuthenticatedMessagesIdRoute: typeof AuthenticatedMessagesIdRoute
   AuthenticatedPlantsIdRoute: typeof AuthenticatedPlantsIdRoute
   AuthenticatedPlantsNewRoute: typeof AuthenticatedPlantsNewRoute
   AuthenticatedUUsernameRoute: typeof AuthenticatedUUsernameRoute
-  AuthenticatedMarketplaceIndexRoute: typeof AuthenticatedMarketplaceIndexRoute
   AuthenticatedMessagesIndexRoute: typeof AuthenticatedMessagesIndexRoute
-  AuthenticatedMarketplaceOrdersIdRoute: typeof AuthenticatedMarketplaceOrdersIdRoute
   AuthenticatedPlantsIdPhotosRoute: typeof AuthenticatedPlantsIdPhotosRoute
-  AuthenticatedMarketplaceOrdersIndexRoute: typeof AuthenticatedMarketplaceOrdersIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -710,20 +542,12 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedFeedRoute: AuthenticatedFeedRoute,
   AuthenticatedFriendsRoute: AuthenticatedFriendsRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
-  AuthenticatedWalletRoute: AuthenticatedWalletRoute,
-  AuthenticatedMarketplaceIdRoute: AuthenticatedMarketplaceIdRoute,
-  AuthenticatedMarketplaceMineRoute: AuthenticatedMarketplaceMineRoute,
-  AuthenticatedMarketplaceNewRoute: AuthenticatedMarketplaceNewRoute,
   AuthenticatedMessagesIdRoute: AuthenticatedMessagesIdRoute,
   AuthenticatedPlantsIdRoute: AuthenticatedPlantsIdRoute,
   AuthenticatedPlantsNewRoute: AuthenticatedPlantsNewRoute,
   AuthenticatedUUsernameRoute: AuthenticatedUUsernameRoute,
-  AuthenticatedMarketplaceIndexRoute: AuthenticatedMarketplaceIndexRoute,
   AuthenticatedMessagesIndexRoute: AuthenticatedMessagesIndexRoute,
-  AuthenticatedMarketplaceOrdersIdRoute: AuthenticatedMarketplaceOrdersIdRoute,
   AuthenticatedPlantsIdPhotosRoute: AuthenticatedPlantsIdPhotosRoute,
-  AuthenticatedMarketplaceOrdersIndexRoute:
-    AuthenticatedMarketplaceOrdersIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
