@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { listUserPlants, generateSummary, logWatering } from "@/lib/plants.functions";
 import { getWeatherForMe } from "@/lib/weather.functions";
 import { computeStatus, predictNextWatering } from "@/lib/plant-status";
-import { Droplets, Sparkles, Sun, Leaf, Plus, Thermometer, CloudSun } from "lucide-react";
+import { Droplets, Sparkles, Sun, Leaf, Plus, Thermometer, CloudSun, Store } from "lucide-react";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
 
@@ -145,6 +145,13 @@ function Dashboard() {
                 >
                   <Droplets className="w-3.5 h-3.5" /> Watered
                 </button>
+                <Link
+                  to="/marketplace/new"
+                  search={{ plant: p.id }}
+                  className="flex-1 text-xs px-3 py-2 rounded-md border border-border hover:bg-muted flex items-center justify-center gap-1"
+                >
+                  <Store className="w-3.5 h-3.5" /> Sell
+                </Link>
                 <button
                   onClick={() => summaryMut.mutate(p.id)}
                   disabled={summaryMut.isPending}
