@@ -195,6 +195,262 @@ export type Database = {
         }
         Relationships: []
       }
+      listing_disclosures: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          kind: Database["public"]["Enums"]["disclosure_kind"]
+          listing_id: string
+          occurred_on: string | null
+          resolved_on: string | null
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: string
+          kind: Database["public"]["Enums"]["disclosure_kind"]
+          listing_id: string
+          occurred_on?: string | null
+          resolved_on?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          kind?: Database["public"]["Enums"]["disclosure_kind"]
+          listing_id?: string
+          occurred_on?: string | null
+          resolved_on?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "listing_disclosures_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      marketplace_listings: {
+        Row: {
+          age_months: number | null
+          allow_pickup: boolean
+          allow_shipping: boolean
+          archived_at: string | null
+          box_size: Database["public"]["Enums"]["box_size"] | null
+          country_code: string
+          cover_photo_path: string | null
+          created_at: string
+          currency: string
+          description: string | null
+          health_rating: number | null
+          id: string
+          plant_id: string | null
+          price_cents: number
+          published_at: string | null
+          seller_id: string
+          shipping_cents: number
+          size: Database["public"]["Enums"]["plant_size"] | null
+          sold_at: string | null
+          species_id: string | null
+          status: Database["public"]["Enums"]["listing_status"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          age_months?: number | null
+          allow_pickup?: boolean
+          allow_shipping?: boolean
+          archived_at?: string | null
+          box_size?: Database["public"]["Enums"]["box_size"] | null
+          country_code?: string
+          cover_photo_path?: string | null
+          created_at?: string
+          currency?: string
+          description?: string | null
+          health_rating?: number | null
+          id?: string
+          plant_id?: string | null
+          price_cents: number
+          published_at?: string | null
+          seller_id: string
+          shipping_cents?: number
+          size?: Database["public"]["Enums"]["plant_size"] | null
+          sold_at?: string | null
+          species_id?: string | null
+          status?: Database["public"]["Enums"]["listing_status"]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          age_months?: number | null
+          allow_pickup?: boolean
+          allow_shipping?: boolean
+          archived_at?: string | null
+          box_size?: Database["public"]["Enums"]["box_size"] | null
+          country_code?: string
+          cover_photo_path?: string | null
+          created_at?: string
+          currency?: string
+          description?: string | null
+          health_rating?: number | null
+          id?: string
+          plant_id?: string | null
+          price_cents?: number
+          published_at?: string | null
+          seller_id?: string
+          shipping_cents?: number
+          size?: Database["public"]["Enums"]["plant_size"] | null
+          sold_at?: string | null
+          species_id?: string | null
+          status?: Database["public"]["Enums"]["listing_status"]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "marketplace_listings_plant_id_fkey"
+            columns: ["plant_id"]
+            isOneToOne: false
+            referencedRelation: "user_plants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "marketplace_listings_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: false
+            referencedRelation: "plant_species"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      marketplace_orders: {
+        Row: {
+          accepted_at: string | null
+          box_size: Database["public"]["Enums"]["box_size"] | null
+          buyer_address: string | null
+          buyer_id: string
+          buyer_note: string | null
+          cancelled_at: string | null
+          carrier: string | null
+          commission_cents: number
+          completed_at: string | null
+          created_at: string
+          currency: string
+          delivered_at: string | null
+          delivery_method: Database["public"]["Enums"]["delivery_method"]
+          expected_delivery: string | null
+          id: string
+          item_cents: number
+          listing_id: string
+          payment_provider: string
+          pickup_address: string | null
+          pickup_slot: string | null
+          ready_at: string | null
+          seller_id: string
+          ship_by: string | null
+          shipped_at: string | null
+          shipping_cents: number
+          status: Database["public"]["Enums"]["order_status"]
+          total_cents: number
+          tracking_number: string | null
+          updated_at: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          box_size?: Database["public"]["Enums"]["box_size"] | null
+          buyer_address?: string | null
+          buyer_id: string
+          buyer_note?: string | null
+          cancelled_at?: string | null
+          carrier?: string | null
+          commission_cents?: number
+          completed_at?: string | null
+          created_at?: string
+          currency?: string
+          delivered_at?: string | null
+          delivery_method: Database["public"]["Enums"]["delivery_method"]
+          expected_delivery?: string | null
+          id?: string
+          item_cents: number
+          listing_id: string
+          payment_provider?: string
+          pickup_address?: string | null
+          pickup_slot?: string | null
+          ready_at?: string | null
+          seller_id: string
+          ship_by?: string | null
+          shipped_at?: string | null
+          shipping_cents?: number
+          status?: Database["public"]["Enums"]["order_status"]
+          total_cents: number
+          tracking_number?: string | null
+          updated_at?: string
+        }
+        Update: {
+          accepted_at?: string | null
+          box_size?: Database["public"]["Enums"]["box_size"] | null
+          buyer_address?: string | null
+          buyer_id?: string
+          buyer_note?: string | null
+          cancelled_at?: string | null
+          carrier?: string | null
+          commission_cents?: number
+          completed_at?: string | null
+          created_at?: string
+          currency?: string
+          delivered_at?: string | null
+          delivery_method?: Database["public"]["Enums"]["delivery_method"]
+          expected_delivery?: string | null
+          id?: string
+          item_cents?: number
+          listing_id?: string
+          payment_provider?: string
+          pickup_address?: string | null
+          pickup_slot?: string | null
+          ready_at?: string | null
+          seller_id?: string
+          ship_by?: string | null
+          shipped_at?: string | null
+          shipping_cents?: number
+          status?: Database["public"]["Enums"]["order_status"]
+          total_cents?: number
+          tracking_number?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "marketplace_orders_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      marketplace_settings: {
+        Row: {
+          active_countries: string[]
+          commission_bps: number
+          id: boolean
+          updated_at: string
+        }
+        Insert: {
+          active_countries?: string[]
+          commission_bps?: number
+          id?: boolean
+          updated_at?: string
+        }
+        Update: {
+          active_countries?: string[]
+          commission_bps?: number
+          id?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           body: string
@@ -273,6 +529,80 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      order_events: {
+        Row: {
+          actor_id: string | null
+          created_at: string
+          id: string
+          note: string | null
+          order_id: string
+          status: Database["public"]["Enums"]["order_status"]
+        }
+        Insert: {
+          actor_id?: string | null
+          created_at?: string
+          id?: string
+          note?: string | null
+          order_id: string
+          status: Database["public"]["Enums"]["order_status"]
+        }
+        Update: {
+          actor_id?: string | null
+          created_at?: string
+          id?: string
+          note?: string | null
+          order_id?: string
+          status?: Database["public"]["Enums"]["order_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_events_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payout_requests: {
+        Row: {
+          admin_id: string | null
+          admin_note: string | null
+          amount_cents: number
+          created_at: string
+          iban_last4: string | null
+          id: string
+          processed_at: string | null
+          status: Database["public"]["Enums"]["payout_status"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          admin_id?: string | null
+          admin_note?: string | null
+          amount_cents: number
+          created_at?: string
+          iban_last4?: string | null
+          id?: string
+          processed_at?: string | null
+          status?: Database["public"]["Enums"]["payout_status"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          admin_id?: string | null
+          admin_note?: string | null
+          amount_cents?: number
+          created_at?: string
+          iban_last4?: string | null
+          id?: string
+          processed_at?: string | null
+          status?: Database["public"]["Enums"]["payout_status"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       plant_photos: {
         Row: {
@@ -617,6 +947,8 @@ export type Database = {
           id: string
           latitude: number | null
           longitude: number | null
+          marketplace_sales_count: number
+          marketplace_show_avatar: boolean
           notify_email: boolean
           notify_in_app: boolean
           notify_sms: boolean
@@ -639,6 +971,8 @@ export type Database = {
           id: string
           latitude?: number | null
           longitude?: number | null
+          marketplace_sales_count?: number
+          marketplace_show_avatar?: boolean
           notify_email?: boolean
           notify_in_app?: boolean
           notify_sms?: boolean
@@ -661,6 +995,8 @@ export type Database = {
           id?: string
           latitude?: number | null
           longitude?: number | null
+          marketplace_sales_count?: number
+          marketplace_show_avatar?: boolean
           notify_email?: boolean
           notify_in_app?: boolean
           notify_sms?: boolean
@@ -725,6 +1061,7 @@ export type Database = {
       }
       user_plants: {
         Row: {
+          acquired_at: string | null
           archived_at: string | null
           archived_by: string | null
           created_at: string
@@ -735,11 +1072,13 @@ export type Database = {
           location: string | null
           nickname: string
           notes: string | null
+          size: Database["public"]["Enums"]["plant_size"] | null
           species_id: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
+          acquired_at?: string | null
           archived_at?: string | null
           archived_by?: string | null
           created_at?: string
@@ -750,11 +1089,13 @@ export type Database = {
           location?: string | null
           nickname: string
           notes?: string | null
+          size?: Database["public"]["Enums"]["plant_size"] | null
           species_id?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
+          acquired_at?: string | null
           archived_at?: string | null
           archived_by?: string | null
           created_at?: string
@@ -765,6 +1106,7 @@ export type Database = {
           location?: string | null
           nickname?: string
           notes?: string | null
+          size?: Database["public"]["Enums"]["plant_size"] | null
           species_id?: string | null
           updated_at?: string
           user_id?: string
@@ -793,6 +1135,71 @@ export type Database = {
         Update: {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      wallet_transactions: {
+        Row: {
+          amount_cents: number
+          balance_after_cents: number
+          created_at: string
+          description: string | null
+          id: string
+          kind: Database["public"]["Enums"]["wallet_txn_kind"]
+          order_id: string | null
+          user_id: string
+        }
+        Insert: {
+          amount_cents: number
+          balance_after_cents?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          kind: Database["public"]["Enums"]["wallet_txn_kind"]
+          order_id?: string | null
+          user_id: string
+        }
+        Update: {
+          amount_cents?: number
+          balance_after_cents?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          kind?: Database["public"]["Enums"]["wallet_txn_kind"]
+          order_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wallet_transactions_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      wallets: {
+        Row: {
+          available_cents: number
+          currency: string
+          pending_cents: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          available_cents?: number
+          currency?: string
+          pending_cents?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          available_cents?: number
+          currency?: string
+          pending_cents?: number
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
@@ -923,6 +1330,29 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
+      box_size: "s" | "m" | "l" | "xl"
+      delivery_method: "pickup" | "shipping"
+      disclosure_kind: "disease" | "pest" | "leaf_damage" | "repot" | "other"
+      listing_status: "draft" | "active" | "reserved" | "sold" | "archived"
+      order_status:
+        | "placed"
+        | "accepted"
+        | "ready"
+        | "in_transit"
+        | "delivered"
+        | "completed"
+        | "cancelled"
+        | "refunded"
+        | "disputed"
+      payout_status: "requested" | "approved" | "paid" | "rejected"
+      plant_size: "xs" | "s" | "m" | "l" | "xl"
+      wallet_txn_kind:
+        | "sale"
+        | "commission"
+        | "shipping"
+        | "refund"
+        | "payout"
+        | "adjustment"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1051,6 +1481,31 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "moderator", "user"],
+      box_size: ["s", "m", "l", "xl"],
+      delivery_method: ["pickup", "shipping"],
+      disclosure_kind: ["disease", "pest", "leaf_damage", "repot", "other"],
+      listing_status: ["draft", "active", "reserved", "sold", "archived"],
+      order_status: [
+        "placed",
+        "accepted",
+        "ready",
+        "in_transit",
+        "delivered",
+        "completed",
+        "cancelled",
+        "refunded",
+        "disputed",
+      ],
+      payout_status: ["requested", "approved", "paid", "rejected"],
+      plant_size: ["xs", "s", "m", "l", "xl"],
+      wallet_txn_kind: [
+        "sale",
+        "commission",
+        "shipping",
+        "refund",
+        "payout",
+        "adjustment",
+      ],
     },
   },
 } as const
