@@ -76,6 +76,8 @@ function Settings() {
         </div>
       </section>
 
+      <NewsletterSection />
+
       <button onClick={() => saveMut.mutate()} disabled={saveMut.isPending} className="px-5 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium">
         {saveMut.isPending ? "Saving…" : "Save preferences"}
       </button>
