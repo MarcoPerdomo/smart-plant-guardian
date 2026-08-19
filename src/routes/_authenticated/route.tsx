@@ -22,6 +22,7 @@ import {
   Store,
   Wallet,
   PackageCheck,
+  Megaphone,
 } from "lucide-react";
 
 import { WeatherChip } from "@/components/weather-chip";
