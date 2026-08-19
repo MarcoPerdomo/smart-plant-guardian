@@ -12,6 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as NewsletterConfirmRouteImport } from './routes/newsletter.confirm'
+import { Route as AuthenticatedWhatsNewRouteImport } from './routes/_authenticated/whats-new'
 import { Route as AuthenticatedWalletRouteImport } from './routes/_authenticated/wallet'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedFriendsRouteImport } from './routes/_authenticated/friends'
@@ -55,6 +57,16 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const NewsletterConfirmRoute = NewsletterConfirmRouteImport.update({
+  id: '/newsletter/confirm',
+  path: '/newsletter/confirm',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedWhatsNewRoute = AuthenticatedWhatsNewRouteImport.update({
+  id: '/whats-new',
+  path: '/whats-new',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedWalletRoute = AuthenticatedWalletRouteImport.update({
   id: '/wallet',
@@ -225,6 +237,8 @@ export interface FileRoutesByFullPath {
   '/friends': typeof AuthenticatedFriendsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/wallet': typeof AuthenticatedWalletRoute
+  '/whats-new': typeof AuthenticatedWhatsNewRoute
+  '/newsletter/confirm': typeof NewsletterConfirmRoute
   '/admin/archive': typeof AuthenticatedAdminArchiveRoute
   '/admin/payouts': typeof AuthenticatedAdminPayoutsRoute
   '/admin/species': typeof AuthenticatedAdminSpeciesRoute
@@ -257,6 +271,8 @@ export interface FileRoutesByTo {
   '/friends': typeof AuthenticatedFriendsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/wallet': typeof AuthenticatedWalletRoute
+  '/whats-new': typeof AuthenticatedWhatsNewRoute
+  '/newsletter/confirm': typeof NewsletterConfirmRoute
   '/admin/archive': typeof AuthenticatedAdminArchiveRoute
   '/admin/payouts': typeof AuthenticatedAdminPayoutsRoute
   '/admin/species': typeof AuthenticatedAdminSpeciesRoute
@@ -292,6 +308,8 @@ export interface FileRoutesById {
   '/_authenticated/friends': typeof AuthenticatedFriendsRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/wallet': typeof AuthenticatedWalletRoute
+  '/_authenticated/whats-new': typeof AuthenticatedWhatsNewRoute
+  '/newsletter/confirm': typeof NewsletterConfirmRoute
   '/_authenticated/admin/archive': typeof AuthenticatedAdminArchiveRoute
   '/_authenticated/admin/payouts': typeof AuthenticatedAdminPayoutsRoute
   '/_authenticated/admin/species': typeof AuthenticatedAdminSpeciesRoute
@@ -327,6 +345,8 @@ export interface FileRouteTypes {
     | '/friends'
     | '/settings'
     | '/wallet'
+    | '/whats-new'
+    | '/newsletter/confirm'
     | '/admin/archive'
     | '/admin/payouts'
     | '/admin/species'
@@ -359,6 +379,8 @@ export interface FileRouteTypes {
     | '/friends'
     | '/settings'
     | '/wallet'
+    | '/whats-new'
+    | '/newsletter/confirm'
     | '/admin/archive'
     | '/admin/payouts'
     | '/admin/species'
@@ -393,6 +415,8 @@ export interface FileRouteTypes {
     | '/_authenticated/friends'
     | '/_authenticated/settings'
     | '/_authenticated/wallet'
+    | '/_authenticated/whats-new'
+    | '/newsletter/confirm'
     | '/_authenticated/admin/archive'
     | '/_authenticated/admin/payouts'
     | '/_authenticated/admin/species'
@@ -422,6 +446,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  NewsletterConfirmRoute: typeof NewsletterConfirmRoute
   ApiPublicIngestRoute: typeof ApiPublicIngestRoute
   ApiPublicSnapshotUploadRoute: typeof ApiPublicSnapshotUploadRoute
   ApiPublicWeatherDigestRoute: typeof ApiPublicWeatherDigestRoute
@@ -450,6 +475,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/newsletter/confirm': {
+      id: '/newsletter/confirm'
+      path: '/newsletter/confirm'
+      fullPath: '/newsletter/confirm'
+      preLoaderRoute: typeof NewsletterConfirmRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/whats-new': {
+      id: '/_authenticated/whats-new'
+      path: '/whats-new'
+      fullPath: '/whats-new'
+      preLoaderRoute: typeof AuthenticatedWhatsNewRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/wallet': {
       id: '/_authenticated/wallet'
@@ -690,6 +729,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedFriendsRoute: typeof AuthenticatedFriendsRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedWalletRoute: typeof AuthenticatedWalletRoute
+  AuthenticatedWhatsNewRoute: typeof AuthenticatedWhatsNewRoute
   AuthenticatedMarketplaceIdRoute: typeof AuthenticatedMarketplaceIdRoute
   AuthenticatedMarketplaceMineRoute: typeof AuthenticatedMarketplaceMineRoute
   AuthenticatedMarketplaceNewRoute: typeof AuthenticatedMarketplaceNewRoute
@@ -711,6 +751,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedFriendsRoute: AuthenticatedFriendsRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedWalletRoute: AuthenticatedWalletRoute,
+  AuthenticatedWhatsNewRoute: AuthenticatedWhatsNewRoute,
   AuthenticatedMarketplaceIdRoute: AuthenticatedMarketplaceIdRoute,
   AuthenticatedMarketplaceMineRoute: AuthenticatedMarketplaceMineRoute,
   AuthenticatedMarketplaceNewRoute: AuthenticatedMarketplaceNewRoute,
@@ -733,6 +774,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  NewsletterConfirmRoute: NewsletterConfirmRoute,
   ApiPublicIngestRoute: ApiPublicIngestRoute,
   ApiPublicSnapshotUploadRoute: ApiPublicSnapshotUploadRoute,
   ApiPublicWeatherDigestRoute: ApiPublicWeatherDigestRoute,
