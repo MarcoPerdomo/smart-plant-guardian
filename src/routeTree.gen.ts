@@ -12,6 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as NewsletterConfirmRouteImport } from './routes/newsletter.confirm'
+import { Route as AuthenticatedWhatsNewRouteImport } from './routes/_authenticated/whats-new'
 import { Route as AuthenticatedWalletRouteImport } from './routes/_authenticated/wallet'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedFriendsRouteImport } from './routes/_authenticated/friends'
@@ -34,6 +36,7 @@ import { Route as AuthenticatedMarketplaceIdRouteImport } from './routes/_authen
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin/users'
 import { Route as AuthenticatedAdminSpeciesRouteImport } from './routes/_authenticated/admin/species'
 import { Route as AuthenticatedAdminPayoutsRouteImport } from './routes/_authenticated/admin/payouts'
+import { Route as AuthenticatedAdminNewsletterRouteImport } from './routes/_authenticated/admin/newsletter'
 import { Route as AuthenticatedAdminArchiveRouteImport } from './routes/_authenticated/admin/archive'
 import { Route as AuthenticatedMarketplaceOrdersIndexRouteImport } from './routes/_authenticated/marketplace/orders/index'
 import { Route as AuthenticatedAdminPlantsIndexRouteImport } from './routes/_authenticated/admin/plants/index'
@@ -55,6 +58,16 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const NewsletterConfirmRoute = NewsletterConfirmRouteImport.update({
+  id: '/newsletter/confirm',
+  path: '/newsletter/confirm',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedWhatsNewRoute = AuthenticatedWhatsNewRouteImport.update({
+  id: '/whats-new',
+  path: '/whats-new',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedWalletRoute = AuthenticatedWalletRouteImport.update({
   id: '/wallet',
@@ -173,6 +186,12 @@ const AuthenticatedAdminPayoutsRoute =
     path: '/payouts',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
+const AuthenticatedAdminNewsletterRoute =
+  AuthenticatedAdminNewsletterRouteImport.update({
+    id: '/newsletter',
+    path: '/newsletter',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
 const AuthenticatedAdminArchiveRoute =
   AuthenticatedAdminArchiveRouteImport.update({
     id: '/archive',
@@ -225,7 +244,10 @@ export interface FileRoutesByFullPath {
   '/friends': typeof AuthenticatedFriendsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/wallet': typeof AuthenticatedWalletRoute
+  '/whats-new': typeof AuthenticatedWhatsNewRoute
+  '/newsletter/confirm': typeof NewsletterConfirmRoute
   '/admin/archive': typeof AuthenticatedAdminArchiveRoute
+  '/admin/newsletter': typeof AuthenticatedAdminNewsletterRoute
   '/admin/payouts': typeof AuthenticatedAdminPayoutsRoute
   '/admin/species': typeof AuthenticatedAdminSpeciesRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
@@ -257,7 +279,10 @@ export interface FileRoutesByTo {
   '/friends': typeof AuthenticatedFriendsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/wallet': typeof AuthenticatedWalletRoute
+  '/whats-new': typeof AuthenticatedWhatsNewRoute
+  '/newsletter/confirm': typeof NewsletterConfirmRoute
   '/admin/archive': typeof AuthenticatedAdminArchiveRoute
+  '/admin/newsletter': typeof AuthenticatedAdminNewsletterRoute
   '/admin/payouts': typeof AuthenticatedAdminPayoutsRoute
   '/admin/species': typeof AuthenticatedAdminSpeciesRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
@@ -292,7 +317,10 @@ export interface FileRoutesById {
   '/_authenticated/friends': typeof AuthenticatedFriendsRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/wallet': typeof AuthenticatedWalletRoute
+  '/_authenticated/whats-new': typeof AuthenticatedWhatsNewRoute
+  '/newsletter/confirm': typeof NewsletterConfirmRoute
   '/_authenticated/admin/archive': typeof AuthenticatedAdminArchiveRoute
+  '/_authenticated/admin/newsletter': typeof AuthenticatedAdminNewsletterRoute
   '/_authenticated/admin/payouts': typeof AuthenticatedAdminPayoutsRoute
   '/_authenticated/admin/species': typeof AuthenticatedAdminSpeciesRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
@@ -327,7 +355,10 @@ export interface FileRouteTypes {
     | '/friends'
     | '/settings'
     | '/wallet'
+    | '/whats-new'
+    | '/newsletter/confirm'
     | '/admin/archive'
+    | '/admin/newsletter'
     | '/admin/payouts'
     | '/admin/species'
     | '/admin/users'
@@ -359,7 +390,10 @@ export interface FileRouteTypes {
     | '/friends'
     | '/settings'
     | '/wallet'
+    | '/whats-new'
+    | '/newsletter/confirm'
     | '/admin/archive'
+    | '/admin/newsletter'
     | '/admin/payouts'
     | '/admin/species'
     | '/admin/users'
@@ -393,7 +427,10 @@ export interface FileRouteTypes {
     | '/_authenticated/friends'
     | '/_authenticated/settings'
     | '/_authenticated/wallet'
+    | '/_authenticated/whats-new'
+    | '/newsletter/confirm'
     | '/_authenticated/admin/archive'
+    | '/_authenticated/admin/newsletter'
     | '/_authenticated/admin/payouts'
     | '/_authenticated/admin/species'
     | '/_authenticated/admin/users'
@@ -422,6 +459,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  NewsletterConfirmRoute: typeof NewsletterConfirmRoute
   ApiPublicIngestRoute: typeof ApiPublicIngestRoute
   ApiPublicSnapshotUploadRoute: typeof ApiPublicSnapshotUploadRoute
   ApiPublicWeatherDigestRoute: typeof ApiPublicWeatherDigestRoute
@@ -450,6 +488,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/newsletter/confirm': {
+      id: '/newsletter/confirm'
+      path: '/newsletter/confirm'
+      fullPath: '/newsletter/confirm'
+      preLoaderRoute: typeof NewsletterConfirmRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/whats-new': {
+      id: '/_authenticated/whats-new'
+      path: '/whats-new'
+      fullPath: '/whats-new'
+      preLoaderRoute: typeof AuthenticatedWhatsNewRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/wallet': {
       id: '/_authenticated/wallet'
@@ -605,6 +657,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminPayoutsRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
+    '/_authenticated/admin/newsletter': {
+      id: '/_authenticated/admin/newsletter'
+      path: '/newsletter'
+      fullPath: '/admin/newsletter'
+      preLoaderRoute: typeof AuthenticatedAdminNewsletterRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
     '/_authenticated/admin/archive': {
       id: '/_authenticated/admin/archive'
       path: '/archive'
@@ -659,6 +718,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedAdminRouteRouteChildren {
   AuthenticatedAdminArchiveRoute: typeof AuthenticatedAdminArchiveRoute
+  AuthenticatedAdminNewsletterRoute: typeof AuthenticatedAdminNewsletterRoute
   AuthenticatedAdminPayoutsRoute: typeof AuthenticatedAdminPayoutsRoute
   AuthenticatedAdminSpeciesRoute: typeof AuthenticatedAdminSpeciesRoute
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
@@ -670,6 +730,7 @@ interface AuthenticatedAdminRouteRouteChildren {
 const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren =
   {
     AuthenticatedAdminArchiveRoute: AuthenticatedAdminArchiveRoute,
+    AuthenticatedAdminNewsletterRoute: AuthenticatedAdminNewsletterRoute,
     AuthenticatedAdminPayoutsRoute: AuthenticatedAdminPayoutsRoute,
     AuthenticatedAdminSpeciesRoute: AuthenticatedAdminSpeciesRoute,
     AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
@@ -690,6 +751,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedFriendsRoute: typeof AuthenticatedFriendsRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedWalletRoute: typeof AuthenticatedWalletRoute
+  AuthenticatedWhatsNewRoute: typeof AuthenticatedWhatsNewRoute
   AuthenticatedMarketplaceIdRoute: typeof AuthenticatedMarketplaceIdRoute
   AuthenticatedMarketplaceMineRoute: typeof AuthenticatedMarketplaceMineRoute
   AuthenticatedMarketplaceNewRoute: typeof AuthenticatedMarketplaceNewRoute
@@ -711,6 +773,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedFriendsRoute: AuthenticatedFriendsRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedWalletRoute: AuthenticatedWalletRoute,
+  AuthenticatedWhatsNewRoute: AuthenticatedWhatsNewRoute,
   AuthenticatedMarketplaceIdRoute: AuthenticatedMarketplaceIdRoute,
   AuthenticatedMarketplaceMineRoute: AuthenticatedMarketplaceMineRoute,
   AuthenticatedMarketplaceNewRoute: AuthenticatedMarketplaceNewRoute,
@@ -733,6 +796,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  NewsletterConfirmRoute: NewsletterConfirmRoute,
   ApiPublicIngestRoute: ApiPublicIngestRoute,
   ApiPublicSnapshotUploadRoute: ApiPublicSnapshotUploadRoute,
   ApiPublicWeatherDigestRoute: ApiPublicWeatherDigestRoute,

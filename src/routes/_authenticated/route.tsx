@@ -22,6 +22,7 @@ import {
   Store,
   Wallet,
   PackageCheck,
+  Megaphone,
 } from "lucide-react";
 
 import { WeatherChip } from "@/components/weather-chip";
@@ -261,6 +262,11 @@ function AuthedLayout() {
                       <Settings className="w-4 h-4" /> Settings
                     </Link>
                   </DropdownMenuItem>
+                  <DropdownMenuItem asChild className="flex items-center gap-2 cursor-pointer">
+                    <Link to="/whats-new">
+                      <Megaphone className="w-4 h-4" /> What's new
+                    </Link>
+                  </DropdownMenuItem>
                   {isAdmin && (
                     <DropdownMenuItem
                       asChild
@@ -428,7 +434,15 @@ function AuthedLayout() {
                         >
                           <Settings className="w-4 h-4" /> Settings
                         </Link>
-                      </SheetClose>
+                       </SheetClose>
+                       <SheetClose asChild>
+                         <Link
+                           to="/whats-new"
+                           className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-muted text-sm"
+                         >
+                           <Megaphone className="w-4 h-4" /> What's new
+                         </Link>
+                       </SheetClose>
                       {isAdmin && (
                         <SheetClose asChild>
                           <Link

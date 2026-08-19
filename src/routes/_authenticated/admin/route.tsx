@@ -21,6 +21,7 @@ const tabs = [
   { to: "/admin/species", label: "Species" },
   { to: "/admin/plants/import", label: "Import" },
   { to: "/admin/payouts", label: "Payouts" },
+  { to: "/admin/newsletter", label: "Newsletter" },
   { to: "/admin/archive", label: "Archive" },
 ] as const;
 
