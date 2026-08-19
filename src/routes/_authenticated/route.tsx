@@ -261,6 +261,11 @@ function AuthedLayout() {
                       <Settings className="w-4 h-4" /> Settings
                     </Link>
                   </DropdownMenuItem>
+                  <DropdownMenuItem asChild className="flex items-center gap-2 cursor-pointer">
+                    <Link to="/whats-new">
+                      <Megaphone className="w-4 h-4" /> What's new
+                    </Link>
+                  </DropdownMenuItem>
                   {isAdmin && (
                     <DropdownMenuItem
                       asChild

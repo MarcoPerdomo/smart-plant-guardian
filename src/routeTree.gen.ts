@@ -36,6 +36,7 @@ import { Route as AuthenticatedMarketplaceIdRouteImport } from './routes/_authen
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin/users'
 import { Route as AuthenticatedAdminSpeciesRouteImport } from './routes/_authenticated/admin/species'
 import { Route as AuthenticatedAdminPayoutsRouteImport } from './routes/_authenticated/admin/payouts'
+import { Route as AuthenticatedAdminNewsletterRouteImport } from './routes/_authenticated/admin/newsletter'
 import { Route as AuthenticatedAdminArchiveRouteImport } from './routes/_authenticated/admin/archive'
 import { Route as AuthenticatedMarketplaceOrdersIndexRouteImport } from './routes/_authenticated/marketplace/orders/index'
 import { Route as AuthenticatedAdminPlantsIndexRouteImport } from './routes/_authenticated/admin/plants/index'
@@ -185,6 +186,12 @@ const AuthenticatedAdminPayoutsRoute =
     path: '/payouts',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
+const AuthenticatedAdminNewsletterRoute =
+  AuthenticatedAdminNewsletterRouteImport.update({
+    id: '/newsletter',
+    path: '/newsletter',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
 const AuthenticatedAdminArchiveRoute =
   AuthenticatedAdminArchiveRouteImport.update({
     id: '/archive',
@@ -240,6 +247,7 @@ export interface FileRoutesByFullPath {
   '/whats-new': typeof AuthenticatedWhatsNewRoute
   '/newsletter/confirm': typeof NewsletterConfirmRoute
   '/admin/archive': typeof AuthenticatedAdminArchiveRoute
+  '/admin/newsletter': typeof AuthenticatedAdminNewsletterRoute
   '/admin/payouts': typeof AuthenticatedAdminPayoutsRoute
   '/admin/species': typeof AuthenticatedAdminSpeciesRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
@@ -274,6 +282,7 @@ export interface FileRoutesByTo {
   '/whats-new': typeof AuthenticatedWhatsNewRoute
   '/newsletter/confirm': typeof NewsletterConfirmRoute
   '/admin/archive': typeof AuthenticatedAdminArchiveRoute
+  '/admin/newsletter': typeof AuthenticatedAdminNewsletterRoute
   '/admin/payouts': typeof AuthenticatedAdminPayoutsRoute
   '/admin/species': typeof AuthenticatedAdminSpeciesRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
@@ -311,6 +320,7 @@ export interface FileRoutesById {
   '/_authenticated/whats-new': typeof AuthenticatedWhatsNewRoute
   '/newsletter/confirm': typeof NewsletterConfirmRoute
   '/_authenticated/admin/archive': typeof AuthenticatedAdminArchiveRoute
+  '/_authenticated/admin/newsletter': typeof AuthenticatedAdminNewsletterRoute
   '/_authenticated/admin/payouts': typeof AuthenticatedAdminPayoutsRoute
   '/_authenticated/admin/species': typeof AuthenticatedAdminSpeciesRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
@@ -348,6 +358,7 @@ export interface FileRouteTypes {
     | '/whats-new'
     | '/newsletter/confirm'
     | '/admin/archive'
+    | '/admin/newsletter'
     | '/admin/payouts'
     | '/admin/species'
     | '/admin/users'
@@ -382,6 +393,7 @@ export interface FileRouteTypes {
     | '/whats-new'
     | '/newsletter/confirm'
     | '/admin/archive'
+    | '/admin/newsletter'
     | '/admin/payouts'
     | '/admin/species'
     | '/admin/users'
@@ -418,6 +430,7 @@ export interface FileRouteTypes {
     | '/_authenticated/whats-new'
     | '/newsletter/confirm'
     | '/_authenticated/admin/archive'
+    | '/_authenticated/admin/newsletter'
     | '/_authenticated/admin/payouts'
     | '/_authenticated/admin/species'
     | '/_authenticated/admin/users'
@@ -644,6 +657,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminPayoutsRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
+    '/_authenticated/admin/newsletter': {
+      id: '/_authenticated/admin/newsletter'
+      path: '/newsletter'
+      fullPath: '/admin/newsletter'
+      preLoaderRoute: typeof AuthenticatedAdminNewsletterRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
     '/_authenticated/admin/archive': {
       id: '/_authenticated/admin/archive'
       path: '/archive'
@@ -698,6 +718,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedAdminRouteRouteChildren {
   AuthenticatedAdminArchiveRoute: typeof AuthenticatedAdminArchiveRoute
+  AuthenticatedAdminNewsletterRoute: typeof AuthenticatedAdminNewsletterRoute
   AuthenticatedAdminPayoutsRoute: typeof AuthenticatedAdminPayoutsRoute
   AuthenticatedAdminSpeciesRoute: typeof AuthenticatedAdminSpeciesRoute
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
@@ -709,6 +730,7 @@ interface AuthenticatedAdminRouteRouteChildren {
 const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren =
   {
     AuthenticatedAdminArchiveRoute: AuthenticatedAdminArchiveRoute,
+    AuthenticatedAdminNewsletterRoute: AuthenticatedAdminNewsletterRoute,
     AuthenticatedAdminPayoutsRoute: AuthenticatedAdminPayoutsRoute,
     AuthenticatedAdminSpeciesRoute: AuthenticatedAdminSpeciesRoute,
     AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
