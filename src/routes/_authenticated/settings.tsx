@@ -3,12 +3,13 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getProfile, updateProfile, listNotifications } from "@/lib/plants.functions";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Copy, Bell, Mail, MessageSquare, Cpu } from "lucide-react";
+import { Copy, Bell, Mail, MessageSquare, Cpu, Megaphone } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { LocationSettings } from "@/components/location-settings";
 import { getMyUsername, setUsername as setUsernameFn, checkUsername } from "@/lib/social.functions";
 import { AtSign, Check, Pencil } from "lucide-react";
 import { Link } from "@tanstack/react-router";
+import { getMySubscription, subscribeNewsletter, unsubscribeNewsletter } from "@/lib/newsletter.functions";
 
 export const Route = createFileRoute("/_authenticated/settings")({
   component: Settings,
@@ -245,5 +246,82 @@ function UsernameField() {
         </button>
       </div>
     </div>
+  );
+}
+
+function NewsletterSection() {
+  const qc = useQueryClient();
+  const { data: sub, isLoading } = useQuery({ queryKey: ["newsletter_sub"], queryFn: () => getMySubscription() });
+
+  const subscribe = useMutation({
+    mutationFn: () => subscribeNewsletter({ data: {} }),
+    onSuccess: (r) => {
+      toast.success(r.emailed ? "Check your inbox to confirm" : "Subscribed — confirmation email could not be sent");
+      qc.invalidateQueries({ queryKey: ["newsletter_sub"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const unsubscribe = useMutation({
+    mutationFn: () => unsubscribeNewsletter(),
+    onSuccess: () => { toast.success("Unsubscribed"); qc.invalidateQueries({ queryKey: ["newsletter_sub"] }); },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const status = sub?.status ?? "none";
+  const active = status === "pending" || status === "confirmed";
+
+  return (
+    <section className="rounded-2xl border border-border bg-card p-5">
+      <h2 className="font-display text-lg font-semibold flex items-center gap-2">
+        <Megaphone className="w-5 h-5 text-primary" /> Product newsletter
+      </h2>
+      <p className="text-xs text-muted-foreground mt-1">
+        News about new features, upgrades and other platform updates. Announcements also appear in your bell
+        and on <Link to="/whats-new" className="underline">What's new</Link>.
+      </p>
+
+      <div className="mt-4 flex flex-wrap items-center gap-3">
+        {isLoading ? (
+          <span className="text-sm text-muted-foreground">Loading…</span>
+        ) : (
+          <>
+            <span className="text-sm">
+              {status === "confirmed" && <span className="text-primary font-medium">Subscribed &amp; confirmed</span>}
+              {status === "pending" && <span className="text-muted-foreground">Pending — check your email for the confirmation link</span>}
+              {(status === "none" || status === "unsubscribed") && <span className="text-muted-foreground">Not subscribed</span>}
+            </span>
+            {active ? (
+              <div className="flex gap-2">
+                {status === "pending" && (
+                  <button
+                    onClick={() => subscribe.mutate()}
+                    disabled={subscribe.isPending}
+                    className="px-3 py-1.5 rounded-lg border border-border text-sm hover:bg-muted"
+                  >
+                    Resend confirmation
+                  </button>
+                )}
+                <button
+                  onClick={() => unsubscribe.mutate()}
+                  disabled={unsubscribe.isPending}
+                  className="px-3 py-1.5 rounded-lg border border-border text-sm hover:bg-muted"
+                >
+                  Unsubscribe
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => subscribe.mutate()}
+                disabled={subscribe.isPending}
+                className="px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium disabled:opacity-50"
+              >
+                {subscribe.isPending ? "Sending…" : "Sign me up"}
+              </button>
+            )}
+          </>
+        )}
+      </div>
+    </section>
   );
 }
