@@ -19,9 +19,9 @@ export const Route = createFileRoute("/api/public/ingest")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const secret = process.env.ARDUINO_INGEST_SECRET;
+        const secret = normalizeSecret(process.env.ARDUINO_INGEST_SECRET);
         if (!secret) return jsonError(500, "Ingestion not configured");
-        const provided = request.headers.get("x-ingest-secret");
+        const provided = normalizeSecret(request.headers.get("x-ingest-secret"));
         if (!provided || provided !== secret) return jsonError(401, "Invalid ingest secret");
 
         let payload: unknown;
@@ -68,4 +68,15 @@ function jsonError(status: number, message: string) {
   return new Response(JSON.stringify({ ok: false, error: message }), {
     status, headers: { "Content-Type": "application/json" },
   });
+}
+
+function normalizeSecret(value: string | null | undefined) {
+  const trimmed = value?.trim();
+  if (!trimmed) return "";
+  const first = trimmed[0];
+  const last = trimmed[trimmed.length - 1];
+  if ((first === '"' && last === '"') || (first === "'" && last === "'")) {
+    return trimmed.slice(1, -1).trim();
+  }
+  return trimmed;
 }
