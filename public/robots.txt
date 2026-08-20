@@ -4,4 +4,4 @@ Disallow: /auth
 Disallow: /_authenticated
 Disallow: /api/
 
-Sitemap: https://leaf-buddy-system.lovable.app/sitemap.xml
+Sitemap: https://verdant-nl.app/sitemap.xml

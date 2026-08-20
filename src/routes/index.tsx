@@ -13,11 +13,16 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "Join the Verdant beta. Plug in Arduino sensors, track soil moisture, humidity, light and pests, and get AI care summaries for every houseplant." },
       { property: "og:title", content: "Verdant (Beta) — Smart houseplant care with Arduino sensors" },
       { property: "og:description", content: "Join the Verdant beta. Plug in Arduino sensors, track soil moisture, humidity, light and pests, and get AI care summaries for every houseplant." },
+      { property: "og:url", content: "https://verdant-nl.app/" },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/da919765-0158-4e54-ae2e-6664086f85cd" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Verdant (Beta) — Smart houseplant care with Arduino sensors" },
+      { name: "twitter:description", content: "Join the Verdant beta. Plug in Arduino sensors, track soil moisture, humidity, light and pests, and get AI care summaries for every houseplant." },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/da919765-0158-4e54-ae2e-6664086f85cd" },
       { name: "robots", content: "index, follow" },
     ],
-    links: [{ rel: "canonical", href: "https://leaf-buddy-system.lovable.app/" }],
+    links: [{ rel: "canonical", href: "https://verdant-nl.app/" }],
   }),
 });
 
@@ -94,7 +99,7 @@ function Landing() {
         ].map(({ icon: Icon, title, body }) => (
           <div key={title} className="rounded-xl border border-border bg-card p-6">
             <Icon className="w-6 h-6 text-primary" />
-            <h3 className="mt-3 font-display font-semibold text-lg">{title}</h3>
+            <h2 className="mt-3 font-display font-semibold text-lg">{title}</h2>
             <p className="mt-1 text-sm text-muted-foreground">{body}</p>
           </div>
         ))}

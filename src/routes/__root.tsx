@@ -69,16 +69,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Verdant (Beta) — Smart houseplant care with Arduino sensors" },
-      { name: "description", content: "Join the Verdant beta. Plug in Arduino sensors, track soil moisture, humidity, light and pests, and get AI care summaries for every houseplant." },
-      { property: "og:title", content: "Verdant (Beta) — Smart houseplant care with Arduino sensors" },
-      { property: "og:description", content: "Join the Verdant beta. Plug in Arduino sensors, track soil moisture, humidity, light and pests, and get AI care summaries for every houseplant." },
+      { title: "Verdant (Beta)" },
+      { property: "og:site_name", content: "Verdant" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Verdant (Beta) — Smart houseplant care with Arduino sensors" },
-      { name: "twitter:description", content: "Join the Verdant beta. Plug in Arduino sensors, track soil moisture, humidity, light and pests, and get AI care summaries for every houseplant." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/da919765-0158-4e54-ae2e-6664086f85cd" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/da919765-0158-4e54-ae2e-6664086f85cd" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
