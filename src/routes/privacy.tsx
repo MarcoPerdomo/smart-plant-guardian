@@ -1,4 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { BetaBadge } from "@/components/beta-banner";
+
+const CANONICAL = "https://leaf-buddy-system.lovable.app/privacy";
 
 export const Route = createFileRoute("/privacy")({
   component: PrivacyPage,
@@ -12,6 +15,7 @@ export const Route = createFileRoute("/privacy")({
       { name: "twitter:card", content: "summary" },
       { name: "robots", content: "index, follow" },
     ],
+    links: [{ rel: "canonical", href: CANONICAL }],
   }),
 });
 
