@@ -116,7 +116,7 @@ function SimpleHeader() {
       <div className="mx-auto max-w-6xl px-4 h-14 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 font-display text-lg font-semibold">
           <span className="text-primary">Verdant</span>
-          <span className="text-[10px] px-1.5 py-0.5 rounded-full border border-border text-muted-foreground">Beta</span>
+          <BetaBadge />
         </Link>
         <Link to="/auth" className="text-sm px-3 py-1.5 rounded-md bg-primary text-primary-foreground">
           Sign in
