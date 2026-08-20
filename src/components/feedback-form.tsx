@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useServerFn } from "@tanstack/react-start";
+import { useMutation } from "@tanstack/react-query";
 import { Bug, Lightbulb, MessageSquare, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,28 +31,29 @@ export function FeedbackForm({ children }: { children?: React.ReactNode }) {
   const [open, setOpen] = React.useState(false);
   const [category, setCategory] = React.useState<Category>("bug");
   const [message, setMessage] = React.useState("");
-  const [submitting, setSubmitting] = React.useState(false);
-  const submit = useServerFn(createFeedback);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!message.trim()) return;
-    setSubmitting(true);
-    try {
-      await submit({
-        category,
-        message: message.trim(),
-        pagePath: typeof window !== "undefined" ? window.location.pathname : undefined,
-        userAgent: typeof window !== "undefined" ? window.navigator.userAgent : undefined,
-      });
+  const submit = useMutation({
+    mutationFn: () =>
+      createFeedback({
+        data: {
+          category,
+          message: message.trim(),
+          pagePath: typeof window !== "undefined" ? window.location.pathname : undefined,
+          userAgent: typeof window !== "undefined" ? window.navigator.userAgent : undefined,
+        },
+      }),
+    onSuccess: () => {
       toast.success("Feedback sent — thank you!");
       setMessage("");
       setOpen(false);
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Could not send feedback");
-    } finally {
-      setSubmitting(false);
-    }
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!message.trim()) return;
+    submit.mutate();
   };
 
   return (
@@ -107,9 +108,9 @@ export function FeedbackForm({ children }: { children?: React.ReactNode }) {
           </div>
 
           <DialogFooter>
-            <Button type="submit" disabled={submitting || !message.trim()}>
+            <Button type="submit" disabled={submit.isPending || !message.trim()}>
               <Send className="mr-2 h-4 w-4" />
-              {submitting ? "Sending..." : "Send feedback"}
+              {submit.isPending ? "Sending..." : "Send feedback"}
             </Button>
           </DialogFooter>
         </form>
