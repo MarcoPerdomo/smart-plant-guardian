@@ -9,15 +9,17 @@ import { format } from "date-fns";
 
 export const Route = createFileRoute("/_authenticated/marketplace/$id")({
   component: ListingDetail,
-  head: () => ({
+  head: ({ params }) => ({
     meta: [
       { title: "Plant listing — Verdant Marketplace" },
       { name: "description", content: "Full care history, disclosures and delivery options for this plant." },
       { property: "og:title", content: "Plant listing — Verdant Marketplace" },
       { property: "og:description", content: "Full care history, disclosures and delivery options for this plant." },
+      { property: "og:url", content: `https://verdant-nl.app/marketplace/${params.id}` },
       { property: "og:type", content: "product" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: `https://verdant-nl.app/marketplace/${params.id}` }],
   }),
 });
 
