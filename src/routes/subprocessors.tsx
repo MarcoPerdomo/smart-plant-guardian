@@ -1,4 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { BetaBadge } from "@/components/beta-banner";
+
+const CANONICAL = "https://leaf-buddy-system.lovable.app/subprocessors";
 
 const processors = [
   { name: "Supabase", role: "Cloud database, authentication, file storage and transactional email", region: "EU (Frankfurt) / US depending on project settings", website: "https://supabase.com" },

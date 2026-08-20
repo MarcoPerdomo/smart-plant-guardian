@@ -1,4 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { BetaBadge } from "@/components/beta-banner";
+
+const CANONICAL = "https://leaf-buddy-system.lovable.app/cookies";
 
 export const Route = createFileRoute("/cookies")({
   component: CookiesPage,
@@ -12,6 +15,7 @@ export const Route = createFileRoute("/cookies")({
       { name: "twitter:card", content: "summary" },
       { name: "robots", content: "index, follow" },
     ],
+    links: [{ rel: "canonical", href: CANONICAL }],
   }),
 });
 

@@ -1,4 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { BetaBadge } from "@/components/beta-banner";
+
+const CANONICAL = "https://leaf-buddy-system.lovable.app/terms";
 
 export const Route = createFileRoute("/terms")({
   component: TermsPage,
@@ -12,6 +15,7 @@ export const Route = createFileRoute("/terms")({
       { name: "twitter:card", content: "summary" },
       { name: "robots", content: "index, follow" },
     ],
+    links: [{ rel: "canonical", href: CANONICAL }],
   }),
 });
 
