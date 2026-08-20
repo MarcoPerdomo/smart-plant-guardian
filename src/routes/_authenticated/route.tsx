@@ -470,12 +470,40 @@ function AuthedLayout() {
                           </Link>
                         </SheetClose>
                       )}
+                      <FeedbackForm>
+                        <button className="w-full flex items-center gap-2 px-3 py-2 rounded-md hover:bg-muted text-sm text-left">
+                          <MessageSquare className="w-4 h-4" /> Send feedback
+                        </button>
+                      </FeedbackForm>
                       <button
                         onClick={signOut}
                         className="w-full flex items-center gap-2 px-3 py-2 rounded-md hover:bg-muted text-sm text-muted-foreground"
                       >
                         <LogOut className="w-4 h-4" /> Sign out
                       </button>
+                    </div>
+                  </section>
+
+                  <section>
+                    <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                      Legal
+                    </h3>
+                    <div className="space-y-1">
+                      <SheetClose asChild>
+                        <Link to="/privacy" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-muted text-sm">
+                          <FileText className="w-4 h-4" /> Privacy
+                        </Link>
+                      </SheetClose>
+                      <SheetClose asChild>
+                        <Link to="/terms" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-muted text-sm">
+                          <FileText className="w-4 h-4" /> Terms
+                        </Link>
+                      </SheetClose>
+                      <SheetClose asChild>
+                        <Link to="/cookies" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-muted text-sm">
+                          <Cookie className="w-4 h-4" /> Cookies
+                        </Link>
+                      </SheetClose>
                     </div>
                   </section>
                 </div>
