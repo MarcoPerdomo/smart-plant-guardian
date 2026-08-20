@@ -23,10 +23,15 @@ import {
   Wallet,
   PackageCheck,
   Megaphone,
+  MessageSquare,
+  FileText,
+  Cookie,
 } from "lucide-react";
 
 import { WeatherChip } from "@/components/weather-chip";
 import { UsernameGate } from "@/components/social/username-gate";
+import { BetaBanner, BetaBadge } from "@/components/beta-banner";
+import { FeedbackForm } from "@/components/feedback-form";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
