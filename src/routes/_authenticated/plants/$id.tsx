@@ -102,7 +102,18 @@ function PlantDetail() {
             {species?.scientific_name && <span className="italic"> · {species.scientific_name}</span>}
             {plant.location && <span> · {plant.location}</span>}
           </p>
+          <p className="mt-1 text-xs text-muted-foreground flex items-center gap-1.5">
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="absolute inline-flex h-full w-full rounded-full bg-success opacity-75 animate-ping" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-success" />
+            </span>
+            {latest?.recorded_at
+              ? `Last reading ${formatDistanceToNow(new Date(latest.recorded_at), { addSuffix: true })}`
+              : "No sensor readings yet"}
+            <span className="opacity-60">· updated {formatDistanceToNow(new Date(dataUpdatedAt), { addSuffix: true })}</span>
+          </p>
         </div>
+
         <div className="flex gap-2">
           <button onClick={() => waterMut.mutate()} className="px-3 py-2 rounded-lg border border-border text-sm flex items-center gap-1.5 hover:bg-muted">
             <Droplets className="w-4 h-4" /> Log watering
