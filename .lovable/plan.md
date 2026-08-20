@@ -2,7 +2,7 @@
 
 Goal: make Verdant safe and self-explanatory for a small beta group of friends, with GDPR-compliant legal pages, a clear "Beta" marker, a feedback loop, and public pages search engines can index.
 
-Controller details used across legal pages: Marco, Netherlands, marcoperb@gmail.com (individual data controller — the pages will say so plainly; swap in a company entity later if you incorporate).
+Controller details used across legal pages: Marco, Netherlands (individual data controller — the pages will say so plainly; swap in a company entity later if you incorporate).
 
 ## 1. Legal and GDPR
 
