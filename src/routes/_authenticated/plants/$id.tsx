@@ -21,7 +21,27 @@ function PlantDetail() {
   const { id } = Route.useParams();
   const navigate = useNavigate();
   const qc = useQueryClient();
-  const { data, isLoading } = useQuery({ queryKey: ["plant", id], queryFn: () => getPlant({ data: { id } }) });
+  const { data, isLoading, dataUpdatedAt } = useQuery({
+    queryKey: ["plant", id],
+    queryFn: () => getPlant({ data: { id } }),
+    refetchInterval: 60_000,
+    refetchIntervalInBackground: false,
+    refetchOnWindowFocus: true,
+  });
+
+  // Live push: a new sensor reading for this plant refreshes the page instantly.
+  useEffect(() => {
+    const channel = supabase
+      .channel(`sensor_readings:${id}`)
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "sensor_readings", filter: `plant_id=eq.${id}` },
+        () => { qc.invalidateQueries({ queryKey: ["plant", id] }); },
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [id, qc]);
+
   const { data: weather } = useQuery({
     queryKey: ["weather", "me"],
     queryFn: () => getWeatherForMe(),
