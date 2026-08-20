@@ -17,6 +17,9 @@ function Dashboard() {
   const { data: plants, isLoading } = useQuery({
     queryKey: ["user_plants"],
     queryFn: () => listUserPlants(),
+    refetchInterval: 60_000,
+    refetchIntervalInBackground: false,
+    refetchOnWindowFocus: true,
   });
   const { data: weather } = useQuery({
     queryKey: ["weather", "me"],
