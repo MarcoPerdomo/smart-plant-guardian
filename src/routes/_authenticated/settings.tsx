@@ -3,17 +3,18 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getProfile, updateProfile, listNotifications } from "@/lib/plants.functions";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Copy, Bell, Mail, MessageSquare, Cpu, Megaphone } from "lucide-react";
+import { Copy, Bell, Mail, MessageSquare, Cpu, Megaphone, Shield, Download, Trash2 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { LocationSettings } from "@/components/location-settings";
 import { getMyUsername, setUsername as setUsernameFn, checkUsername } from "@/lib/social.functions";
 import { AtSign, Check, Pencil } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { getMySubscription, subscribeNewsletter, unsubscribeNewsletter } from "@/lib/newsletter.functions";
+import { exportMyData, requestAccountDeletion } from "@/lib/privacy.functions";
 
 export const Route = createFileRoute("/_authenticated/settings")({
   component: Settings,
-  head: () => ({ meta: [{ title: "Settings — Verdant" }, { name: "description", content: "Notification preferences and Arduino ingestion details." }] }),
+  head: () => ({ meta: [{ title: "Settings — Verdant" }, { name: "description", content: "Notification preferences, privacy and Arduino ingestion details." }] }),
 });
 
 function Settings() {
@@ -78,6 +79,7 @@ function Settings() {
       </section>
 
       <NewsletterSection />
+      <PrivacySection />
 
       <button onClick={() => saveMut.mutate()} disabled={saveMut.isPending} className="px-5 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium">
         {saveMut.isPending ? "Saving…" : "Save preferences"}
@@ -320,6 +322,96 @@ function NewsletterSection() {
               </button>
             )}
           </>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function PrivacySection() {
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleteText, setDeleteText] = useState("");
+
+  const exportMut = useMutation({
+    mutationFn: () => exportMyData(),
+    onSuccess: (data) => {
+      const blob = new Blob([data.json], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `verdant-export-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast.success("Export downloaded");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const deleteMut = useMutation({
+    mutationFn: () => requestAccountDeletion({ data: { reason: "" } }),
+    onSuccess: () => {
+      toast.success("Account deletion requested. We will process it within 30 days.");
+      setConfirmDelete(false);
+      setDeleteText("");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  return (
+    <section className="rounded-2xl border border-border bg-card p-5">
+      <h2 className="font-display text-lg font-semibold flex items-center gap-2">
+        <Shield className="w-5 h-5 text-primary" /> Privacy &amp; data
+      </h2>
+      <p className="text-xs text-muted-foreground mt-1">
+        You can export your data or request account deletion at any time. Read our{" "}
+        <Link to="/privacy" target="_blank" className="underline">Privacy Policy</Link>.
+      </p>
+
+      <div className="mt-4 flex flex-wrap gap-3">
+        <button
+          onClick={() => exportMut.mutate()}
+          disabled={exportMut.isPending}
+          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border text-sm hover:bg-muted disabled:opacity-50"
+        >
+          <Download className="w-4 h-4" />
+          {exportMut.isPending ? "Preparing…" : "Export my data"}
+        </button>
+
+        {!confirmDelete ? (
+          <button
+            onClick={() => setConfirmDelete(true)}
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-destructive/30 text-sm text-destructive hover:bg-destructive/10"
+          >
+            <Trash2 className="w-4 h-4" /> Request account deletion
+          </button>
+        ) : (
+          <div className="w-full rounded-xl border border-destructive/30 bg-destructive/5 p-4">
+            <p className="text-sm text-destructive font-medium">This will schedule your account for deletion.</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Type <strong>delete</strong> below to confirm. Your plants, photos and personal data will be removed within 30 days.
+            </p>
+            <input
+              value={deleteText}
+              onChange={(e) => setDeleteText(e.target.value)}
+              placeholder="delete"
+              className="mt-3 w-full px-3 py-2 rounded-lg border border-input bg-background text-sm"
+            />
+            <div className="mt-3 flex gap-2">
+              <button
+                onClick={() => deleteMut.mutate()}
+                disabled={deleteText !== "delete" || deleteMut.isPending}
+                className="px-3 py-1.5 rounded-lg bg-destructive text-destructive-foreground text-sm font-medium disabled:opacity-50"
+              >
+                {deleteMut.isPending ? "Requesting…" : "Confirm deletion"}
+              </button>
+              <button
+                onClick={() => { setConfirmDelete(false); setDeleteText(""); }}
+                className="px-3 py-1.5 rounded-lg border border-border text-sm hover:bg-muted"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
         )}
       </div>
     </section>

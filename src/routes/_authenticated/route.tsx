@@ -23,10 +23,15 @@ import {
   Wallet,
   PackageCheck,
   Megaphone,
+  MessageSquare,
+  FileText,
+  Cookie,
 } from "lucide-react";
 
 import { WeatherChip } from "@/components/weather-chip";
 import { UsernameGate } from "@/components/social/username-gate";
+import { BetaBanner, BetaBadge } from "@/components/beta-banner";
+import { FeedbackForm } from "@/components/feedback-form";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -103,11 +108,12 @@ function AuthedLayout() {
 
   return (
     <div className="min-h-screen bg-background">
+      <BetaBanner />
       <header className="border-b border-border bg-card/50 backdrop-blur sticky top-0 z-40">
         <div className="mx-auto max-w-6xl px-4 h-14 flex items-center justify-between">
           <Link to="/dashboard" className="flex items-center gap-2 font-display text-lg font-semibold">
             <Leaf className="w-5 h-5 text-primary" />
-            Verdant
+            Verdant <BetaBadge className="ml-1" />
           </Link>
 
           <div className="flex items-center gap-1">
@@ -267,6 +273,14 @@ function AuthedLayout() {
                       <Megaphone className="w-4 h-4" /> What's new
                     </Link>
                   </DropdownMenuItem>
+                  <FeedbackForm>
+                    <DropdownMenuItem
+                      className="flex items-center gap-2 cursor-pointer"
+                      onSelect={(e) => e.preventDefault()}
+                    >
+                      <MessageSquare className="w-4 h-4" /> Send feedback
+                    </DropdownMenuItem>
+                  </FeedbackForm>
                   {isAdmin && (
                     <DropdownMenuItem
                       asChild
@@ -456,12 +470,40 @@ function AuthedLayout() {
                           </Link>
                         </SheetClose>
                       )}
+                      <FeedbackForm>
+                        <button className="w-full flex items-center gap-2 px-3 py-2 rounded-md hover:bg-muted text-sm text-left">
+                          <MessageSquare className="w-4 h-4" /> Send feedback
+                        </button>
+                      </FeedbackForm>
                       <button
                         onClick={signOut}
                         className="w-full flex items-center gap-2 px-3 py-2 rounded-md hover:bg-muted text-sm text-muted-foreground"
                       >
                         <LogOut className="w-4 h-4" /> Sign out
                       </button>
+                    </div>
+                  </section>
+
+                  <section>
+                    <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                      Legal
+                    </h3>
+                    <div className="space-y-1">
+                      <SheetClose asChild>
+                        <Link to="/privacy" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-muted text-sm">
+                          <FileText className="w-4 h-4" /> Privacy
+                        </Link>
+                      </SheetClose>
+                      <SheetClose asChild>
+                        <Link to="/terms" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-muted text-sm">
+                          <FileText className="w-4 h-4" /> Terms
+                        </Link>
+                      </SheetClose>
+                      <SheetClose asChild>
+                        <Link to="/cookies" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-muted text-sm">
+                          <Cookie className="w-4 h-4" /> Cookies
+                        </Link>
+                      </SheetClose>
                     </div>
                   </section>
                 </div>

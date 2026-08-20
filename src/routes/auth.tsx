@@ -1,15 +1,29 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 import { Leaf } from "lucide-react";
 import { toast } from "sonner";
+import { BetaBadge } from "@/components/beta-banner";
 
 export const Route = createFileRoute("/auth")({
   ssr: false,
   component: AuthPage,
-  head: () => ({ meta: [{ title: "Sign in — Verdant" }, { name: "description", content: "Sign in to Verdant to manage your plants." }] }),
+  head: () => ({
+    meta: [
+      { title: "Sign in — Verdant (Beta)" },
+      { name: "description", content: "Sign in to Verdant to manage your plants." },
+      { property: "og:title", content: "Sign in — Verdant (Beta)" },
+      { property: "og:description", content: "Sign in to Verdant to manage your plants." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+      { name: "robots", content: "noindex" },
+    ],
+  }),
 });
+
+const PRIVACY_VERSION = "2026-08-20";
+const TERMS_VERSION = "2026-08-20";
 
 function AuthPage() {
   const navigate = useNavigate();
@@ -17,6 +31,8 @@ function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [consent, setConsent] = useState(false);
+  const [needsConsent, setNeedsConsent] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -28,24 +44,48 @@ function AuthPage() {
     }
 
     supabase.auth.getUser().then(({ data }) => {
-      if (data.user) navigate({ to: "/dashboard", replace: true });
+      if (data.user) {
+        checkLegalAcceptance(data.user.id).then((accepted) => {
+          if (accepted) {
+            navigate({ to: "/dashboard", replace: true });
+          } else {
+            setNeedsConsent(true);
+          }
+        });
+      }
     });
   }, [navigate]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (mode === "signup" && !consent) {
+      toast.error("Please accept the Terms and Privacy Policy to continue.");
+      return;
+    }
     setLoading(true);
     try {
       if (mode === "signup") {
-        const { error } = await supabase.auth.signUp({
-          email, password,
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
           options: { emailRedirectTo: `${window.location.origin}/auth` },
         });
         if (error) throw error;
         toast.success("Check your email to confirm, or sign in if confirmation is off.");
+        if (data.user) {
+          await recordAcceptance(data.user.id);
+        }
       } else {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
+        if (data.user) {
+          const accepted = await checkLegalAcceptance(data.user.id);
+          if (!accepted) {
+            setNeedsConsent(true);
+            setLoading(false);
+            return;
+          }
+        }
         navigate({ to: "/dashboard", replace: true });
       }
     } catch (err) {
@@ -63,12 +103,59 @@ function AuthPage() {
     if (error) toast.error(error.message);
   }
 
+  async function submitConsent() {
+    const { data } = await supabase.auth.getUser();
+    if (!data.user) {
+      toast.error("Session expired. Please sign in again.");
+      return;
+    }
+    await recordAcceptance(data.user.id);
+    navigate({ to: "/dashboard", replace: true });
+  }
+
+  if (needsConsent) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background px-4">
+        <div className="w-full max-w-md rounded-2xl border border-border bg-card p-6">
+          <div className="mb-4 flex items-center gap-2 font-display text-xl font-semibold">
+            <Leaf className="w-6 h-6 text-primary" /> Verdant <BetaBadge />
+          </div>
+          <h2 className="font-display text-lg font-semibold">Welcome to the beta</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Before you continue, please review and accept our Terms and Privacy Policy.
+          </p>
+          <label className="mt-4 flex items-start gap-3 rounded-xl border border-border p-4 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={consent}
+              onChange={(e) => setConsent(e.target.checked)}
+              className="mt-1 h-4 w-4"
+            />
+            <span className="text-sm leading-relaxed">
+              I agree to the{" "}
+              <Link to="/terms" target="_blank" className="underline hover:text-primary">Terms of Service</Link>{" "}
+              and{" "}
+              <Link to="/privacy" target="_blank" className="underline hover:text-primary">Privacy Policy</Link>.
+            </span>
+          </label>
+          <button
+            onClick={submitConsent}
+            disabled={!consent}
+            className="mt-4 w-full px-4 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 disabled:opacity-50"
+          >
+            Continue
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 font-display text-2xl font-semibold">
-            <Leaf className="w-6 h-6 text-primary" /> Verdant
+            <Leaf className="w-6 h-6 text-primary" /> Verdant <BetaBadge />
           </div>
           <p className="mt-2 text-sm text-muted-foreground">Sign in to tend to your plants.</p>
         </div>
@@ -97,6 +184,25 @@ function AuthPage() {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-3 py-2.5 rounded-lg border border-input bg-background text-sm"
             />
+
+            {mode === "signup" && (
+              <label className="flex items-start gap-3 rounded-lg border border-border p-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={consent}
+                  onChange={(e) => setConsent(e.target.checked)}
+                  required
+                  className="mt-0.5 h-4 w-4"
+                />
+                <span className="text-xs leading-relaxed text-muted-foreground">
+                  I agree to the{" "}
+                  <Link to="/terms" target="_blank" className="underline hover:text-foreground">Terms of Service</Link>{" "}
+                  and{" "}
+                  <Link to="/privacy" target="_blank" className="underline hover:text-foreground">Privacy Policy</Link>.
+                </span>
+              </label>
+            )}
+
             <button
               type="submit" disabled={loading}
               className="w-full px-4 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 disabled:opacity-50"
@@ -112,7 +218,36 @@ function AuthPage() {
             {mode === "signin" ? "New here? Create an account" : "Already have an account? Sign in"}
           </button>
         </div>
+
+        <p className="mt-6 text-center text-xs text-muted-foreground">
+          Verdant is in beta. By signing in you accept our{" "}
+          <Link to="/terms" className="underline hover:text-foreground">Terms</Link>{" "}
+          and{" "}
+          <Link to="/privacy" className="underline hover:text-foreground">Privacy Policy</Link>.
+        </p>
       </div>
     </div>
+  );
+}
+
+async function checkLegalAcceptance(userId: string) {
+  const { data, error } = await supabase
+    .from("legal_acceptances")
+    .select("id")
+    .eq("user_id", userId)
+    .eq("document", "privacy_policy")
+    .eq("version", PRIVACY_VERSION)
+    .maybeSingle();
+  if (error) return false;
+  return !!data;
+}
+
+async function recordAcceptance(userId: string) {
+  await supabase.from("legal_acceptances").upsert(
+    [
+      { user_id: userId, document: "privacy_policy", version: PRIVACY_VERSION, accepted_at: new Date().toISOString() },
+      { user_id: userId, document: "terms_of_service", version: TERMS_VERSION, accepted_at: new Date().toISOString() },
+    ],
+    { onConflict: "user_id,document,version" },
   );
 }

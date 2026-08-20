@@ -3,16 +3,21 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Leaf, Droplets, Sun, Bug, Cpu, Sparkles } from "lucide-react";
 import { VisitorWeatherChip } from "@/components/weather-chip";
+import { BetaBadge, BetaBanner } from "@/components/beta-banner";
 
 export const Route = createFileRoute("/")({
   component: Landing,
   head: () => ({
     meta: [
-      { title: "Verdant — Smart houseplant care with Arduino sensors" },
-      { name: "description", content: "Plug in Arduino sensors, track soil moisture, humidity, light and pests, and get AI care summaries for every plant." },
-      { property: "og:title", content: "Verdant — Smart houseplant care with Arduino sensors" },
-      { property: "og:description", content: "Plug in Arduino sensors, track soil moisture, humidity, light and pests, and get AI care summaries for every plant." },
+      { title: "Verdant (Beta) — Smart houseplant care with Arduino sensors" },
+      { name: "description", content: "Join the Verdant beta. Plug in Arduino sensors, track soil moisture, humidity, light and pests, and get AI care summaries for every houseplant." },
+      { property: "og:title", content: "Verdant (Beta) — Smart houseplant care with Arduino sensors" },
+      { property: "og:description", content: "Join the Verdant beta. Plug in Arduino sensors, track soil moisture, humidity, light and pests, and get AI care summaries for every houseplant." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "robots", content: "index, follow" },
     ],
+    links: [{ rel: "canonical", href: "https://leaf-buddy-system.lovable.app/" }],
   }),
 });
 
@@ -31,14 +36,20 @@ function Landing() {
 
   return (
     <div className="min-h-screen bg-background">
+      <BetaBanner />
       <header className="border-b border-border">
         <div className="mx-auto max-w-6xl px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-2 font-display text-lg font-semibold">
-            <Leaf className="w-5 h-5 text-primary" /> Verdant
+            <Leaf className="w-5 h-5 text-primary" /> Verdant <BetaBadge />
           </div>
-          <Link to="/auth" className="text-sm px-3 py-1.5 rounded-md bg-primary text-primary-foreground">
-            Sign in
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link to="/get-started" className="hidden sm:inline-flex text-sm px-3 py-1.5 rounded-md border border-border hover:bg-muted">
+              Get started
+            </Link>
+            <Link to="/auth" className="text-sm px-3 py-1.5 rounded-md bg-primary text-primary-foreground">
+              Sign in
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -52,13 +63,16 @@ function Landing() {
             Verdant tracks every plant's health, predicts the next watering,
             and sends you an AI-written care summary a few times a week.
           </p>
-          <div className="mt-8 flex gap-3">
+          <p className="mt-3 inline-flex items-center gap-2 text-sm text-primary font-medium">
+            <BetaBadge /> Now open for beta testers.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
             <Link to="/auth" className="px-5 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:opacity-90">
               Start growing
             </Link>
-            <a href="#how" className="px-5 py-3 rounded-lg border border-border font-medium hover:bg-muted">
-              How it works
-            </a>
+            <Link to="/get-started" className="px-5 py-3 rounded-lg border border-border font-medium hover:bg-muted">
+              Get started
+            </Link>
           </div>
           <div className="mt-6">
             <VisitorWeatherChip />
@@ -87,9 +101,16 @@ function Landing() {
       </section>
 
       <footer className="border-t border-border">
-        <div className="mx-auto max-w-6xl px-4 py-6 text-sm text-muted-foreground flex justify-between">
-          <span>Verdant</span>
-          <Link to="/auth" className="hover:text-foreground">Sign in</Link>
+        <div className="mx-auto max-w-6xl px-4 py-6 text-sm text-muted-foreground flex flex-col sm:flex-row gap-4 justify-between">
+          <span>© 2026 Verdant <BetaBadge /></span>
+          <div className="flex flex-wrap gap-4">
+            <Link to="/privacy" className="hover:text-foreground">Privacy</Link>
+            <Link to="/terms" className="hover:text-foreground">Terms</Link>
+            <Link to="/cookies" className="hover:text-foreground">Cookies</Link>
+            <Link to="/subprocessors" className="hover:text-foreground">Subprocessors</Link>
+            <Link to="/get-started" className="hover:text-foreground">Get started</Link>
+            <Link to="/auth" className="hover:text-foreground">Sign in</Link>
+          </div>
         </div>
       </footer>
     </div>
