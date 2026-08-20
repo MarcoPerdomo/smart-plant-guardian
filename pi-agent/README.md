@@ -141,7 +141,11 @@ journalctl -u verdant-agent -f
 1. In Verdant → **Add plant**, set the plant's **Device ID** to exactly the
    `device_id` in `config.yaml` (e.g. `pi5-monstera-01`).
 2. Copy the ingest secret into `config.yaml` — it's the `ARDUINO_INGEST_SECRET`
-   value in your backend secrets. The agent sends it as `X-Ingest-Secret`.
+   value stored in the **app's backend secrets** (Lovable → Project Settings →
+   Secrets). It is *not* a Supabase Edge Function secret: the ingest endpoint is
+   a server route in the app, so a value set in the Supabase dashboard has no
+   effect. The agent sends it as `X-Ingest-Secret`. Paste it unquoted, on one
+   line — a stray quote, space or line break gives `401 Invalid ingest secret`.
 3. Readings appear on the plant detail chart within one interval; the AI
    summary uses the latest ones.
 

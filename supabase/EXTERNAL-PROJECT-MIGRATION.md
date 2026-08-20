@@ -114,7 +114,7 @@ The app reads these at runtime:
 | `SUPABASE_PUBLISHABLE_KEY` / `VITE_SUPABASE_PUBLISHABLE_KEY` | same page (publishable/anon key) |
 | `VITE_SUPABASE_PROJECT_ID` | the project ref in the URL |
 | `SUPABASE_SERVICE_ROLE_KEY` | same page — **server only, never commit** |
-| `ARDUINO_INGEST_SECRET` | keep the existing value so the Pi's `config.yaml` keeps working |
+| `ARDUINO_INGEST_SECRET` | the app's own backend secrets (Project Settings → Secrets) — **not** a Supabase Edge Function secret; keep the existing value so the Pi's `config.yaml` keeps working |
 | `LOVABLE_API_KEY` | unchanged — AI summaries still use the Lovable AI Gateway |
 | `APP_URL` | your published URL |
 
