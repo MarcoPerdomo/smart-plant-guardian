@@ -19,6 +19,7 @@ export const Route = createFileRoute("/api/public/ingest")({
   server: {
     handlers: {
       POST: async ({ request }) => {
+        try {
         const secret = normalizeSecret(process.env.ARDUINO_INGEST_SECRET);
         if (!secret) return jsonError(500, "Ingestion not configured");
         const provided = normalizeSecret(request.headers.get("x-ingest-secret"));
@@ -55,6 +56,11 @@ export const Route = createFileRoute("/api/public/ingest")({
         if (insErr) return jsonError(500, insErr.message);
 
         return Response.json({ ok: true, plant_id: plant.id });
+        } catch (err) {
+          const message = err instanceof Error ? err.message : "Unexpected server error";
+          console.error("[ingest] failed", message);
+          return jsonError(500, message);
+        }
       },
       GET: async () => Response.json({
         ok: true,
