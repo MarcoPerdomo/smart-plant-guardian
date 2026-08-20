@@ -2,59 +2,64 @@ import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
 
+type ExportBundle = {
+  table: string;
+  rows: Record<string, unknown>[];
+};
+
+const ownerTables = [
+  "profiles",
+  "user_plants",
+  "sensor_readings",
+  "watering_events",
+  "plant_photos",
+  "ai_summaries",
+  "posts",
+  "post_comments",
+  "post_reactions",
+  "messages",
+  "conversations",
+  "conversation_participants",
+  "notifications",
+  "marketplace_listings",
+  "wallets",
+  "wallet_transactions",
+  "payout_requests",
+  "newsletter_subscriptions",
+  "legal_acceptances",
+  "feedback",
+] as const;
+
 export const exportMyData = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { supabase, userId } = context;
 
-    const tables = [
-      "profiles",
-      "user_plants",
-      "sensor_readings",
-      "watering_events",
-      "plant_photos",
-      "ai_summaries",
-      "friendships",
-      "posts",
-      "post_comments",
-      "post_reactions",
-      "messages",
-      "conversations",
-      "conversation_participants",
-      "notifications",
-      "marketplace_listings",
-      "marketplace_orders",
-      "wallets",
-      "wallet_transactions",
-      "payout_requests",
-      "newsletter_subscriptions",
-      "legal_acceptances",
-      "feedback",
-    ] as const;
+    const bundles: ExportBundle[] = [];
 
-    const exportData: Record<string, unknown[]> = {};
-
-    for (const table of tables) {
-      const { data, error } = await supabase.from(table).select("*").eq("user_id", userId);
+    for (const table of ownerTables) {
+      const { data, error } = await supabase.from(table as string).select("*").eq("user_id", userId);
+      bundles.push({ table, rows: (data as Record<string, unknown>[]) ?? [] });
       if (error) {
-        exportData[table] = [];
-        continue;
+        bundles[bundles.length - 1].rows = [];
       }
-      exportData[table] = data ?? [];
     }
 
-    // Add auth-related rows that use different owner columns
-    const { data: listingsAsBuyer } = await supabase.from("marketplace_orders").select("*").eq("buyer_id", userId);
-    const { data: listingsAsSeller } = await supabase.from("marketplace_orders").select("*").eq("seller_id", userId);
-    exportData["marketplace_orders_buyer"] = listingsAsBuyer ?? [];
-    exportData["marketplace_orders_seller"] = listingsAsSeller ?? [];
+    const extra: ExportBundle[] = [];
+
+    const { data: ordersBuyer } = await supabase.from("marketplace_orders").select("*").eq("buyer_id", userId);
+    extra.push({ table: "marketplace_orders_buyer", rows: (ordersBuyer as Record<string, unknown>[]) ?? [] });
+
+    const { data: ordersSeller } = await supabase.from("marketplace_orders").select("*").eq("seller_id", userId);
+    extra.push({ table: "marketplace_orders_seller", rows: (ordersSeller as Record<string, unknown>[]) ?? [] });
 
     const { data: friendshipsRequester } = await supabase.from("friendships").select("*").eq("requester_id", userId);
-    const { data: friendshipsAddressee } = await supabase.from("friendships").select("*").eq("addressee_id", userId);
-    exportData["friendships_requester"] = friendshipsRequester ?? [];
-    exportData["friendships_addressee"] = friendshipsAddressee ?? [];
+    extra.push({ table: "friendships_requester", rows: (friendshipsRequester as Record<string, unknown>[]) ?? [] });
 
-    return { userId, exportedAt: new Date().toISOString(), data: exportData };
+    const { data: friendshipsAddressee } = await supabase.from("friendships").select("*").eq("addressee_id", userId);
+    extra.push({ table: "friendships_addressee", rows: (friendshipsAddressee as Record<string, unknown>[]) ?? [] });
+
+    return { userId, exportedAt: new Date().toISOString(), bundles: [...bundles, ...extra] };
   });
 
 export const requestAccountDeletion = createServerFn({ method: "POST" })
