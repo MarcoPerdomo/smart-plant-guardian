@@ -157,6 +157,7 @@ function AuthPage() {
           <div className="inline-flex items-center gap-2 font-display text-2xl font-semibold">
             <Leaf className="w-6 h-6 text-primary" /> Verdant <BetaBadge />
           </div>
+          <h1 className="mt-3 font-display text-xl font-semibold">Sign in to Verdant</h1>
           <p className="mt-2 text-sm text-muted-foreground">Sign in to tend to your plants.</p>
         </div>
 
