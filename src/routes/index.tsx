@@ -17,7 +17,7 @@ export const Route = createFileRoute("/")({
       { name: "twitter:card", content: "summary_large_image" },
       { name: "robots", content: "index, follow" },
     ],
-    links: [{ rel: "canonical", href: "https://leaf-buddy-system.lovable.app/" }],
+    links: [{ rel: "canonical", href: "https://verdant-nl.app/" }],
   }),
 });
 
