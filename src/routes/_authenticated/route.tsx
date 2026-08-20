@@ -273,6 +273,14 @@ function AuthedLayout() {
                       <Megaphone className="w-4 h-4" /> What's new
                     </Link>
                   </DropdownMenuItem>
+                  <FeedbackForm>
+                    <DropdownMenuItem
+                      className="flex items-center gap-2 cursor-pointer"
+                      onSelect={(e) => e.preventDefault()}
+                    >
+                      <MessageSquare className="w-4 h-4" /> Send feedback
+                    </DropdownMenuItem>
+                  </FeedbackForm>
                   {isAdmin && (
                     <DropdownMenuItem
                       asChild
