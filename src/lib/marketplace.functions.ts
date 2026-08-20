@@ -84,7 +84,7 @@ export const searchListings = createServerFn({ method: "POST" })
 
     const covers = await signCovers(filtered.map((r) => r.cover_photo_path ?? "").filter(Boolean));
     const sellerIds = filtered.map((r) => r.seller_id);
-    const { data: sellers } = await context.supabase.rpc("profiles_public_by_ids", { _ids: Array.from(new Set(sellerIds)) });
+    const { data: sellers } = await context.supabase.rpc("marketplace_sellers_by_ids", { _ids: Array.from(new Set(sellerIds)) });
     const sellerMap: Record<string, { username: string | null; display_name: string | null; country_code: string | null; created_at: string }> = {};
     for (const s of (sellers ?? []) as { id: string; username: string | null; display_name: string | null; country_code: string | null; created_at: string }[]) {
       sellerMap[s.id] = { username: s.username, display_name: s.display_name, country_code: s.country_code, created_at: s.created_at };
@@ -115,7 +115,7 @@ export const getListing = createServerFn({ method: "POST" })
       .eq("listing_id", data.id)
       .order("occurred_on", { ascending: false });
 
-    const { data: sellers } = await context.supabase.rpc("profiles_public_by_ids", { _ids: [listing.seller_id] });
+    const { data: sellers } = await context.supabase.rpc("marketplace_sellers_by_ids", { _ids: [listing.seller_id] });
     const sellerRow = ((sellers ?? []) as { id: string; username: string | null; display_name: string | null; country_code: string | null; created_at: string }[])[0] ?? null;
 
     // Photo journal of the underlying plant (owner-only table -> admin read, safe: listing is public)
@@ -478,7 +478,7 @@ export const getOrder = createServerFn({ method: "POST" })
       .eq("order_id", data.id)
       .order("created_at", { ascending: true });
 
-    const { data: profiles } = await context.supabase.rpc("profiles_public_by_ids", {
+    const { data: profiles } = await context.supabase.rpc("marketplace_sellers_by_ids", {
       _ids: [order.buyer_id, order.seller_id],
     });
     const map: Record<string, { username: string | null; display_name: string | null }> = {};
