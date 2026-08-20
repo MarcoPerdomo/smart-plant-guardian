@@ -5,7 +5,9 @@
 endpoint: "https://project--a4e7f216-3697-4a14-8dd3-320be3ad8cc4.lovable.app/api/public/ingest"
 snapshot_endpoint: "https://project--a4e7f216-3697-4a14-8dd3-320be3ad8cc4.lovable.app/api/public/snapshot-upload"
 
-# Must match ARDUINO_INGEST_SECRET stored in the app's backend secrets.
+# Must match ARDUINO_INGEST_SECRET stored in the app's backend secrets
+# (Lovable → Project Settings → Secrets), NOT a Supabase Edge Function secret.
+# Paste it unquoted on one line — stray quotes/spaces cause 401.
 ingest_secret: "PUT-YOUR-INGEST-SECRET-HERE"
 
 # Must match the device_id you saved on the plant in the Verdant UI.
