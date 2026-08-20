@@ -9,7 +9,18 @@ import { formatDistanceToNow } from "date-fns";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   component: Dashboard,
-  head: () => ({ meta: [{ title: "Dashboard — Verdant" }, { name: "description", content: "Overview of all your plants and their current status." }] }),
+  head: () => ({
+    meta: [
+      { title: "Dashboard — Verdant" },
+      { name: "description", content: "Overview of all your plants and their current status." },
+      { property: "og:title", content: "Dashboard — Verdant" },
+      { property: "og:description", content: "Overview of all your plants and their current status." },
+      { property: "og:url", content: "https://verdant-nl.app/dashboard" },
+      { property: "og:type", content: "website" },
+      { name: "robots", content: "noindex" },
+    ],
+    links: [{ rel: "canonical", href: "https://verdant-nl.app/dashboard" }],
+  }),
 });
 
 function Dashboard() {
