@@ -213,6 +213,45 @@ export type Database = {
         }
         Relationships: []
       }
+      feedback: {
+        Row: {
+          category: string
+          created_at: string
+          id: string
+          message: string
+          page_path: string | null
+          screenshot_path: string | null
+          status: string
+          updated_at: string
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          id?: string
+          message: string
+          page_path?: string | null
+          screenshot_path?: string | null
+          status?: string
+          updated_at?: string
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          id?: string
+          message?: string
+          page_path?: string | null
+          screenshot_path?: string | null
+          status?: string
+          updated_at?: string
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       friendships: {
         Row: {
           addressee_id: string
@@ -237,6 +276,36 @@ export type Database = {
           requester_id?: string
           status?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      legal_acceptances: {
+        Row: {
+          accepted_at: string
+          created_at: string
+          document: string
+          id: string
+          updated_at: string
+          user_id: string
+          version: string
+        }
+        Insert: {
+          accepted_at?: string
+          created_at?: string
+          document: string
+          id?: string
+          updated_at?: string
+          user_id: string
+          version: string
+        }
+        Update: {
+          accepted_at?: string
+          created_at?: string
+          document?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+          version?: string
         }
         Relationships: []
       }
