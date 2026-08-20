@@ -14,7 +14,18 @@ import { LatestPhotoCard } from "@/components/plant-photos";
 
 export const Route = createFileRoute("/_authenticated/plants/$id")({
   component: PlantDetail,
-  head: ({ params }) => ({ meta: [{ title: `Plant — Verdant` }, { name: "description", content: `Detailed history and AI care for plant ${params.id}` }] }),
+  head: ({ params }) => ({
+    meta: [
+      { title: "Plant — Verdant" },
+      { name: "description", content: "Detailed sensor history and AI care guidance for your plant." },
+      { property: "og:title", content: "Plant — Verdant" },
+      { property: "og:description", content: "Detailed sensor history and AI care guidance for your plant." },
+      { property: "og:url", content: `https://verdant-nl.app/plants/${params.id}` },
+      { property: "og:type", content: "website" },
+      { name: "robots", content: "noindex" },
+    ],
+    links: [{ rel: "canonical", href: `https://verdant-nl.app/plants/${params.id}` }],
+  }),
 });
 
 function PlantDetail() {
