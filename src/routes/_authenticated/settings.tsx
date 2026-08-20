@@ -3,17 +3,18 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getProfile, updateProfile, listNotifications } from "@/lib/plants.functions";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Copy, Bell, Mail, MessageSquare, Cpu, Megaphone } from "lucide-react";
+import { Copy, Bell, Mail, MessageSquare, Cpu, Megaphone, Shield, Download, Trash2 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { LocationSettings } from "@/components/location-settings";
 import { getMyUsername, setUsername as setUsernameFn, checkUsername } from "@/lib/social.functions";
 import { AtSign, Check, Pencil } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { getMySubscription, subscribeNewsletter, unsubscribeNewsletter } from "@/lib/newsletter.functions";
+import { exportMyData, requestAccountDeletion } from "@/lib/privacy.functions";
 
 export const Route = createFileRoute("/_authenticated/settings")({
   component: Settings,
-  head: () => ({ meta: [{ title: "Settings — Verdant" }, { name: "description", content: "Notification preferences and Arduino ingestion details." }] }),
+  head: () => ({ meta: [{ title: "Settings — Verdant" }, { name: "description", content: "Notification preferences, privacy and Arduino ingestion details." }] }),
 });
 
 function Settings() {
