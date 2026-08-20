@@ -327,3 +327,93 @@ function NewsletterSection() {
     </section>
   );
 }
+
+function PrivacySection() {
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleteText, setDeleteText] = useState("");
+
+  const exportMut = useMutation({
+    mutationFn: () => exportMyData(),
+    onSuccess: (data) => {
+      const blob = new Blob([data.json], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `verdant-export-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast.success("Export downloaded");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const deleteMut = useMutation({
+    mutationFn: () => requestAccountDeletion({ data: { reason: "" } }),
+    onSuccess: () => {
+      toast.success("Account deletion requested. We will process it within 30 days.");
+      setConfirmDelete(false);
+      setDeleteText("");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  return (
+    <section className="rounded-2xl border border-border bg-card p-5">
+      <h2 className="font-display text-lg font-semibold flex items-center gap-2">
+        <Shield className="w-5 h-5 text-primary" /> Privacy &amp; data
+      </h2>
+      <p className="text-xs text-muted-foreground mt-1">
+        You can export your data or request account deletion at any time. Read our{" "}
+        <Link to="/privacy" target="_blank" className="underline">Privacy Policy</Link>.
+      </p>
+
+      <div className="mt-4 flex flex-wrap gap-3">
+        <button
+          onClick={() => exportMut.mutate()}
+          disabled={exportMut.isPending}
+          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border text-sm hover:bg-muted disabled:opacity-50"
+        >
+          <Download className="w-4 h-4" />
+          {exportMut.isPending ? "Preparing…" : "Export my data"}
+        </button>
+
+        {!confirmDelete ? (
+          <button
+            onClick={() => setConfirmDelete(true)}
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-destructive/30 text-sm text-destructive hover:bg-destructive/10"
+          >
+            <Trash2 className="w-4 h-4" /> Request account deletion
+          </button>
+        ) : (
+          <div className="w-full rounded-xl border border-destructive/30 bg-destructive/5 p-4">
+            <p className="text-sm text-destructive font-medium">This will schedule your account for deletion.</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Type <strong>delete</strong> below to confirm. Your plants, photos and personal data will be removed within 30 days.
+            </p>
+            <input
+              value={deleteText}
+              onChange={(e) => setDeleteText(e.target.value)}
+              placeholder="delete"
+              className="mt-3 w-full px-3 py-2 rounded-lg border border-input bg-background text-sm"
+            />
+            <div className="mt-3 flex gap-2">
+              <button
+                onClick={() => deleteMut.mutate()}
+                disabled={deleteText !== "delete" || deleteMut.isPending}
+                className="px-3 py-1.5 rounded-lg bg-destructive text-destructive-foreground text-sm font-medium disabled:opacity-50"
+              >
+                {deleteMut.isPending ? "Requesting…" : "Confirm deletion"}
+              </button>
+              <button
+                onClick={() => { setConfirmDelete(false); setDeleteText(""); }}
+                className="px-3 py-1.5 rounded-lg border border-border text-sm hover:bg-muted"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
