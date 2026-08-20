@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SubprocessorsRouteImport } from './routes/subprocessors'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as GetStartedRouteImport } from './routes/get-started'
 import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
@@ -62,6 +63,11 @@ const SubprocessorsRoute = SubprocessorsRouteImport.update({
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GetStartedRoute = GetStartedRouteImport.update({
+  id: '/get-started',
+  path: '/get-started',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CookiesRoute = CookiesRouteImport.update({
@@ -263,6 +269,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/cookies': typeof CookiesRoute
+  '/get-started': typeof GetStartedRoute
   '/privacy': typeof PrivacyRoute
   '/subprocessors': typeof SubprocessorsRoute
   '/terms': typeof TermsRoute
@@ -303,6 +310,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/cookies': typeof CookiesRoute
+  '/get-started': typeof GetStartedRoute
   '/privacy': typeof PrivacyRoute
   '/subprocessors': typeof SubprocessorsRoute
   '/terms': typeof TermsRoute
@@ -344,6 +352,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/cookies': typeof CookiesRoute
+  '/get-started': typeof GetStartedRoute
   '/privacy': typeof PrivacyRoute
   '/subprocessors': typeof SubprocessorsRoute
   '/terms': typeof TermsRoute
@@ -386,6 +395,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/cookies'
+    | '/get-started'
     | '/privacy'
     | '/subprocessors'
     | '/terms'
@@ -426,6 +436,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/cookies'
+    | '/get-started'
     | '/privacy'
     | '/subprocessors'
     | '/terms'
@@ -466,6 +477,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/cookies'
+    | '/get-started'
     | '/privacy'
     | '/subprocessors'
     | '/terms'
@@ -508,6 +520,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   CookiesRoute: typeof CookiesRoute
+  GetStartedRoute: typeof GetStartedRoute
   PrivacyRoute: typeof PrivacyRoute
   SubprocessorsRoute: typeof SubprocessorsRoute
   TermsRoute: typeof TermsRoute
@@ -539,6 +552,13 @@ declare module '@tanstack/react-router' {
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/get-started': {
+      id: '/get-started'
+      path: '/get-started'
+      fullPath: '/get-started'
+      preLoaderRoute: typeof GetStartedRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cookies': {
@@ -877,6 +897,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   CookiesRoute: CookiesRoute,
+  GetStartedRoute: GetStartedRoute,
   PrivacyRoute: PrivacyRoute,
   SubprocessorsRoute: SubprocessorsRoute,
   TermsRoute: TermsRoute,
