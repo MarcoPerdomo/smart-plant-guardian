@@ -22,6 +22,7 @@ export const Route = createFileRoute("/subprocessors")({
       { name: "twitter:card", content: "summary" },
       { name: "robots", content: "index, follow" },
     ],
+    links: [{ rel: "canonical", href: CANONICAL }],
   }),
 });
 
