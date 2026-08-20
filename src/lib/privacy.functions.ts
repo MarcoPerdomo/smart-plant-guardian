@@ -2,11 +2,6 @@ import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
 
-type ExportBundle = {
-  table: string;
-  rows: Record<string, unknown>[];
-};
-
 const ownerTables = [
   "profiles",
   "user_plants",
@@ -35,31 +30,33 @@ export const exportMyData = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     const { supabase, userId } = context;
 
-    const bundles: ExportBundle[] = [];
+    const bundles: Record<string, unknown[]> = {};
 
     for (const table of ownerTables) {
-      const { data, error } = await supabase.from(table as string).select("*").eq("user_id", userId);
-      bundles.push({ table, rows: (data as Record<string, unknown>[]) ?? [] });
-      if (error) {
-        bundles[bundles.length - 1].rows = [];
-      }
+      const { data, error } = await (supabase.from(table) as never as { select: (cols: string) => { eq: (col: string, val: string) => Promise<{ data: unknown[] | null; error: Error | null }> } }).select("*").eq("user_id", userId);
+      bundles[table] = data ?? [];
+      if (error) bundles[table] = [];
     }
 
-    const extra: ExportBundle[] = [];
-
     const { data: ordersBuyer } = await supabase.from("marketplace_orders").select("*").eq("buyer_id", userId);
-    extra.push({ table: "marketplace_orders_buyer", rows: (ordersBuyer as Record<string, unknown>[]) ?? [] });
+    bundles["marketplace_orders_buyer"] = (ordersBuyer as unknown[]) ?? [];
 
     const { data: ordersSeller } = await supabase.from("marketplace_orders").select("*").eq("seller_id", userId);
-    extra.push({ table: "marketplace_orders_seller", rows: (ordersSeller as Record<string, unknown>[]) ?? [] });
+    bundles["marketplace_orders_seller"] = (ordersSeller as unknown[]) ?? [];
 
     const { data: friendshipsRequester } = await supabase.from("friendships").select("*").eq("requester_id", userId);
-    extra.push({ table: "friendships_requester", rows: (friendshipsRequester as Record<string, unknown>[]) ?? [] });
+    bundles["friendships_requester"] = (friendshipsRequester as unknown[]) ?? [];
 
     const { data: friendshipsAddressee } = await supabase.from("friendships").select("*").eq("addressee_id", userId);
-    extra.push({ table: "friendships_addressee", rows: (friendshipsAddressee as Record<string, unknown>[]) ?? [] });
+    bundles["friendships_addressee"] = (friendshipsAddressee as unknown[]) ?? [];
 
-    return { userId, exportedAt: new Date().toISOString(), bundles: [...bundles, ...extra] };
+    const payload = {
+      userId,
+      exportedAt: new Date().toISOString(),
+      bundles,
+    };
+
+    return { json: JSON.stringify(payload, null, 2) };
   });
 
 export const requestAccountDeletion = createServerFn({ method: "POST" })
