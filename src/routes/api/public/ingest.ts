@@ -19,6 +19,7 @@ export const Route = createFileRoute("/api/public/ingest")({
   server: {
     handlers: {
       POST: async ({ request }) => {
+        try {
         const secret = normalizeSecret(process.env.ARDUINO_INGEST_SECRET);
         if (!secret) return jsonError(500, "Ingestion not configured");
         const provided = normalizeSecret(request.headers.get("x-ingest-secret"));
