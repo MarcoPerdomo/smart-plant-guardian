@@ -67,8 +67,25 @@ function ListingDetail() {
   const q = quote({ itemCents: listing.price_cents, shippingCents: shipping, commissionBps: commission_bps });
   const available = listing.status === "active";
 
+  const productLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: listing.title,
+    description: listing.description ?? species?.care_tips ?? "Houseplant listed on the Verdant marketplace.",
+    ...(listing.cover_url ? { image: [listing.cover_url] } : {}),
+    ...(species?.common_name ? { category: species.common_name } : {}),
+    offers: {
+      "@type": "Offer",
+      url: `https://verdant-nl.app/marketplace/${id}`,
+      price: (listing.price_cents / 100).toFixed(2),
+      priceCurrency: "EUR",
+      availability: available ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+    },
+  };
+
   return (
     <div className="grid gap-8 lg:grid-cols-3">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productLd) }} />
       <div className="lg:col-span-2 space-y-6">
         <div className="rounded-2xl border border-border overflow-hidden bg-card">
           <div className="aspect-[16/10] bg-muted flex items-center justify-center">
