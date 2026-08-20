@@ -1452,6 +1452,17 @@ export type Database = {
         Args: { _conversation: string; _user: string }
         Returns: boolean
       }
+      marketplace_sellers_by_ids: {
+        Args: { _ids: string[] }
+        Returns: {
+          avatar_url: string
+          country_code: string
+          created_at: string
+          display_name: string
+          id: string
+          username: string
+        }[]
+      }
       profiles_public_by_ids: {
         Args: { _ids: string[] }
         Returns: {
