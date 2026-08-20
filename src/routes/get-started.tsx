@@ -14,6 +14,7 @@ export const Route = createFileRoute("/get-started")({
       { name: "twitter:card", content: "summary" },
       { name: "robots", content: "index, follow" },
     ],
+    links: [{ rel: "canonical", href: "https://leaf-buddy-system.lovable.app/get-started" }],
   }),
 });
 
