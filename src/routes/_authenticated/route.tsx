@@ -108,11 +108,12 @@ function AuthedLayout() {
 
   return (
     <div className="min-h-screen bg-background">
+      <BetaBanner />
       <header className="border-b border-border bg-card/50 backdrop-blur sticky top-0 z-40">
         <div className="mx-auto max-w-6xl px-4 h-14 flex items-center justify-between">
           <Link to="/dashboard" className="flex items-center gap-2 font-display text-lg font-semibold">
             <Leaf className="w-5 h-5 text-primary" />
-            Verdant
+            Verdant <BetaBadge className="ml-1" />
           </Link>
 
           <div className="flex items-center gap-1">
