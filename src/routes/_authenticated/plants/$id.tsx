@@ -4,7 +4,7 @@ import { getPlant, generateSummary, logWatering, addManualReading, deletePlant }
 import { computeStatus, predictNextWatering } from "@/lib/plant-status";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { ArrowLeft, Droplets, Sparkles, Trash2, Sun, Thermometer, Bug, Camera, CloudSun } from "lucide-react";
+import { ArrowLeft, Droplets, Sparkles, Trash2, Sun, Thermometer, Bug, Camera, CloudSun, RefreshCw, Cpu, Copy, Check } from "lucide-react";
 import { getWeatherForMe } from "@/lib/weather.functions";
 import { formatDistanceToNow, format } from "date-fns";
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
@@ -32,7 +32,7 @@ function PlantDetail() {
   const { id } = Route.useParams();
   const navigate = useNavigate();
   const qc = useQueryClient();
-  const { data, isLoading, dataUpdatedAt } = useQuery({
+  const { data, isLoading, dataUpdatedAt, refetch, isFetching } = useQuery({
     queryKey: ["plant", id],
     queryFn: () => getPlant({ data: { id } }),
     refetchInterval: 60_000,
@@ -107,7 +107,10 @@ function PlantDetail() {
 
       <header className="mt-2 flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="font-display text-4xl font-semibold">{plant.nickname}</h1>
+          <div className="flex items-center gap-2 flex-wrap">
+            <h1 className="font-display text-4xl font-semibold">{plant.nickname}</h1>
+            {plant.device_id && <DeviceIdChip deviceId={plant.device_id} />}
+          </div>
           <p className="text-muted-foreground text-sm">
             {species?.common_name ?? "Unknown species"}
             {species?.scientific_name && <span className="italic"> · {species.scientific_name}</span>}
@@ -126,6 +129,14 @@ function PlantDetail() {
         </div>
 
         <div className="flex gap-2">
+          <button
+            onClick={() => refetch()}
+            disabled={isFetching}
+            title="Refresh sensor data"
+            className="px-3 py-2 rounded-lg border border-border text-sm flex items-center gap-1.5 hover:bg-muted disabled:opacity-50"
+          >
+            <RefreshCw className={`w-4 h-4 ${isFetching ? "animate-spin" : ""}`} /> Refresh
+          </button>
           <button onClick={() => waterMut.mutate()} className="px-3 py-2 rounded-lg border border-border text-sm flex items-center gap-1.5 hover:bg-muted">
             <Droplets className="w-4 h-4" /> Log watering
           </button>
@@ -263,6 +274,31 @@ function PlantDetail() {
         </button>
       </div>
     </div>
+  );
+}
+
+function DeviceIdChip({ deviceId }: { deviceId: string }) {
+  const [copied, setCopied] = useState(false);
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(deviceId);
+      setCopied(true);
+      toast.success("Device ID copied");
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      toast.error("Could not copy");
+    }
+  };
+  return (
+    <button
+      onClick={handleCopy}
+      title={`Sensor device ID: ${deviceId} (click to copy)`}
+      className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-muted text-xs text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-colors"
+    >
+      <Cpu className="w-3 h-3" />
+      <span className="max-w-[140px] truncate font-mono">{deviceId}</span>
+      {copied ? <Check className="w-3 h-3 text-success" /> : <Copy className="w-3 h-3" />}
+    </button>
   );
 }
 
