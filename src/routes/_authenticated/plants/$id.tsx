@@ -107,7 +107,10 @@ function PlantDetail() {
 
       <header className="mt-2 flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="font-display text-4xl font-semibold">{plant.nickname}</h1>
+          <div className="flex items-center gap-2 flex-wrap">
+            <h1 className="font-display text-4xl font-semibold">{plant.nickname}</h1>
+            {plant.device_id && <DeviceIdChip deviceId={plant.device_id} />}
+          </div>
           <p className="text-muted-foreground text-sm">
             {species?.common_name ?? "Unknown species"}
             {species?.scientific_name && <span className="italic"> · {species.scientific_name}</span>}
@@ -126,6 +129,14 @@ function PlantDetail() {
         </div>
 
         <div className="flex gap-2">
+          <button
+            onClick={() => refetch()}
+            disabled={isFetching}
+            title="Refresh sensor data"
+            className="px-3 py-2 rounded-lg border border-border text-sm flex items-center gap-1.5 hover:bg-muted disabled:opacity-50"
+          >
+            <RefreshCw className={`w-4 h-4 ${isFetching ? "animate-spin" : ""}`} /> Refresh
+          </button>
           <button onClick={() => waterMut.mutate()} className="px-3 py-2 rounded-lg border border-border text-sm flex items-center gap-1.5 hover:bg-muted">
             <Droplets className="w-4 h-4" /> Log watering
           </button>
