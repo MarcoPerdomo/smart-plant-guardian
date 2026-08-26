@@ -32,7 +32,7 @@ function PlantDetail() {
   const { id } = Route.useParams();
   const navigate = useNavigate();
   const qc = useQueryClient();
-  const { data, isLoading, dataUpdatedAt } = useQuery({
+  const { data, isLoading, dataUpdatedAt, refetch, isFetching } = useQuery({
     queryKey: ["plant", id],
     queryFn: () => getPlant({ data: { id } }),
     refetchInterval: 60_000,
