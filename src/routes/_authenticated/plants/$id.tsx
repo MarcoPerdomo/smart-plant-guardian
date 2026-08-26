@@ -277,6 +277,31 @@ function PlantDetail() {
   );
 }
 
+function DeviceIdChip({ deviceId }: { deviceId: string }) {
+  const [copied, setCopied] = useState(false);
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(deviceId);
+      setCopied(true);
+      toast.success("Device ID copied");
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      toast.error("Could not copy");
+    }
+  };
+  return (
+    <button
+      onClick={handleCopy}
+      title={`Sensor device ID: ${deviceId} (click to copy)`}
+      className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-muted text-xs text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-colors"
+    >
+      <Cpu className="w-3 h-3" />
+      <span className="max-w-[140px] truncate font-mono">{deviceId}</span>
+      {copied ? <Check className="w-3 h-3 text-success" /> : <Copy className="w-3 h-3" />}
+    </button>
+  );
+}
+
 function Metric({ icon: Icon, label, value, sub }: { icon: React.ElementType; label: string; value: string; sub?: string }) {
   return (
     <div className="rounded-xl border border-border bg-card p-4">
