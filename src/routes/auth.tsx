@@ -259,7 +259,7 @@ async function recordAcceptance(userId: string) {
   );
 }
 
-function validateNext(value: string): string {
+function validateNext(value: string | undefined): string {
   if (!value) return "";
   try {
     const url = new URL(value, window.location.origin);
