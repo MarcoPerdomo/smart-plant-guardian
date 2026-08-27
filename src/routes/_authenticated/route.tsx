@@ -87,6 +87,7 @@ function AuthedLayout() {
 
   const dashboardActive = !!useMatch({ from: "/_authenticated/dashboard", shouldThrow: false });
   const plantsNewActive = !!useMatch({ from: "/_authenticated/plants/new", shouldThrow: false });
+  const chatActive = !!useMatch({ from: "/_authenticated/chat", shouldThrow: false });
   const feedActive = !!useMatch({ from: "/_authenticated/feed", shouldThrow: false });
   const friendsActive = !!useMatch({ from: "/_authenticated/friends", shouldThrow: false });
   const messagesIndexActive = !!useMatch({ from: "/_authenticated/messages/", shouldThrow: false });
