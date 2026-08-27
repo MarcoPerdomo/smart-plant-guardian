@@ -354,6 +354,17 @@ function AuthedLayout() {
                           <Plus className="w-4 h-4" /> Add plant
                         </Link>
                       </SheetClose>
+                      <SheetClose asChild>
+                        <Link
+                          to="/chat"
+                          className={cn(
+                            "flex items-center gap-2 px-3 py-2 rounded-md hover:bg-muted text-sm",
+                            chatActive && "bg-muted text-primary"
+                          )}
+                        >
+                          <Bot className="w-4 h-4" /> Ask Verdant
+                        </Link>
+                      </SheetClose>
                     </div>
                   </section>
 
