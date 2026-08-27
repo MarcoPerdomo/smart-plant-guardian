@@ -61,7 +61,7 @@ function Consent() {
       setError(error.message);
       return;
     }
-    const target = data?.redirect_url ?? data?.redirect_to;
+    const target = details?.redirect_url ?? details?.redirect_to;
     if (!target) {
       setBusy(false);
       setError("No redirect returned by the authorization server.");
@@ -70,7 +70,7 @@ function Consent() {
     window.location.href = target;
   }
 
-  const clientName = details?.client?.name ?? "an app";
+  const clientName = (details?.client as { name?: string } | undefined)?.name ?? "an app";
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-background px-4">
