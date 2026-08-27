@@ -155,6 +155,14 @@ function AuthedLayout() {
                       <Plus className="w-4 h-4" /> Add plant
                     </Link>
                   </DropdownMenuItem>
+                  <DropdownMenuItem
+                    asChild
+                    className={cn("flex items-center gap-2 cursor-pointer", activeItem(chatActive))}
+                  >
+                    <Link to="/chat">
+                      <Bot className="w-4 h-4" /> Ask Verdant
+                    </Link>
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
 
