@@ -31,31 +31,34 @@ function ChatPage() {
   const [audioLoading, setAudioLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  const transportRef = useRef(
+    new DefaultChatTransport({
+      api: "/api/chat",
+      prepareSendMessagesRequest: async ({ messages }) => {
+        const { data } = await supabase.auth.getSession();
+        const token = data.session?.access_token;
+        if (!token) throw new Error("Not authenticated");
+
+        const headers: Record<string, string> = {
+          Authorization: `Bearer ${token}`,
+        };
+
+        if (pendingAudioRef.current) {
+          const formData = new FormData();
+          formData.append("messages", JSON.stringify(messages));
+          formData.append("audio", pendingAudioRef.current, "recording.wav");
+          return { headers, body: formData as unknown as object };
+        }
+
+        headers["Content-Type"] = "application/json";
+        return { headers, body: { messages } };
+      },
+    })
+  );
+
   const chat = useChat({
     id: sessionId,
-    transport: new DefaultChatTransport({ api: "/api/chat" }),
-    experimental_prepareRequestBody: async ({ messages }) => {
-      const { data } = await supabase.auth.getSession();
-      const token = data.session?.access_token;
-      if (!token) throw new Error("Not authenticated");
-
-      const headers: Record<string, string> = {
-        Authorization: `Bearer ${token}`,
-      };
-
-      let body: BodyInit;
-      if (pendingAudioRef.current) {
-        const formData = new FormData();
-        formData.append("messages", JSON.stringify(messages));
-        formData.append("audio", pendingAudioRef.current, "recording.wav");
-        body = formData;
-      } else {
-        headers["Content-Type"] = "application/json";
-        body = JSON.stringify({ messages });
-      }
-
-      return { headers, body };
-    },
+    transport: transportRef.current,
   });
 
   const pendingAudioRef = useRef<Blob | null>(null);

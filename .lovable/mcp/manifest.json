@@ -1,0 +1,146 @@
+{
+  "version": 1,
+  "sdk_version": "0.28.0",
+  "path": "/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://yfszbddvgowfniqvzkcg.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "verdant",
+      "version": "0.1.0",
+      "title": "Verdant"
+    },
+    "tools": [
+      {
+        "name": "list_plants",
+        "title": "List my plants",
+        "description": "List the user's plants with their current status and latest sensor reading.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_plant_insights",
+        "title": "Get plant insights",
+        "description": "Get detailed insights for a specific plant by nickname or ID, including recent sensor readings, AI summaries, and watering history.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "identifier": {
+              "type": "string",
+              "description": "The plant nickname or UUID."
+            }
+          },
+          "required": [
+            "identifier"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "log_watering",
+        "title": "Log watering",
+        "description": "Log that the user watered a plant. Accepts the plant nickname or ID and an optional amount in milliliters.",
+        "annotations": {
+          "readOnlyHint": false,
+          "idempotentHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "identifier": {
+              "type": "string",
+              "description": "The plant nickname or UUID."
+            },
+            "amount_ml": {
+              "type": "integer",
+              "description": "Optional amount of water in milliliters."
+            }
+          },
+          "required": [
+            "identifier"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "add_plant",
+        "title": "Add plant",
+        "description": "Add a new plant to the user's garden. Requires a nickname and the plant species/common name.",
+        "annotations": {
+          "readOnlyHint": false,
+          "idempotentHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "nickname": {
+              "type": "string",
+              "description": "A friendly nickname for the plant."
+            },
+            "species_name": {
+              "type": "string",
+              "description": "The plant species or common name."
+            }
+          },
+          "required": [
+            "nickname",
+            "species_name"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "search_catalog",
+        "title": "Search plant catalog",
+        "description": "Search the Verdant plant catalog for care information about a houseplant.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "q": {
+              "type": "string",
+              "description": "Search term such as a common name or scientific name."
+            }
+          },
+          "required": [
+            "q"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}

@@ -32,7 +32,7 @@ export const Route = createFileRoute("/api/public/ingest")({
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const { data: plant, error: pErr } = await supabaseAdmin
-          .from("user_plants").select("id, user_id, nickname").eq("device_id", parsed.data.device_id).maybeSingle();
+          .from("user_plants").select("id, user_id, user_email, nickname").eq("device_id", parsed.data.device_id).maybeSingle();
         if (pErr) return jsonError(500, pErr.message);
         if (!plant) return jsonError(404, `No plant registered for device_id "${parsed.data.device_id}"`);
 
@@ -44,6 +44,7 @@ export const Route = createFileRoute("/api/public/ingest")({
 
         const { error: insErr } = await supabaseAdmin.from("sensor_readings").insert({
           plant_id: plant.id,
+          user_email: plant.user_email,
           soil_moisture: parsed.data.soil_moisture ?? null,
           temperature_c: parsed.data.temperature_c ?? null,
           humidity: parsed.data.humidity ?? null,

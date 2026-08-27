@@ -9,6 +9,17 @@ function getUserEmailFromClaims(claims: Record<string, unknown>): string | null 
   return null;
 }
 
+async function resolveUserId(email: string): Promise<string> {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data, error } = await supabaseAdmin
+    .from("profiles")
+    .select("id")
+    .eq("email", email.toLowerCase())
+    .maybeSingle();
+  if (error || !data?.id) throw new Error("User account not found");
+  return data.id;
+}
+
 async function findPlantByNicknameOrId(
   supabase: AuthenticatedSupabase,
   userEmail: string,
@@ -137,6 +148,7 @@ export async function logWatering(
 
   const { error } = await supabase.from("watering_events").insert({
     plant_id: plant.id,
+    user_email: email,
     watered_at: new Date().toISOString(),
     amount_ml: amountMl,
   });
@@ -161,6 +173,7 @@ export async function addUserPlant(
 ) {
   const email = userEmail || getUserEmailFromClaims(claims ?? {}) || "";
   if (!email) throw new Error("User email is required");
+  const userId = await resolveUserId(email);
 
   const { data: existingSpecies } = await supabase
     .from("plant_species")
@@ -215,6 +228,7 @@ export async function addUserPlant(
   const { data: row, error } = await supabase
     .from("user_plants")
     .insert({
+      user_id: userId,
       nickname: nickname.trim(),
       species_id: speciesId,
       user_email: email,

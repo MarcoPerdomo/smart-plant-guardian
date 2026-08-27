@@ -4,7 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { createLovableAiGatewayProvider } from "@/lib/ai-gateway.server";
 import { PLANT_CARE_SYSTEM_PROMPT } from "@/lib/assistant/prompts";
-import { createAssistantTools } from "@/lib/assistant/tools";
+import { createAssistantTools } from "@/lib/assistant/tools.server";
 
 function isNewSupabaseApiKey(value: string): boolean {
   return value.startsWith("sb_publishable_") || value.startsWith("sb_secret_");

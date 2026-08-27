@@ -8,6 +8,10 @@ import { BetaBadge } from "@/components/beta-banner";
 
 export const Route = createFileRoute("/auth")({
   ssr: false,
+  validateSearch: (s: Record<string, unknown>) => {
+    const next = typeof s.next === "string" ? s.next : "";
+    return next ? { next } : {};
+  },
   component: AuthPage,
   head: () => ({
     meta: [
@@ -27,6 +31,8 @@ const TERMS_VERSION = "2026-08-20";
 
 function AuthPage() {
   const navigate = useNavigate();
+  const { next: rawNext } = Route.useSearch();
+  const next = validateNext(rawNext);
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -47,14 +53,14 @@ function AuthPage() {
       if (data.user) {
         checkLegalAcceptance(data.user.id).then((accepted) => {
           if (accepted) {
-            navigate({ to: "/dashboard", replace: true });
+            navigate({ href: next || "/dashboard", replace: true });
           } else {
             setNeedsConsent(true);
           }
         });
       }
     });
-  }, [navigate]);
+  }, [navigate, next]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -64,44 +70,44 @@ function AuthPage() {
     }
     setLoading(true);
     try {
-      if (mode === "signup") {
-        const { data, error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: { emailRedirectTo: `${window.location.origin}/auth` },
-        });
-        if (error) throw error;
-        toast.success("Check your email to confirm, or sign in if confirmation is off.");
-        if (data.user) {
-          await recordAcceptance(data.user.id);
-        }
-      } else {
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
-        if (data.user) {
-          const accepted = await checkLegalAcceptance(data.user.id);
-          if (!accepted) {
-            setNeedsConsent(true);
-            setLoading(false);
-            return;
+        if (mode === "signup") {
+          const { data, error } = await supabase.auth.signUp({
+            email,
+            password,
+            options: { emailRedirectTo: `${window.location.origin}/auth?${new URLSearchParams({ next }).toString()}` },
+          });
+          if (error) throw error;
+          toast.success("Check your email to confirm, or sign in if confirmation is off.");
+          if (data.user) {
+            await recordAcceptance(data.user.id);
           }
+        } else {
+          const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+          if (error) throw error;
+          if (data.user) {
+            const accepted = await checkLegalAcceptance(data.user.id);
+            if (!accepted) {
+              setNeedsConsent(true);
+              setLoading(false);
+              return;
+            }
+          }
+          navigate({ href: next || "/dashboard", replace: true });
         }
-        navigate({ to: "/dashboard", replace: true });
+      } catch (err) {
+        toast.error(err instanceof Error ? err.message : "Something went wrong");
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Something went wrong");
-    } finally {
-      setLoading(false);
     }
-  }
 
-  async function handleGoogle() {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: { redirectTo: `${window.location.origin}/auth` },
-    });
-    if (error) toast.error(error.message);
-  }
+    async function handleGoogle() {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo: `${window.location.origin}/auth?${new URLSearchParams({ next }).toString()}` },
+      });
+      if (error) toast.error(error.message);
+    }
 
   async function submitConsent() {
     const { data } = await supabase.auth.getUser();
@@ -110,7 +116,7 @@ function AuthPage() {
       return;
     }
     await recordAcceptance(data.user.id);
-    navigate({ to: "/dashboard", replace: true });
+    navigate({ href: next || "/dashboard", replace: true });
   }
 
   if (needsConsent) {
@@ -251,4 +257,15 @@ async function recordAcceptance(userId: string) {
     ],
     { onConflict: "user_id,document,version" },
   );
+}
+
+function validateNext(value: string | undefined): string {
+  if (!value) return "";
+  try {
+    const url = new URL(value, window.location.origin);
+    if (url.origin !== window.location.origin) return "";
+    return url.pathname + url.search;
+  } catch {
+    return "";
+  }
 }
