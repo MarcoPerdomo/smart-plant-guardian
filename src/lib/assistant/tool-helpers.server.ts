@@ -11,9 +11,13 @@ function getUserEmailFromClaims(claims: Record<string, unknown>): string | null 
 
 async function resolveUserId(email: string): Promise<string> {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  const { data, error } = await supabaseAdmin.auth.admin.getUserByEmail(email);
-  if (error || !data.user) throw new Error("User account not found");
-  return data.user.id;
+  const { data, error } = await supabaseAdmin
+    .from("profiles")
+    .select("id")
+    .eq("email", email.toLowerCase())
+    .maybeSingle();
+  if (error || !data?.id) throw new Error("User account not found");
+  return data.id;
 }
 
 async function findPlantByNicknameOrId(
