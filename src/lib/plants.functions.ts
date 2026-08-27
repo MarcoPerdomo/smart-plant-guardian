@@ -261,8 +261,10 @@ export const generateSummary = createServerFn({ method: "POST" })
     const parsed = JSON.parse(content);
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const plantEmail = (plant as { user_email?: string | null }).user_email;
     const { data: saved, error } = await supabaseAdmin.from("ai_summaries").insert({
       plant_id: data.plant_id,
+      user_email: plantEmail,
       status: parsed.status ?? "unknown",
       summary: parsed.summary ?? "No summary available.",
       recommendations: parsed.recommendations ?? [],

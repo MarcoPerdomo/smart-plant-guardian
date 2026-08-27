@@ -5,7 +5,7 @@ import type { UIMessage } from "ai";
 
 export function ChatMessage({ message }: { message: UIMessage }) {
   const isUser = message.role === "user";
-  const text = message.parts?.map((p) => (p.type === "text" ? p.text : "")).join("") || String(message.content);
+  const text = message.parts?.map((p) => (p.type === "text" ? p.text : "")).join("");
 
   return (
     <div className={cn("flex gap-3", isUser ? "flex-row-reverse" : "flex-row")}>
