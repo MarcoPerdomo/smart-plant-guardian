@@ -16,8 +16,9 @@ export default defineTool({
     if (!ctx.isAuthenticated()) {
       return { content: [{ type: "text", text: "Not authenticated" }], isError: true };
     }
-    const supabase = supabaseForUser(ctx);
     const email = ctx.getUserEmail();
+    if (!email) return { content: [{ type: "text", text: "No email in token" }], isError: true };
+    const supabase = supabaseForUser(ctx);
     const result = await addUserPlant(supabase, email, nickname, species_name);
     return {
       content: [{ type: "text", text: `Added ${result.plant.nickname} to your garden.` }],
