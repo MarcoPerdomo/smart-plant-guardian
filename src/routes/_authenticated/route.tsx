@@ -26,6 +26,7 @@ import {
   MessageSquare,
   FileText,
   Cookie,
+  Bot,
 } from "lucide-react";
 
 import { WeatherChip } from "@/components/weather-chip";
