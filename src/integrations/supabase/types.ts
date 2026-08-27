@@ -22,6 +22,7 @@ export type Database = {
           recommendations: Json | null
           status: string
           summary: string
+          user_email: string | null
         }
         Insert: {
           created_at?: string
@@ -30,6 +31,7 @@ export type Database = {
           recommendations?: Json | null
           status: string
           summary: string
+          user_email?: string | null
         }
         Update: {
           created_at?: string
@@ -38,6 +40,7 @@ export type Database = {
           recommendations?: Json | null
           status?: string
           summary?: string
+          user_email?: string | null
         }
         Relationships: [
           {
@@ -909,6 +912,7 @@ export type Database = {
           severity: string
           title: string
           updated_at: string
+          user_email: string | null
           user_id: string
         }
         Insert: {
@@ -922,6 +926,7 @@ export type Database = {
           severity?: string
           title: string
           updated_at?: string
+          user_email?: string | null
           user_id: string
         }
         Update: {
@@ -935,6 +940,7 @@ export type Database = {
           severity?: string
           title?: string
           updated_at?: string
+          user_email?: string | null
           user_id?: string
         }
         Relationships: [
@@ -1172,6 +1178,7 @@ export type Database = {
           soil_moisture: number | null
           source_device: string | null
           temperature_c: number | null
+          user_email: string | null
         }
         Insert: {
           extra?: Json | null
@@ -1185,6 +1192,7 @@ export type Database = {
           soil_moisture?: number | null
           source_device?: string | null
           temperature_c?: number | null
+          user_email?: string | null
         }
         Update: {
           extra?: Json | null
@@ -1198,6 +1206,7 @@ export type Database = {
           soil_moisture?: number | null
           source_device?: string | null
           temperature_c?: number | null
+          user_email?: string | null
         }
         Relationships: [
           {
@@ -1225,6 +1234,7 @@ export type Database = {
           size: Database["public"]["Enums"]["plant_size"] | null
           species_id: string | null
           updated_at: string
+          user_email: string | null
           user_id: string
         }
         Insert: {
@@ -1242,6 +1252,7 @@ export type Database = {
           size?: Database["public"]["Enums"]["plant_size"] | null
           species_id?: string | null
           updated_at?: string
+          user_email?: string | null
           user_id: string
         }
         Update: {
@@ -1259,6 +1270,7 @@ export type Database = {
           size?: Database["public"]["Enums"]["plant_size"] | null
           species_id?: string | null
           updated_at?: string
+          user_email?: string | null
           user_id?: string
         }
         Relationships: [
@@ -1361,6 +1373,7 @@ export type Database = {
           id: string
           notes: string | null
           plant_id: string
+          user_email: string | null
           watered_at: string
         }
         Insert: {
@@ -1369,6 +1382,7 @@ export type Database = {
           id?: string
           notes?: string | null
           plant_id: string
+          user_email?: string | null
           watered_at?: string
         }
         Update: {
@@ -1377,6 +1391,7 @@ export type Database = {
           id?: string
           notes?: string | null
           plant_id?: string
+          user_email?: string | null
           watered_at?: string
         }
         Relationships: [
