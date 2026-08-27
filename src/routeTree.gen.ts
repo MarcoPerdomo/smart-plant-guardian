@@ -18,12 +18,14 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as NewsletterConfirmRouteImport } from './routes/newsletter.confirm'
+import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AuthenticatedWhatsNewRouteImport } from './routes/_authenticated/whats-new'
 import { Route as AuthenticatedWalletRouteImport } from './routes/_authenticated/wallet'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedFriendsRouteImport } from './routes/_authenticated/friends'
 import { Route as AuthenticatedFeedRouteImport } from './routes/_authenticated/feed'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedChatRouteImport } from './routes/_authenticated/chat'
 import { Route as AuthenticatedAdminRouteRouteImport } from './routes/_authenticated/admin/route'
 import { Route as AuthenticatedMessagesIndexRouteImport } from './routes/_authenticated/messages.index'
 import { Route as AuthenticatedMarketplaceIndexRouteImport } from './routes/_authenticated/marketplace/index'
@@ -94,6 +96,11 @@ const NewsletterConfirmRoute = NewsletterConfirmRouteImport.update({
   path: '/newsletter/confirm',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiChatRoute = ApiChatRouteImport.update({
+  id: '/api/chat',
+  path: '/api/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedWhatsNewRoute = AuthenticatedWhatsNewRouteImport.update({
   id: '/whats-new',
   path: '/whats-new',
@@ -122,6 +129,11 @@ const AuthenticatedFeedRoute = AuthenticatedFeedRouteImport.update({
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedChatRoute = AuthenticatedChatRouteImport.update({
+  id: '/chat',
+  path: '/chat',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedAdminRouteRoute = AuthenticatedAdminRouteRouteImport.update({
@@ -274,12 +286,14 @@ export interface FileRoutesByFullPath {
   '/subprocessors': typeof SubprocessorsRoute
   '/terms': typeof TermsRoute
   '/admin': typeof AuthenticatedAdminRouteRouteWithChildren
+  '/chat': typeof AuthenticatedChatRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/feed': typeof AuthenticatedFeedRoute
   '/friends': typeof AuthenticatedFriendsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/wallet': typeof AuthenticatedWalletRoute
   '/whats-new': typeof AuthenticatedWhatsNewRoute
+  '/api/chat': typeof ApiChatRoute
   '/newsletter/confirm': typeof NewsletterConfirmRoute
   '/admin/archive': typeof AuthenticatedAdminArchiveRoute
   '/admin/newsletter': typeof AuthenticatedAdminNewsletterRoute
@@ -314,12 +328,14 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/subprocessors': typeof SubprocessorsRoute
   '/terms': typeof TermsRoute
+  '/chat': typeof AuthenticatedChatRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/feed': typeof AuthenticatedFeedRoute
   '/friends': typeof AuthenticatedFriendsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/wallet': typeof AuthenticatedWalletRoute
   '/whats-new': typeof AuthenticatedWhatsNewRoute
+  '/api/chat': typeof ApiChatRoute
   '/newsletter/confirm': typeof NewsletterConfirmRoute
   '/admin/archive': typeof AuthenticatedAdminArchiveRoute
   '/admin/newsletter': typeof AuthenticatedAdminNewsletterRoute
@@ -357,12 +373,14 @@ export interface FileRoutesById {
   '/subprocessors': typeof SubprocessorsRoute
   '/terms': typeof TermsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteRouteWithChildren
+  '/_authenticated/chat': typeof AuthenticatedChatRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/feed': typeof AuthenticatedFeedRoute
   '/_authenticated/friends': typeof AuthenticatedFriendsRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/wallet': typeof AuthenticatedWalletRoute
   '/_authenticated/whats-new': typeof AuthenticatedWhatsNewRoute
+  '/api/chat': typeof ApiChatRoute
   '/newsletter/confirm': typeof NewsletterConfirmRoute
   '/_authenticated/admin/archive': typeof AuthenticatedAdminArchiveRoute
   '/_authenticated/admin/newsletter': typeof AuthenticatedAdminNewsletterRoute
@@ -400,12 +418,14 @@ export interface FileRouteTypes {
     | '/subprocessors'
     | '/terms'
     | '/admin'
+    | '/chat'
     | '/dashboard'
     | '/feed'
     | '/friends'
     | '/settings'
     | '/wallet'
     | '/whats-new'
+    | '/api/chat'
     | '/newsletter/confirm'
     | '/admin/archive'
     | '/admin/newsletter'
@@ -440,12 +460,14 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/subprocessors'
     | '/terms'
+    | '/chat'
     | '/dashboard'
     | '/feed'
     | '/friends'
     | '/settings'
     | '/wallet'
     | '/whats-new'
+    | '/api/chat'
     | '/newsletter/confirm'
     | '/admin/archive'
     | '/admin/newsletter'
@@ -482,12 +504,14 @@ export interface FileRouteTypes {
     | '/subprocessors'
     | '/terms'
     | '/_authenticated/admin'
+    | '/_authenticated/chat'
     | '/_authenticated/dashboard'
     | '/_authenticated/feed'
     | '/_authenticated/friends'
     | '/_authenticated/settings'
     | '/_authenticated/wallet'
     | '/_authenticated/whats-new'
+    | '/api/chat'
     | '/newsletter/confirm'
     | '/_authenticated/admin/archive'
     | '/_authenticated/admin/newsletter'
@@ -524,6 +548,7 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   SubprocessorsRoute: typeof SubprocessorsRoute
   TermsRoute: typeof TermsRoute
+  ApiChatRoute: typeof ApiChatRoute
   NewsletterConfirmRoute: typeof NewsletterConfirmRoute
   ApiPublicIngestRoute: typeof ApiPublicIngestRoute
   ApiPublicSnapshotUploadRoute: typeof ApiPublicSnapshotUploadRoute
@@ -596,6 +621,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NewsletterConfirmRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/chat': {
+      id: '/api/chat'
+      path: '/api/chat'
+      fullPath: '/api/chat'
+      preLoaderRoute: typeof ApiChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/whats-new': {
       id: '/_authenticated/whats-new'
       path: '/whats-new'
@@ -636,6 +668,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/chat': {
+      id: '/_authenticated/chat'
+      path: '/chat'
+      fullPath: '/chat'
+      preLoaderRoute: typeof AuthenticatedChatRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/admin': {
@@ -846,6 +885,7 @@ const AuthenticatedAdminRouteRouteWithChildren =
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRouteRoute: typeof AuthenticatedAdminRouteRouteWithChildren
+  AuthenticatedChatRoute: typeof AuthenticatedChatRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedFeedRoute: typeof AuthenticatedFeedRoute
   AuthenticatedFriendsRoute: typeof AuthenticatedFriendsRoute
@@ -868,6 +908,7 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRouteRoute: AuthenticatedAdminRouteRouteWithChildren,
+  AuthenticatedChatRoute: AuthenticatedChatRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedFeedRoute: AuthenticatedFeedRoute,
   AuthenticatedFriendsRoute: AuthenticatedFriendsRoute,
@@ -901,6 +942,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   SubprocessorsRoute: SubprocessorsRoute,
   TermsRoute: TermsRoute,
+  ApiChatRoute: ApiChatRoute,
   NewsletterConfirmRoute: NewsletterConfirmRoute,
   ApiPublicIngestRoute: ApiPublicIngestRoute,
   ApiPublicSnapshotUploadRoute: ApiPublicSnapshotUploadRoute,

@@ -26,6 +26,7 @@ import {
   MessageSquare,
   FileText,
   Cookie,
+  Bot,
 } from "lucide-react";
 
 import { WeatherChip } from "@/components/weather-chip";
@@ -86,6 +87,7 @@ function AuthedLayout() {
 
   const dashboardActive = !!useMatch({ from: "/_authenticated/dashboard", shouldThrow: false });
   const plantsNewActive = !!useMatch({ from: "/_authenticated/plants/new", shouldThrow: false });
+  const chatActive = !!useMatch({ from: "/_authenticated/chat", shouldThrow: false });
   const feedActive = !!useMatch({ from: "/_authenticated/feed", shouldThrow: false });
   const friendsActive = !!useMatch({ from: "/_authenticated/friends", shouldThrow: false });
   const messagesIndexActive = !!useMatch({ from: "/_authenticated/messages/", shouldThrow: false });
@@ -151,6 +153,14 @@ function AuthedLayout() {
                   >
                     <Link to="/plants/new">
                       <Plus className="w-4 h-4" /> Add plant
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    asChild
+                    className={cn("flex items-center gap-2 cursor-pointer", activeItem(chatActive))}
+                  >
+                    <Link to="/chat">
+                      <Bot className="w-4 h-4" /> Ask Verdant
                     </Link>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -342,6 +352,17 @@ function AuthedLayout() {
                           )}
                         >
                           <Plus className="w-4 h-4" /> Add plant
+                        </Link>
+                      </SheetClose>
+                      <SheetClose asChild>
+                        <Link
+                          to="/chat"
+                          className={cn(
+                            "flex items-center gap-2 px-3 py-2 rounded-md hover:bg-muted text-sm",
+                            chatActive && "bg-muted text-primary"
+                          )}
+                        >
+                          <Bot className="w-4 h-4" /> Ask Verdant
                         </Link>
                       </SheetClose>
                     </div>
