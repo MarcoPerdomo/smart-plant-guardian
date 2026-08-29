@@ -147,10 +147,9 @@ function PlantDetail() {
       </header>
 
       <div className="mt-6 grid gap-4 md:grid-cols-4">
-        <Metric icon={Droplets} label="Moisture" value={latest?.soil_moisture != null ? `${Math.round(latest.soil_moisture)}%` : "—"} sub={species?.soil_moisture_min != null ? `Target ${species.soil_moisture_min}-${species.soil_moisture_max}%` : ""} />
-        <Metric icon={Thermometer} label="Temp" value={latest?.temperature_c != null ? `${latest.temperature_c.toFixed(1)}°C` : "—"} sub={species?.temperature_min_c != null ? `${species.temperature_min_c}-${species.temperature_max_c}°C` : ""} />
-        <Metric icon={Sun} label="Light" value={latest?.light_lux != null ? `${Math.round(latest.light_lux)} lx` : "—"} sub={species?.light ?? ""} />
-        <Metric icon={Bug} label="Motion (24h)" value={String(readings.slice(0, 24).reduce((s, r) => s + (r.motion_events ?? 0), 0))} sub="Radar events" />
+        <Metric icon={Droplets} label="Moisture" hint={SENSOR_HINTS.moisture} value={latest?.soil_moisture != null ? `${Math.round(latest.soil_moisture)}%` : "—"} sub={species?.soil_moisture_min != null ? `Target ${species.soil_moisture_min}-${species.soil_moisture_max}%` : ""} />
+        <Metric icon={Thermometer} label="Temp" hint={SENSOR_HINTS.temp} value={latest?.temperature_c != null ? `${latest.temperature_c.toFixed(1)}°C` : "—"} sub={species?.temperature_min_c != null ? `${species.temperature_min_c}-${species.temperature_max_c}°C` : ""} />
+        <Metric icon={Sun} label="Light" hint={SENSOR_HINTS.light} value={latest?.light_lux != null ? `${Math.round(latest.light_lux)}%` : "—"} sub={species?.light ?? ""} />
       </div>
 
       <div className="mt-4 rounded-2xl border border-border bg-card p-5 flex items-center justify-between">
