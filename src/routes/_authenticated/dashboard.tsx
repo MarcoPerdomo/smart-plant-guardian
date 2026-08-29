@@ -6,6 +6,7 @@ import { computeStatus, predictNextWatering } from "@/lib/plant-status";
 import { Droplets, Sparkles, Sun, Leaf, Plus, Thermometer, CloudSun, Store } from "lucide-react";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
+import { SensorHint, SENSOR_HINTS } from "@/components/sensor-hint";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   component: Dashboard,
