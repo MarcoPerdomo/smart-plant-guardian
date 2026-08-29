@@ -42,6 +42,16 @@ export const Route = createFileRoute("/api/public/ingest")({
         const cleanedExtra = extra ? { ...extra } : null;
         if (cleanedExtra) delete cleanedExtra.snapshot_url;
 
+        // Grab the previous reading before inserting the new one (moisture-spike detection).
+        const { data: prev } = await supabaseAdmin
+          .from("sensor_readings")
+          .select("soil_moisture, recorded_at")
+          .eq("plant_id", plant.id)
+          .not("soil_moisture", "is", null)
+          .order("recorded_at", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
         const { error: insErr } = await supabaseAdmin.from("sensor_readings").insert({
           plant_id: plant.id,
           user_email: plant.user_email,
@@ -56,7 +66,14 @@ export const Route = createFileRoute("/api/public/ingest")({
         });
         if (insErr) return jsonError(500, insErr.message);
 
-        return Response.json({ ok: true, plant_id: plant.id });
+        let auto_watering_logged = false;
+        try {
+          auto_watering_logged = await maybeAutoLogWatering(plant, parsed.data.soil_moisture ?? null, prev);
+        } catch (e) {
+          console.error("[ingest] auto-watering check failed", e);
+        }
+
+        return Response.json({ ok: true, plant_id: plant.id, auto_watering_logged });
         } catch (err) {
           const message = err instanceof Error ? err.message : "Unexpected server error";
           console.error("[ingest] failed", message);
