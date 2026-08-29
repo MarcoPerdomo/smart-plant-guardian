@@ -136,9 +136,9 @@ function Dashboard() {
 
 
               <div className="mt-4 grid grid-cols-3 gap-2 text-center">
-                <Stat icon={Droplets} label="Moisture" value={latest?.soil_moisture != null ? `${Math.round(latest.soil_moisture)}%` : "—"} />
-                <Stat icon={Thermometer} label="Temp" value={latest?.temperature_c != null ? `${latest.temperature_c.toFixed(1)}°` : "—"} />
-                <Stat icon={Sun} label="Light" value={latest?.light_lux != null ? `${Math.round(latest.light_lux)}lx` : "—"} />
+                <Stat icon={Droplets} label="Moisture" hint={SENSOR_HINTS.moisture} value={latest?.soil_moisture != null ? `${Math.round(latest.soil_moisture)}%` : "—"} />
+                <Stat icon={Thermometer} label="Temp" hint={SENSOR_HINTS.temp} value={latest?.temperature_c != null ? `${latest.temperature_c.toFixed(1)}°` : "—"} />
+                <Stat icon={Sun} label="Light" hint={SENSOR_HINTS.light} value={latest?.light_lux != null ? `${Math.round(latest.light_lux)}%` : "—"} />
               </div>
 
               <div className="mt-4 flex items-center justify-between text-xs">
