@@ -6,6 +6,7 @@ import { computeStatus, predictNextWatering } from "@/lib/plant-status";
 import { Droplets, Sparkles, Sun, Leaf, Plus, Thermometer, CloudSun, Store } from "lucide-react";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
+import { SensorHint, SENSOR_HINTS } from "@/components/sensor-hint";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   component: Dashboard,
@@ -136,9 +137,9 @@ function Dashboard() {
 
 
               <div className="mt-4 grid grid-cols-3 gap-2 text-center">
-                <Stat icon={Droplets} label="Moisture" value={latest?.soil_moisture != null ? `${Math.round(latest.soil_moisture)}%` : "—"} />
-                <Stat icon={Thermometer} label="Temp" value={latest?.temperature_c != null ? `${latest.temperature_c.toFixed(1)}°` : "—"} />
-                <Stat icon={Sun} label="Light" value={latest?.light_lux != null ? `${Math.round(latest.light_lux)}lx` : "—"} />
+                <Stat icon={Droplets} label="Moisture" hint={SENSOR_HINTS.moisture} value={latest?.soil_moisture != null ? `${Math.round(latest.soil_moisture)}%` : "—"} />
+                <Stat icon={Thermometer} label="Temp" hint={SENSOR_HINTS.temp} value={latest?.temperature_c != null ? `${latest.temperature_c.toFixed(1)}°` : "—"} />
+                <Stat icon={Sun} label="Light" hint={SENSOR_HINTS.light} value={latest?.light_lux != null ? `${Math.round(latest.light_lux)}%` : "—"} />
               </div>
 
               <div className="mt-4 flex items-center justify-between text-xs">
@@ -182,12 +183,15 @@ function Dashboard() {
   );
 }
 
-function Stat({ icon: Icon, label, value }: { icon: React.ElementType; label: string; value: string }) {
+function Stat({ icon: Icon, label, value, hint }: { icon: React.ElementType; label: string; value: string; hint?: string }) {
   return (
     <div className="rounded-lg bg-muted/50 py-2">
       <Icon className="w-3.5 h-3.5 mx-auto text-muted-foreground" />
       <div className="text-sm font-semibold mt-1">{value}</div>
-      <div className="text-[10px] uppercase tracking-wide text-muted-foreground">{label}</div>
+      <div className="text-[10px] uppercase tracking-wide text-muted-foreground flex items-center justify-center gap-1">
+        {label}
+        {hint && <SensorHint text={hint} />}
+      </div>
     </div>
   );
 }

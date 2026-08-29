@@ -4,7 +4,8 @@ import { getPlant, generateSummary, logWatering, addManualReading, deletePlant }
 import { computeStatus, predictNextWatering } from "@/lib/plant-status";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { ArrowLeft, Droplets, Sparkles, Trash2, Sun, Thermometer, Bug, Camera, CloudSun, RefreshCw, Cpu, Copy, Check } from "lucide-react";
+import { ArrowLeft, Droplets, Sparkles, Trash2, Sun, Thermometer, Camera, CloudSun, RefreshCw, Cpu, Copy, Check } from "lucide-react";
+import { SensorHint, SENSOR_HINTS } from "@/components/sensor-hint";
 import { getWeatherForMe } from "@/lib/weather.functions";
 import { formatDistanceToNow, format } from "date-fns";
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
@@ -147,10 +148,9 @@ function PlantDetail() {
       </header>
 
       <div className="mt-6 grid gap-4 md:grid-cols-4">
-        <Metric icon={Droplets} label="Moisture" value={latest?.soil_moisture != null ? `${Math.round(latest.soil_moisture)}%` : "—"} sub={species?.soil_moisture_min != null ? `Target ${species.soil_moisture_min}-${species.soil_moisture_max}%` : ""} />
-        <Metric icon={Thermometer} label="Temp" value={latest?.temperature_c != null ? `${latest.temperature_c.toFixed(1)}°C` : "—"} sub={species?.temperature_min_c != null ? `${species.temperature_min_c}-${species.temperature_max_c}°C` : ""} />
-        <Metric icon={Sun} label="Light" value={latest?.light_lux != null ? `${Math.round(latest.light_lux)} lx` : "—"} sub={species?.light ?? ""} />
-        <Metric icon={Bug} label="Motion (24h)" value={String(readings.slice(0, 24).reduce((s, r) => s + (r.motion_events ?? 0), 0))} sub="Radar events" />
+        <Metric icon={Droplets} label="Moisture" hint={SENSOR_HINTS.moisture} value={latest?.soil_moisture != null ? `${Math.round(latest.soil_moisture)}%` : "—"} sub={species?.soil_moisture_min != null ? `Target ${species.soil_moisture_min}-${species.soil_moisture_max}%` : ""} />
+        <Metric icon={Thermometer} label="Temp" hint={SENSOR_HINTS.temp} value={latest?.temperature_c != null ? `${latest.temperature_c.toFixed(1)}°C` : "—"} sub={species?.temperature_min_c != null ? `${species.temperature_min_c}-${species.temperature_max_c}°C` : ""} />
+        <Metric icon={Sun} label="Light" hint={SENSOR_HINTS.light} value={latest?.light_lux != null ? `${Math.round(latest.light_lux)}%` : "—"} sub={species?.light ?? ""} />
       </div>
 
       <div className="mt-4 rounded-2xl border border-border bg-card p-5 flex items-center justify-between">
@@ -302,11 +302,12 @@ function DeviceIdChip({ deviceId }: { deviceId: string }) {
   );
 }
 
-function Metric({ icon: Icon, label, value, sub }: { icon: React.ElementType; label: string; value: string; sub?: string }) {
+function Metric({ icon: Icon, label, value, sub, hint }: { icon: React.ElementType; label: string; value: string; sub?: string; hint?: string }) {
   return (
     <div className="rounded-xl border border-border bg-card p-4">
       <div className="flex items-center gap-1.5 text-xs uppercase tracking-wide text-muted-foreground">
         <Icon className="w-3.5 h-3.5" /> {label}
+        {hint && <SensorHint text={hint} />}
       </div>
       <div className="mt-2 font-display text-2xl font-semibold">{value}</div>
       {sub && <div className="text-xs text-muted-foreground mt-0.5">{sub}</div>}
