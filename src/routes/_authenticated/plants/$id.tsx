@@ -301,11 +301,12 @@ function DeviceIdChip({ deviceId }: { deviceId: string }) {
   );
 }
 
-function Metric({ icon: Icon, label, value, sub }: { icon: React.ElementType; label: string; value: string; sub?: string }) {
+function Metric({ icon: Icon, label, value, sub, hint }: { icon: React.ElementType; label: string; value: string; sub?: string; hint?: string }) {
   return (
     <div className="rounded-xl border border-border bg-card p-4">
       <div className="flex items-center gap-1.5 text-xs uppercase tracking-wide text-muted-foreground">
         <Icon className="w-3.5 h-3.5" /> {label}
+        {hint && <SensorHint text={hint} />}
       </div>
       <div className="mt-2 font-display text-2xl font-semibold">{value}</div>
       {sub && <div className="text-xs text-muted-foreground mt-0.5">{sub}</div>}
