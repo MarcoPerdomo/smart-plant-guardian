@@ -182,12 +182,15 @@ function Dashboard() {
   );
 }
 
-function Stat({ icon: Icon, label, value }: { icon: React.ElementType; label: string; value: string }) {
+function Stat({ icon: Icon, label, value, hint }: { icon: React.ElementType; label: string; value: string; hint?: string }) {
   return (
     <div className="rounded-lg bg-muted/50 py-2">
       <Icon className="w-3.5 h-3.5 mx-auto text-muted-foreground" />
       <div className="text-sm font-semibold mt-1">{value}</div>
-      <div className="text-[10px] uppercase tracking-wide text-muted-foreground">{label}</div>
+      <div className="text-[10px] uppercase tracking-wide text-muted-foreground flex items-center justify-center gap-1">
+        {label}
+        {hint && <SensorHint text={hint} />}
+      </div>
     </div>
   );
 }
