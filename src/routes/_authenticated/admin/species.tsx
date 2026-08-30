@@ -3,8 +3,10 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
 import { adminListSpecies, adminUpdateSpecies } from "@/lib/admin.functions";
+import { listSpeciesMissingEnvironment, classifySpeciesEnvironment } from "@/lib/plants.functions";
 import { ArchiveDialog } from "@/components/admin-archive-dialog";
-import { Search, Trash2, Pencil } from "lucide-react";
+import { EnvironmentBadge } from "@/components/environment-badge";
+import { Search, Trash2, Pencil, Sparkles } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin/species")({
   component: AdminSpecies,
