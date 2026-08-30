@@ -16,7 +16,18 @@ export type SpeciesProfile = {
   common_pests?: string[];
   common_diseases?: string[];
   care_tips?: string | null;
+  environment?: "indoor" | "outdoor" | "both" | "unknown";
+  environment_notes?: string | null;
 };
+
+const ENVIRONMENTS = ["indoor", "outdoor", "both", "unknown"] as const;
+
+export function normalizeEnvironment(value: unknown): "indoor" | "outdoor" | "both" | "unknown" {
+  const v = typeof value === "string" ? value.trim().toLowerCase() : "";
+  return (ENVIRONMENTS as readonly string[]).includes(v)
+    ? (v as "indoor" | "outdoor" | "both" | "unknown")
+    : "unknown";
+}
 
 function normalizeNumber(value: unknown): number | null {
   if (typeof value === "number") return value;
