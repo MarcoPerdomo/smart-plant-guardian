@@ -143,10 +143,29 @@ export const createPlant = createServerFn({ method: "POST" })
     location: z.string().nullable(),
     device_id: z.string().nullable(),
     notes: z.string().nullable(),
+    environment: z.enum(["indoor", "outdoor"]).default("indoor"),
   }).parse(i))
   .handler(async ({ data, context }) => {
     const { data: row, error } = await context.supabase
       .from("user_plants").insert({ ...data, user_id: context.userId }).select().single();
+    if (error) throw new Error(error.message);
+    return row;
+  });
+
+export const updatePlantEnvironment = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((i: unknown) => z.object({
+    plant_id: z.string().uuid(),
+    environment: z.enum(["indoor", "outdoor"]),
+  }).parse(i))
+  .handler(async ({ data, context }) => {
+    const { data: row, error } = await context.supabase
+      .from("user_plants")
+      .update({ environment: data.environment })
+      .eq("id", data.plant_id)
+      .eq("user_id", context.userId)
+      .select("id, environment")
+      .single();
     if (error) throw new Error(error.message);
     return row;
   });
