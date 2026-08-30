@@ -159,7 +159,7 @@ function NewPlant() {
           </div>
 
           {selectedSpecies && (
-            <div className="mt-4 flex items-center gap-3 rounded-lg border border-border bg-muted/40 p-3">
+            <div className="mt-4 flex items-start gap-3 rounded-lg border border-border bg-muted/40 p-3">
               {selectedSpecies.image_url ? (
                 <img src={selectedSpecies.image_url} alt={selectedSpecies.common_name} className="w-14 h-14 rounded-lg object-cover shrink-0" />
               ) : (
@@ -173,6 +173,10 @@ function NewPlant() {
                 {selectedSpecies.scientific_name && (
                   <p className="text-xs text-muted-foreground italic truncate">{selectedSpecies.scientific_name}</p>
                 )}
+                <EnvironmentBadge value={selectedSpecies.environment} className="mt-1.5" />
+                {selectedSpecies.environment_notes && (
+                  <p className="mt-1.5 text-xs text-muted-foreground">{selectedSpecies.environment_notes}</p>
+                )}
               </div>
             </div>
           )}
@@ -182,6 +186,30 @@ function NewPlant() {
           <h2 className="font-medium">2. Details</h2>
           <input value={nickname} onChange={(e) => setNickname(e.target.value)} placeholder="Nickname (e.g. Monty)" className="w-full px-3 py-2.5 rounded-lg border border-input bg-background text-sm" />
           <input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Location (e.g. living room window)" className="w-full px-3 py-2.5 rounded-lg border border-input bg-background text-sm" />
+
+          <div>
+            <p className="text-sm font-medium">Where does this plant live?</p>
+            <div className="mt-2 flex gap-2">
+              {(["indoor", "outdoor"] as const).map((env) => (
+                <button
+                  key={env}
+                  type="button"
+                  onClick={() => setEnvironment(env)}
+                  className={`flex-1 px-3 py-2 rounded-lg border text-sm capitalize ${
+                    environment === env ? "border-primary bg-primary/10 text-primary font-medium" : "border-input hover:bg-muted"
+                  }`}
+                >
+                  {env}
+                </button>
+              ))}
+            </div>
+            {recommended !== "unknown" && recommended !== "both" && recommended !== environment && (
+              <p className="mt-2 text-xs text-accent">
+                Heads up: {selectedSpecies?.common_name} is usually kept {recommended}s.
+              </p>
+            )}
+          </div>
+
           <textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Notes" rows={2} className="w-full px-3 py-2.5 rounded-lg border border-input bg-background text-sm" />
         </section>
 
