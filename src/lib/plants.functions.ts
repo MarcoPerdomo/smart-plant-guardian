@@ -442,6 +442,83 @@ export const generateSpeciesImageFor = createServerFn({ method: "POST" })
     return { name: row.common_name, status: "created" as const };
   });
 
+// Fill in the indoor/outdoor classification for catalog rows still marked unknown.
+export const listSpeciesMissingEnvironment = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((i: unknown) => z.object({ limit: z.number().min(1).max(500).default(200) }).parse(i))
+  .handler(async ({ data, context }) => {
+    const { data: isAdmin } = await context.supabase.rpc("has_role", {
+      _user_id: context.userId,
+      _role: "admin",
+    });
+    if (!isAdmin) throw new Error("Forbidden: admin role required");
+    const { data: rows, error } = await context.supabase
+      .from("plant_species")
+      .select("id, common_name")
+      .eq("environment", "unknown")
+      .is("archived_at", null)
+      .order("common_name")
+      .limit(data.limit);
+    if (error) throw new Error(error.message);
+    return rows ?? [];
+  });
+
+export const classifySpeciesEnvironment = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((i: unknown) => z.object({ id: z.string().uuid() }).parse(i))
+  .handler(async ({ data, context }) => {
+    const { data: isAdmin } = await context.supabase.rpc("has_role", {
+      _user_id: context.userId,
+      _role: "admin",
+    });
+    if (!isAdmin) throw new Error("Forbidden: admin role required");
+
+    const apiKey = process.env.LOVABLE_API_KEY;
+    if (!apiKey) throw new Error("AI unavailable");
+
+    const { data: row, error: rowError } = await context.supabase
+      .from("plant_species")
+      .select("id, common_name, scientific_name, environment")
+      .eq("id", data.id)
+      .single();
+    if (rowError) throw new Error(rowError.message);
+    if (row.environment && row.environment !== "unknown") {
+      return { name: row.common_name, status: "skipped" as const };
+    }
+
+    const label = row.scientific_name ? `${row.common_name} (${row.scientific_name})` : row.common_name;
+    const prompt = `You are a botanist. For the plant "${label}", return ONLY JSON (no markdown) with:
+environment (exactly one of "indoor", "outdoor", "both" — where it is normally grown in a temperate Northern-European climate),
+environment_notes (1-2 sentences explaining the recommendation, e.g. minimum outdoor temperature or whether it can summer outside).`;
+
+    const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+      body: JSON.stringify({
+        model: "google/gemini-3.6-flash",
+        messages: [{ role: "user", content: prompt }],
+        response_format: { type: "json_object" },
+      }),
+    });
+    if (!resp.ok) throw new Error(`AI error ${resp.status}: ${await resp.text()}`);
+    const json = await resp.json();
+    const parsed = JSON.parse(json.choices?.[0]?.message?.content ?? "{}");
+
+    const value = String(parsed.environment ?? "").trim().toLowerCase();
+    const environment = ["indoor", "outdoor", "both"].includes(value) ? value : "unknown";
+    const notes = typeof parsed.environment_notes === "string" ? parsed.environment_notes.trim() || null : null;
+
+    const { error } = await context.supabase
+      .from("plant_species")
+      .update({ environment, environment_notes: notes })
+      .eq("id", row.id);
+    if (error) throw new Error(error.message);
+
+    return { name: row.common_name, status: "updated" as const, environment };
+  });
+
+
+
 
 // ============ Plant photo journal ============
 export const listPlantPhotos = createServerFn({ method: "POST" })
