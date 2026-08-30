@@ -54,8 +54,12 @@ function NewPlant() {
 
   const results = (() => {
     const q = query.trim().toLowerCase();
-    if (!q) return catalog;
     return catalog.filter((s) => {
+      if (envFilter !== "all") {
+        const env = normalizeEnvironment(s.environment);
+        if (env !== envFilter && env !== "both") return false;
+      }
+      if (!q) return true;
       const hay = [s.common_name, s.scientific_name, ...(s.aliases ?? [])]
         .filter(Boolean).join(" ").toLowerCase();
       return hay.includes(q);
@@ -64,7 +68,7 @@ function NewPlant() {
 
   const aiLookup = useMutation({
     mutationFn: (name: string) => lookupOrCreateSpecies({ data: { name } }),
-    onSuccess: (row) => { setSelectedSpecies({ id: row.id, common_name: row.common_name, scientific_name: row.scientific_name, image_url: row.image_url }); toast.success(`Added ${row.common_name} to your catalog`); },
+    onSuccess: (row) => { selectSpecies(row); toast.success(`Added ${row.common_name} to your catalog`); },
     onError: (e: Error) => toast.error(e.message),
   });
 
@@ -72,6 +76,7 @@ function NewPlant() {
     mutationFn: () => createPlant({ data: {
       nickname, species_id: selectedSpecies?.id ?? null,
       location: location || null, device_id: deviceId || null, notes: notes || null,
+      environment,
     } }),
     onSuccess: (row) => { toast.success("Plant added"); navigate({ to: "/plants/$id", params: { id: row.id } }); },
     onError: (e: Error) => toast.error(e.message),
