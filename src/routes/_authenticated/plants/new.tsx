@@ -101,6 +101,20 @@ function NewPlant() {
             />
           </div>
 
+          <div className="mt-3 flex gap-1.5">
+            {(["all", "indoor", "outdoor"] as const).map((f) => (
+              <button
+                key={f}
+                onClick={() => setEnvFilter(f)}
+                className={`px-3 py-1 rounded-full border text-xs capitalize ${
+                  envFilter === f ? "bg-primary text-primary-foreground border-primary" : "border-border text-muted-foreground hover:bg-muted"
+                }`}
+              >
+                {f}
+              </button>
+            ))}
+          </div>
+
           <p className="mt-2 text-xs text-muted-foreground">
             {isLoading
               ? "Loading catalog…"
@@ -114,7 +128,7 @@ function NewPlant() {
             {results.map((s) => (
               <button
                 key={s.id}
-                onClick={() => setSelectedSpecies({ id: s.id, common_name: s.common_name, scientific_name: s.scientific_name, image_url: s.image_url })}
+                onClick={() => selectSpecies(s)}
                 className={`w-full text-left px-2 py-2 rounded-md hover:bg-muted text-sm flex items-center gap-3 ${selectedSpecies?.id === s.id ? "bg-muted" : ""}`}
               >
                 {s.image_url ? (
