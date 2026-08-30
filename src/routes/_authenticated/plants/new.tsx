@@ -19,11 +19,31 @@ function NewPlant() {
     common_name: string;
     scientific_name?: string | null;
     image_url?: string | null;
+    environment?: string | null;
+    environment_notes?: string | null;
   } | null>(null);
   const [nickname, setNickname] = useState("");
   const [location, setLocation] = useState("");
   const [deviceId, setDeviceId] = useState("");
   const [notes, setNotes] = useState("");
+  const [environment, setEnvironment] = useState<"indoor" | "outdoor">("indoor");
+  const [envFilter, setEnvFilter] = useState<"all" | "indoor" | "outdoor">("all");
+
+  const recommended = normalizeEnvironment(selectedSpecies?.environment);
+
+  const selectSpecies = (s: {
+    id: string;
+    common_name: string;
+    scientific_name?: string | null;
+    image_url?: string | null;
+    environment?: string | null;
+    environment_notes?: string | null;
+  }) => {
+    setSelectedSpecies(s);
+    const env = normalizeEnvironment(s.environment);
+    if (env === "indoor" || env === "outdoor") setEnvironment(env);
+  };
+
 
   // Load the whole catalog once, then filter locally so typing is instant.
   const { data: catalog = [], isLoading, isError, error } = useQuery({
