@@ -824,6 +824,8 @@ export type Database = {
           common_pests: string[] | null
           created_at: string
           description: string | null
+          environment: string
+          environment_notes: string | null
           fertilizer: string | null
           humidity_max: number | null
           humidity_min: number | null
@@ -852,6 +854,8 @@ export type Database = {
           common_pests?: string[] | null
           created_at?: string
           description?: string | null
+          environment?: string
+          environment_notes?: string | null
           fertilizer?: string | null
           humidity_max?: number | null
           humidity_min?: number | null
@@ -880,6 +884,8 @@ export type Database = {
           common_pests?: string[] | null
           created_at?: string
           description?: string | null
+          environment?: string
+          environment_notes?: string | null
           fertilizer?: string | null
           humidity_max?: number | null
           humidity_min?: number | null
@@ -1225,6 +1231,7 @@ export type Database = {
           archived_by: string | null
           created_at: string
           device_id: string | null
+          environment: string
           id: string
           image_url: string | null
           last_watered_at: string | null
@@ -1243,6 +1250,7 @@ export type Database = {
           archived_by?: string | null
           created_at?: string
           device_id?: string | null
+          environment?: string
           id?: string
           image_url?: string | null
           last_watered_at?: string | null
@@ -1261,6 +1269,7 @@ export type Database = {
           archived_by?: string | null
           created_at?: string
           device_id?: string | null
+          environment?: string
           id?: string
           image_url?: string | null
           last_watered_at?: string | null
