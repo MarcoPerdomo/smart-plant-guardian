@@ -98,6 +98,8 @@ If the plant name is unknown, still return your best general guess.`;
     common_pests: Array.isArray(parsed.common_pests) ? parsed.common_pests.map((s: unknown) => String(s)) : [],
     common_diseases: Array.isArray(parsed.common_diseases) ? parsed.common_diseases.map((s: unknown) => String(s)) : [],
     care_tips: normalizeString(parsed.care_tips),
+    environment: normalizeEnvironment(parsed.environment),
+    environment_notes: normalizeString(parsed.environment_notes),
   };
 }
 
