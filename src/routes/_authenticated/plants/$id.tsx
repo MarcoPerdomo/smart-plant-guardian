@@ -284,6 +284,53 @@ function PlantDetail() {
   );
 }
 
+function EnvironmentControl({
+  plantId,
+  value,
+  speciesEnvironment,
+  speciesNotes,
+  onChanged,
+}: {
+  plantId: string;
+  value: unknown;
+  speciesEnvironment: string | null;
+  speciesNotes: string | null;
+  onChanged: () => void;
+}) {
+  const current = value === "outdoor" ? "outdoor" : "indoor";
+  const mut = useMutation({
+    mutationFn: (environment: "indoor" | "outdoor") =>
+      updatePlantEnvironment({ data: { plant_id: plantId, environment } }),
+    onSuccess: (_r, environment) => { toast.success(`Marked as ${environment}`); onChanged(); },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  return (
+    <div className="mt-2 flex flex-wrap items-center gap-2">
+      <div className="inline-flex rounded-full border border-border overflow-hidden">
+        {(["indoor", "outdoor"] as const).map((env) => (
+          <button
+            key={env}
+            onClick={() => current !== env && mut.mutate(env)}
+            disabled={mut.isPending}
+            className={`px-3 py-1 text-xs capitalize ${current === env ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted"}`}
+          >
+            {env}
+          </button>
+        ))}
+      </div>
+      {speciesEnvironment && speciesEnvironment !== "unknown" && (
+        <span
+          title={speciesNotes ?? undefined}
+          className="text-xs text-muted-foreground inline-flex items-center gap-1"
+        >
+          Typically <EnvironmentBadge value={speciesEnvironment} />
+        </span>
+      )}
+    </div>
+  );
+}
+
 function DeviceIdChip({ deviceId }: { deviceId: string }) {
   const [copied, setCopied] = useState(false);
   const handleCopy = async () => {
