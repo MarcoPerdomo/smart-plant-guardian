@@ -7,6 +7,7 @@ import { Droplets, Sparkles, Sun, Leaf, Plus, Thermometer, CloudSun, Store } fro
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
 import { SensorHint, SENSOR_HINTS } from "@/components/sensor-hint";
+import { EnvironmentBadge } from "@/components/environment-badge";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   component: Dashboard,
