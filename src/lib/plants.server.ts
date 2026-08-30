@@ -16,7 +16,18 @@ export type SpeciesProfile = {
   common_pests?: string[];
   common_diseases?: string[];
   care_tips?: string | null;
+  environment?: "indoor" | "outdoor" | "both" | "unknown";
+  environment_notes?: string | null;
 };
+
+const ENVIRONMENTS = ["indoor", "outdoor", "both", "unknown"] as const;
+
+export function normalizeEnvironment(value: unknown): "indoor" | "outdoor" | "both" | "unknown" {
+  const v = typeof value === "string" ? value.trim().toLowerCase() : "";
+  return (ENVIRONMENTS as readonly string[]).includes(v)
+    ? (v as "indoor" | "outdoor" | "both" | "unknown")
+    : "unknown";
+}
 
 function normalizeNumber(value: unknown): number | null {
   if (typeof value === "number") return value;
@@ -47,7 +58,10 @@ scientific_name (string), description (1-2 sentences), light (short phrase like 
 water_frequency_days (single integer, average days between waterings), soil_moisture_min (int 0-100), soil_moisture_max (int 0-100),
 temperature_min_c (number), temperature_max_c (number), humidity_min (int 0-100), humidity_max (int 0-100),
 soil (short), fertilizer (short), toxicity (short), common_pests (string array of 2-4),
-common_diseases (string array of 2-4), care_tips (single string, 2-3 sentences). If the plant name is unknown, still return your best general guess.`;
+common_diseases (string array of 2-4), care_tips (single string, 2-3 sentences),
+environment (exactly one of "indoor", "outdoor", "both" — where this plant is normally grown in a temperate Northern-European climate),
+environment_notes (single string, 1-2 sentences explaining the indoor/outdoor recommendation, e.g. minimum outdoor temperature or whether it can summer outside).
+If the plant name is unknown, still return your best general guess.`;
 
   const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
     method: "POST",
@@ -84,6 +98,8 @@ common_diseases (string array of 2-4), care_tips (single string, 2-3 sentences).
     common_pests: Array.isArray(parsed.common_pests) ? parsed.common_pests.map((s: unknown) => String(s)) : [],
     common_diseases: Array.isArray(parsed.common_diseases) ? parsed.common_diseases.map((s: unknown) => String(s)) : [],
     care_tips: normalizeString(parsed.care_tips),
+    environment: normalizeEnvironment(parsed.environment),
+    environment_notes: normalizeString(parsed.environment_notes),
   };
 }
 

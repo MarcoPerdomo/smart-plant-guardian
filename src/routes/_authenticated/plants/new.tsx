@@ -4,6 +4,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { searchSpecies, lookupOrCreateSpecies, createPlant } from "@/lib/plants.functions";
 import { toast } from "sonner";
 import { ArrowLeft, Search, Sparkles, Leaf } from "lucide-react";
+import { EnvironmentBadge, normalizeEnvironment } from "@/components/environment-badge";
 
 export const Route = createFileRoute("/_authenticated/plants/new")({
   component: NewPlant,
@@ -18,11 +19,31 @@ function NewPlant() {
     common_name: string;
     scientific_name?: string | null;
     image_url?: string | null;
+    environment?: string | null;
+    environment_notes?: string | null;
   } | null>(null);
   const [nickname, setNickname] = useState("");
   const [location, setLocation] = useState("");
   const [deviceId, setDeviceId] = useState("");
   const [notes, setNotes] = useState("");
+  const [environment, setEnvironment] = useState<"indoor" | "outdoor">("indoor");
+  const [envFilter, setEnvFilter] = useState<"all" | "indoor" | "outdoor">("all");
+
+  const recommended = normalizeEnvironment(selectedSpecies?.environment);
+
+  const selectSpecies = (s: {
+    id: string;
+    common_name: string;
+    scientific_name?: string | null;
+    image_url?: string | null;
+    environment?: string | null;
+    environment_notes?: string | null;
+  }) => {
+    setSelectedSpecies(s);
+    const env = normalizeEnvironment(s.environment);
+    if (env === "indoor" || env === "outdoor") setEnvironment(env);
+  };
+
 
   // Load the whole catalog once, then filter locally so typing is instant.
   const { data: catalog = [], isLoading, isError, error } = useQuery({
@@ -33,8 +54,12 @@ function NewPlant() {
 
   const results = (() => {
     const q = query.trim().toLowerCase();
-    if (!q) return catalog;
     return catalog.filter((s) => {
+      if (envFilter !== "all") {
+        const env = normalizeEnvironment(s.environment);
+        if (env !== envFilter && env !== "both") return false;
+      }
+      if (!q) return true;
       const hay = [s.common_name, s.scientific_name, ...(s.aliases ?? [])]
         .filter(Boolean).join(" ").toLowerCase();
       return hay.includes(q);
@@ -43,7 +68,7 @@ function NewPlant() {
 
   const aiLookup = useMutation({
     mutationFn: (name: string) => lookupOrCreateSpecies({ data: { name } }),
-    onSuccess: (row) => { setSelectedSpecies({ id: row.id, common_name: row.common_name, scientific_name: row.scientific_name, image_url: row.image_url }); toast.success(`Added ${row.common_name} to your catalog`); },
+    onSuccess: (row) => { selectSpecies(row); toast.success(`Added ${row.common_name} to your catalog`); },
     onError: (e: Error) => toast.error(e.message),
   });
 
@@ -51,6 +76,7 @@ function NewPlant() {
     mutationFn: () => createPlant({ data: {
       nickname, species_id: selectedSpecies?.id ?? null,
       location: location || null, device_id: deviceId || null, notes: notes || null,
+      environment,
     } }),
     onSuccess: (row) => { toast.success("Plant added"); navigate({ to: "/plants/$id", params: { id: row.id } }); },
     onError: (e: Error) => toast.error(e.message),
@@ -75,6 +101,20 @@ function NewPlant() {
             />
           </div>
 
+          <div className="mt-3 flex gap-1.5">
+            {(["all", "indoor", "outdoor"] as const).map((f) => (
+              <button
+                key={f}
+                onClick={() => setEnvFilter(f)}
+                className={`px-3 py-1 rounded-full border text-xs capitalize ${
+                  envFilter === f ? "bg-primary text-primary-foreground border-primary" : "border-border text-muted-foreground hover:bg-muted"
+                }`}
+              >
+                {f}
+              </button>
+            ))}
+          </div>
+
           <p className="mt-2 text-xs text-muted-foreground">
             {isLoading
               ? "Loading catalog…"
@@ -88,7 +128,7 @@ function NewPlant() {
             {results.map((s) => (
               <button
                 key={s.id}
-                onClick={() => setSelectedSpecies({ id: s.id, common_name: s.common_name, scientific_name: s.scientific_name, image_url: s.image_url })}
+                onClick={() => selectSpecies(s)}
                 className={`w-full text-left px-2 py-2 rounded-md hover:bg-muted text-sm flex items-center gap-3 ${selectedSpecies?.id === s.id ? "bg-muted" : ""}`}
               >
                 {s.image_url ? (
@@ -102,6 +142,7 @@ function NewPlant() {
                   <span className="font-medium">{s.common_name}</span>{" "}
                   <span className="text-muted-foreground italic">{s.scientific_name}</span>
                 </span>
+                <EnvironmentBadge value={s.environment} className="shrink-0 hidden sm:inline-flex" />
                 {s.source === "ai" && <Sparkles className="w-3.5 h-3.5 text-accent shrink-0" />}
               </button>
             ))}
@@ -118,7 +159,7 @@ function NewPlant() {
           </div>
 
           {selectedSpecies && (
-            <div className="mt-4 flex items-center gap-3 rounded-lg border border-border bg-muted/40 p-3">
+            <div className="mt-4 flex items-start gap-3 rounded-lg border border-border bg-muted/40 p-3">
               {selectedSpecies.image_url ? (
                 <img src={selectedSpecies.image_url} alt={selectedSpecies.common_name} className="w-14 h-14 rounded-lg object-cover shrink-0" />
               ) : (
@@ -132,6 +173,10 @@ function NewPlant() {
                 {selectedSpecies.scientific_name && (
                   <p className="text-xs text-muted-foreground italic truncate">{selectedSpecies.scientific_name}</p>
                 )}
+                <EnvironmentBadge value={selectedSpecies.environment} className="mt-1.5" />
+                {selectedSpecies.environment_notes && (
+                  <p className="mt-1.5 text-xs text-muted-foreground">{selectedSpecies.environment_notes}</p>
+                )}
               </div>
             </div>
           )}
@@ -141,6 +186,30 @@ function NewPlant() {
           <h2 className="font-medium">2. Details</h2>
           <input value={nickname} onChange={(e) => setNickname(e.target.value)} placeholder="Nickname (e.g. Monty)" className="w-full px-3 py-2.5 rounded-lg border border-input bg-background text-sm" />
           <input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Location (e.g. living room window)" className="w-full px-3 py-2.5 rounded-lg border border-input bg-background text-sm" />
+
+          <div>
+            <p className="text-sm font-medium">Where does this plant live?</p>
+            <div className="mt-2 flex gap-2">
+              {(["indoor", "outdoor"] as const).map((env) => (
+                <button
+                  key={env}
+                  type="button"
+                  onClick={() => setEnvironment(env)}
+                  className={`flex-1 px-3 py-2 rounded-lg border text-sm capitalize ${
+                    environment === env ? "border-primary bg-primary/10 text-primary font-medium" : "border-input hover:bg-muted"
+                  }`}
+                >
+                  {env}
+                </button>
+              ))}
+            </div>
+            {recommended !== "unknown" && recommended !== "both" && recommended !== environment && (
+              <p className="mt-2 text-xs text-accent">
+                Heads up: {selectedSpecies?.common_name} is usually kept {recommended}.
+              </p>
+            )}
+          </div>
+
           <textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Notes" rows={2} className="w-full px-3 py-2.5 rounded-lg border border-input bg-background text-sm" />
         </section>
 

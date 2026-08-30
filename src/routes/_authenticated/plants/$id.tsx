@@ -1,11 +1,12 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getPlant, generateSummary, logWatering, addManualReading, deletePlant } from "@/lib/plants.functions";
+import { getPlant, generateSummary, logWatering, addManualReading, deletePlant, updatePlantEnvironment } from "@/lib/plants.functions";
 import { computeStatus, predictNextWatering } from "@/lib/plant-status";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { ArrowLeft, Droplets, Sparkles, Trash2, Sun, Thermometer, Camera, CloudSun, RefreshCw, Cpu, Copy, Check } from "lucide-react";
 import { SensorHint, SENSOR_HINTS } from "@/components/sensor-hint";
+import { EnvironmentBadge } from "@/components/environment-badge";
 import { getWeatherForMe } from "@/lib/weather.functions";
 import { formatDistanceToNow, format } from "date-fns";
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
@@ -117,6 +118,13 @@ function PlantDetail() {
             {species?.scientific_name && <span className="italic"> · {species.scientific_name}</span>}
             {plant.location && <span> · {plant.location}</span>}
           </p>
+          <EnvironmentControl
+            plantId={plant.id}
+            value={plant.environment}
+            speciesEnvironment={species?.environment ?? null}
+            speciesNotes={species?.environment_notes ?? null}
+            onChanged={invalidate}
+          />
           <p className="mt-1 text-xs text-muted-foreground flex items-center gap-1.5">
             <span className="relative flex h-1.5 w-1.5">
               <span className="absolute inline-flex h-full w-full rounded-full bg-success opacity-75 animate-ping" />
@@ -273,6 +281,53 @@ function PlantDetail() {
           <Trash2 className="w-3.5 h-3.5" /> Delete plant
         </button>
       </div>
+    </div>
+  );
+}
+
+function EnvironmentControl({
+  plantId,
+  value,
+  speciesEnvironment,
+  speciesNotes,
+  onChanged,
+}: {
+  plantId: string;
+  value: unknown;
+  speciesEnvironment: string | null;
+  speciesNotes: string | null;
+  onChanged: () => void;
+}) {
+  const current = value === "outdoor" ? "outdoor" : "indoor";
+  const mut = useMutation({
+    mutationFn: (environment: "indoor" | "outdoor") =>
+      updatePlantEnvironment({ data: { plant_id: plantId, environment } }),
+    onSuccess: (_r, environment) => { toast.success(`Marked as ${environment}`); onChanged(); },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  return (
+    <div className="mt-2 flex flex-wrap items-center gap-2">
+      <div className="inline-flex rounded-full border border-border overflow-hidden">
+        {(["indoor", "outdoor"] as const).map((env) => (
+          <button
+            key={env}
+            onClick={() => current !== env && mut.mutate(env)}
+            disabled={mut.isPending}
+            className={`px-3 py-1 text-xs capitalize ${current === env ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted"}`}
+          >
+            {env}
+          </button>
+        ))}
+      </div>
+      {speciesEnvironment && speciesEnvironment !== "unknown" && (
+        <span
+          title={speciesNotes ?? undefined}
+          className="text-xs text-muted-foreground inline-flex items-center gap-1"
+        >
+          Typically <EnvironmentBadge value={speciesEnvironment} />
+        </span>
+      )}
     </div>
   );
 }
