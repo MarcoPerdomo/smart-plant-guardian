@@ -180,3 +180,60 @@ function AdminSpecies() {
     </div>
   );
 }
+
+function EnvironmentBackfill() {
+  const qc = useQueryClient();
+  const [running, setRunning] = useState(false);
+  const [progress, setProgress] = useState<{ done: number; total: number; current: string } | null>(null);
+
+  const { data: pending, isLoading, refetch } = useQuery({
+    queryKey: ["admin", "species", "missing-environment"],
+    queryFn: () => listSpeciesMissingEnvironment({ data: { limit: 200 } }),
+  });
+
+  async function run() {
+    const rows = pending ?? [];
+    if (!rows.length) return;
+    setRunning(true);
+    let done = 0;
+    let failed = 0;
+    for (const row of rows) {
+      setProgress({ done, total: rows.length, current: row.common_name });
+      try {
+        await classifySpeciesEnvironment({ data: { id: row.id } });
+      } catch {
+        failed += 1;
+      }
+      done += 1;
+    }
+    setProgress(null);
+    setRunning(false);
+    toast[failed ? "warning" : "success"](
+      failed ? `Classified ${done - failed} of ${done}, ${failed} failed` : `Classified ${done} species`,
+    );
+    await Promise.all([refetch(), qc.invalidateQueries({ queryKey: ["admin", "species"] })]);
+  }
+
+  return (
+    <div className="rounded-lg border border-border p-4 flex flex-wrap items-center justify-between gap-3">
+      <div>
+        <h2 className="font-medium text-sm">Indoor / outdoor backfill</h2>
+        <p className="text-xs text-muted-foreground mt-0.5">
+          {isLoading
+            ? "Checking catalog…"
+            : progress
+              ? `Classifying ${progress.current} (${progress.done + 1}/${progress.total})…`
+              : `${pending?.length ?? 0} species still unclassified.`}
+        </p>
+      </div>
+      <button
+        onClick={run}
+        disabled={running || isLoading || !(pending?.length)}
+        className="px-3 py-2 rounded-md text-sm bg-primary text-primary-foreground disabled:opacity-50 inline-flex items-center gap-1.5"
+      >
+        <Sparkles className="w-3.5 h-3.5" />
+        {running ? "Running…" : "Classify with AI"}
+      </button>
+    </div>
+  );
+}
