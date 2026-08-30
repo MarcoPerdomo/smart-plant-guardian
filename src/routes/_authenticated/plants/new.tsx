@@ -205,7 +205,7 @@ function NewPlant() {
             </div>
             {recommended !== "unknown" && recommended !== "both" && recommended !== environment && (
               <p className="mt-2 text-xs text-accent">
-                Heads up: {selectedSpecies?.common_name} is usually kept {recommended}s.
+                Heads up: {selectedSpecies?.common_name} is usually kept {recommended}.
               </p>
             )}
           </div>
