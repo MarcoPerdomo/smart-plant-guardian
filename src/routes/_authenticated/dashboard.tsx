@@ -116,6 +116,7 @@ function Dashboard() {
                     {species?.common_name ?? "Unknown species"}
                     {p.location ? ` · ${p.location}` : ""}
                   </div>
+                  <EnvironmentBadge value={p.environment} className="mt-1.5" />
                 </div>
                 <span className={`text-xs font-medium px-2 py-1 rounded-full ${statusColor}`}>{status.label}</span>
               </div>
