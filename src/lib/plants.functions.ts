@@ -354,6 +354,8 @@ export const importOneSpecies = createServerFn({ method: "POST" })
       common_pests: parsed.common_pests ?? [],
       common_diseases: parsed.common_diseases ?? [],
       care_tips: parsed.care_tips ?? null,
+      environment: parsed.environment ?? "unknown",
+      environment_notes: parsed.environment_notes ?? null,
       image_url: imageUrl,
       source: "batch",
     });
