@@ -117,6 +117,13 @@ function PlantDetail() {
             {species?.scientific_name && <span className="italic"> · {species.scientific_name}</span>}
             {plant.location && <span> · {plant.location}</span>}
           </p>
+          <EnvironmentControl
+            plantId={plant.id}
+            value={plant.environment}
+            speciesEnvironment={species?.environment ?? null}
+            speciesNotes={species?.environment_notes ?? null}
+            onChanged={invalidate}
+          />
           <p className="mt-1 text-xs text-muted-foreground flex items-center gap-1.5">
             <span className="relative flex h-1.5 w-1.5">
               <span className="absolute inline-flex h-full w-full rounded-full bg-success opacity-75 animate-ping" />
