@@ -96,9 +96,12 @@ function AdminSpecies() {
                 <div className="text-sm text-muted-foreground truncate italic">
                   {s.scientific_name ?? "—"}
                 </div>
-                <div className="text-xs text-muted-foreground">
-                  {s.light ?? "light ?"} · water every {s.water_frequency_days ?? "?"}d ·{" "}
-                  {s.image_url ? "has image" : "no image"}
+                <div className="text-xs text-muted-foreground flex items-center gap-2 flex-wrap">
+                  <span>
+                    {s.light ?? "light ?"} · water every {s.water_frequency_days ?? "?"}d ·{" "}
+                    {s.image_url ? "has image" : "no image"}
+                  </span>
+                  <EnvironmentBadge value={s.environment} showUnknown />
                 </div>
               </div>
               <div className="flex gap-1.5 shrink-0">
