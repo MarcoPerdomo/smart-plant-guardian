@@ -4,6 +4,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { searchSpecies, lookupOrCreateSpecies, createPlant } from "@/lib/plants.functions";
 import { toast } from "sonner";
 import { ArrowLeft, Search, Sparkles, Leaf } from "lucide-react";
+import { EnvironmentBadge, normalizeEnvironment } from "@/components/environment-badge";
 
 export const Route = createFileRoute("/_authenticated/plants/new")({
   component: NewPlant,
