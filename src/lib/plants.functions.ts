@@ -80,6 +80,10 @@ If the plant name is unknown, still return your best general guess.`;
       common_pests: parsed.common_pests ?? [],
       common_diseases: parsed.common_diseases ?? [],
       care_tips: parsed.care_tips ?? null,
+      environment: ["indoor", "outdoor", "both"].includes(String(parsed.environment ?? "").toLowerCase())
+        ? String(parsed.environment).toLowerCase()
+        : "unknown",
+      environment_notes: parsed.environment_notes ?? null,
       source: "ai",
     }).select().single();
     if (error) throw new Error(error.message);
