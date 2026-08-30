@@ -142,6 +142,7 @@ function NewPlant() {
                   <span className="font-medium">{s.common_name}</span>{" "}
                   <span className="text-muted-foreground italic">{s.scientific_name}</span>
                 </span>
+                <EnvironmentBadge value={s.environment} className="shrink-0 hidden sm:inline-flex" />
                 {s.source === "ai" && <Sparkles className="w-3.5 h-3.5 text-accent shrink-0" />}
               </button>
             ))}
