@@ -59,6 +59,8 @@ function AdminSpecies() {
 
   return (
     <div className="space-y-4">
+      <EnvironmentBackfill />
+
       <div className="flex flex-wrap items-center gap-3">
         <div className="relative flex-1 min-w-[240px] max-w-md">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
