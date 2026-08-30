@@ -58,7 +58,10 @@ scientific_name (string), description (1-2 sentences), light (short phrase like 
 water_frequency_days (single integer, average days between waterings), soil_moisture_min (int 0-100), soil_moisture_max (int 0-100),
 temperature_min_c (number), temperature_max_c (number), humidity_min (int 0-100), humidity_max (int 0-100),
 soil (short), fertilizer (short), toxicity (short), common_pests (string array of 2-4),
-common_diseases (string array of 2-4), care_tips (single string, 2-3 sentences). If the plant name is unknown, still return your best general guess.`;
+common_diseases (string array of 2-4), care_tips (single string, 2-3 sentences),
+environment (exactly one of "indoor", "outdoor", "both" — where this plant is normally grown in a temperate Northern-European climate),
+environment_notes (single string, 1-2 sentences explaining the indoor/outdoor recommendation, e.g. minimum outdoor temperature or whether it can summer outside).
+If the plant name is unknown, still return your best general guess.`;
 
   const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
     method: "POST",
