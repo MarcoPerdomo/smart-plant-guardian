@@ -511,6 +511,11 @@ function AuthedLayout() {
                     </h3>
                     <div className="space-y-1">
                       <SheetClose asChild>
+                        <Link to="/about" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-muted text-sm">
+                          <FileText className="w-4 h-4" /> About
+                        </Link>
+                      </SheetClose>
+                      <SheetClose asChild>
                         <Link to="/privacy" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-muted text-sm">
                           <FileText className="w-4 h-4" /> Privacy
                         </Link>
