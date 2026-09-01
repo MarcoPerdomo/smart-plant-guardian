@@ -1,28 +1,30 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Leaf, Droplets, Sun, Bug, Cpu, Sparkles } from "lucide-react";
+import { Leaf, Droplets, Sun, Bug, Cpu, Sparkles, Users, Store } from "lucide-react";
 import { VisitorWeatherChip } from "@/components/weather-chip";
 import { BetaBadge, BetaBanner } from "@/components/beta-banner";
+
+const CANONICAL = "https://verdant-nl.app/";
 
 export const Route = createFileRoute("/")({
   component: Landing,
   head: () => ({
     meta: [
-      { title: "Verdant (Beta) — Smart houseplant care with Arduino sensors" },
-      { name: "description", content: "Join the Verdant beta. Plug in Arduino sensors, track soil moisture, humidity, light and pests, and get AI care summaries for every houseplant." },
-      { property: "og:title", content: "Verdant (Beta) — Smart houseplant care with Arduino sensors" },
-      { property: "og:description", content: "Join the Verdant beta. Plug in Arduino sensors, track soil moisture, humidity, light and pests, and get AI care summaries for every houseplant." },
-      { property: "og:url", content: "https://verdant-nl.app/" },
+      { title: "Verdant (Beta) — Europe's network of connected plant lovers" },
+      { name: "description", content: "Join the Verdant beta. Track your plants with AI care advice, connect with fellow plant lovers, and trade plants in a community-powered marketplace." },
+      { property: "og:title", content: "Verdant (Beta) — Europe's network of connected plant lovers" },
+      { property: "og:description", content: "Join the Verdant beta. Track your plants with AI care advice, connect with fellow plant lovers, and trade plants in a community-powered marketplace." },
+      { property: "og:url", content: CANONICAL },
       { property: "og:type", content: "website" },
       { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/da919765-0158-4e54-ae2e-6664086f85cd" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Verdant (Beta) — Smart houseplant care with Arduino sensors" },
-      { name: "twitter:description", content: "Join the Verdant beta. Plug in Arduino sensors, track soil moisture, humidity, light and pests, and get AI care summaries for every houseplant." },
+      { name: "twitter:title", content: "Verdant (Beta) — Europe's network of connected plant lovers" },
+      { name: "twitter:description", content: "Join the Verdant beta. Track your plants with AI care advice, connect with fellow plant lovers, and trade plants in a community-powered marketplace." },
       { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/da919765-0158-4e54-ae2e-6664086f85cd" },
       { name: "robots", content: "index, follow" },
     ],
-    links: [{ rel: "canonical", href: "https://verdant-nl.app/" }],
+    links: [{ rel: "canonical", href: CANONICAL }],
   }),
 });
 
@@ -48,6 +50,9 @@ function Landing() {
             <Leaf className="w-5 h-5 text-primary" /> Verdant <BetaBadge />
           </div>
           <div className="flex items-center gap-3">
+            <Link to="/about" className="hidden sm:inline-flex text-sm px-3 py-1.5 rounded-md border border-border hover:bg-muted">
+              About us
+            </Link>
             <Link to="/get-started" className="hidden sm:inline-flex text-sm px-3 py-1.5 rounded-md border border-border hover:bg-muted">
               Get started
             </Link>
@@ -61,12 +66,12 @@ function Landing() {
       <section className="mx-auto max-w-6xl px-4 py-20 grid md:grid-cols-2 gap-12 items-center">
         <div>
           <h1 className="font-display text-5xl md:text-6xl font-semibold leading-tight text-foreground">
-            Give your plants<br/>a voice.
+            Turn every home<br/>into a green sanctuary.
           </h1>
           <p className="mt-6 text-lg text-muted-foreground max-w-lg">
-            Plug in an Arduino with moisture, humidity, light, and radar sensors.
-            Verdant tracks every plant's health, predicts the next watering,
-            and sends you an AI-written care summary a few times a week.
+            Verdant blends AI plant care with a community of plant lovers.
+            Track your indoor jungle, get weekly care summaries, and trade plants
+            with friends across Europe.
           </p>
           <p className="mt-3 inline-flex items-center gap-2 text-sm text-primary font-medium">
             <BetaBadge /> Now open for beta testers.
@@ -75,8 +80,8 @@ function Landing() {
             <Link to="/auth" className="px-5 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:opacity-90">
               Start growing
             </Link>
-            <Link to="/get-started" className="px-5 py-3 rounded-lg border border-border font-medium hover:bg-muted">
-              Get started
+            <Link to="/about" className="px-5 py-3 rounded-lg border border-border font-medium hover:bg-muted">
+              About us
             </Link>
           </div>
           <div className="mt-6">
@@ -90,12 +95,12 @@ function Landing() {
 
       <section id="how" className="mx-auto max-w-6xl px-4 py-16 grid md:grid-cols-3 gap-6">
         {[
-          { icon: Cpu, title: "Plug in your Arduino", body: "Point your device at our secure ingestion endpoint. Every reading lands in your dashboard." },
-          { icon: Droplets, title: "Track everything", body: "Soil moisture, humidity, temperature, light, and radar-based pest activity — all timestamped." },
-          { icon: Sparkles, title: "AI care advisor", body: "Get watering predictions, disease warnings, and a friendly summary a few times per week." },
-          { icon: Sun, title: "Ideal conditions", body: "Every plant in your dashboard is matched against a growing catalog of care profiles." },
-          { icon: Bug, title: "Pest detection", body: "Radar motion events at odd hours flag potential pest activity before you spot damage." },
-          { icon: Leaf, title: "Any houseplant", body: "Curated care profiles for the classics; AI fills in the rest on demand." },
+          { icon: Sparkles, title: "AI care advisor", body: "Get watering predictions, disease warnings, and a friendly summary a few times per week based on your plants and local weather." },
+          { icon: Users, title: "Plant community", body: "Follow friends, celebrate new growth, comment on photos and message fellow plant lovers." },
+          { icon: Store, title: "Trusted marketplace", body: "Buy, sell and trade plants with transparent history. Verdant charges a small commission on completed sales." },
+          { icon: Cpu, title: "Optional sensors", body: "Plug in an Arduino or Raspberry Pi to log soil moisture, humidity, light and motion events automatically." },
+          { icon: Droplets, title: "Track everything", body: "Soil moisture, humidity, temperature, light and pest activity — all timestamped in one place." },
+          { icon: Sun, title: "Ideal conditions", body: "Every plant is matched against a growing catalogue of care profiles for indoor and outdoor life." },
         ].map(({ icon: Icon, title, body }) => (
           <div key={title} className="rounded-xl border border-border bg-card p-6">
             <Icon className="w-6 h-6 text-primary" />
@@ -109,6 +114,7 @@ function Landing() {
         <div className="mx-auto max-w-6xl px-4 py-6 text-sm text-muted-foreground flex flex-col sm:flex-row gap-4 justify-between">
           <span>© 2026 Verdant <BetaBadge /></span>
           <div className="flex flex-wrap gap-4">
+            <Link to="/about" className="hover:text-foreground">About</Link>
             <Link to="/privacy" className="hover:text-foreground">Privacy</Link>
             <Link to="/terms" className="hover:text-foreground">Terms</Link>
             <Link to="/cookies" className="hover:text-foreground">Cookies</Link>
