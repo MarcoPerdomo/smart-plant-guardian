@@ -43,12 +43,15 @@ function ChatPage() {
           Authorization: `Bearer ${token}`,
         };
 
-        if (pendingAudioRef.current) {
+        const audio = pendingAudioRef.current;
+        if (audio) {
+          pendingAudioRef.current = null;
           const formData = new FormData();
           formData.append("messages", JSON.stringify(messages));
-          formData.append("audio", pendingAudioRef.current, "recording.wav");
+          formData.append("audio", audio, "recording.wav");
           return { headers, body: formData as unknown as object };
         }
+
 
         headers["Content-Type"] = "application/json";
         return { headers, body: { messages } };
