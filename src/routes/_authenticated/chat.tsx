@@ -83,10 +83,12 @@ function ChatPage() {
   const handleAudio = (blob: Blob) => {
     pendingAudioRef.current = blob;
     setAudioLoading(true);
-    chat.sendMessage({ text: " " });
-    pendingAudioRef.current = null;
-    setAudioLoading(false);
+    void Promise.resolve(chat.sendMessage({ text: " " })).finally(() => {
+      pendingAudioRef.current = null;
+      setAudioLoading(false);
+    });
   };
+
 
   const isLoading = chat.status === "submitted" || chat.status === "streaming" || audioLoading;
 
