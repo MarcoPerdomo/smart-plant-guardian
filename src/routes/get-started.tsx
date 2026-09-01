@@ -2,19 +2,24 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Leaf, Cpu, Droplets, Sun, Wifi, Camera, ArrowRight } from "lucide-react";
 import { BetaBadge } from "@/components/beta-banner";
 
+const CANONICAL = "https://verdant-nl.app/get-started";
+
 export const Route = createFileRoute("/get-started")({
   component: GetStartedPage,
   head: () => ({
     meta: [
       { title: "Get Started — Verdant (Beta)" },
-      { name: "description", content: "Set up your Verdant beta account, connect sensors and start tracking your houseplants." },
+      { name: "description", content: "Join the Verdant beta: set up your account, add plants, connect optional sensors and become part of Europe's network of connected plant lovers." },
       { property: "og:title", content: "Get Started — Verdant (Beta)" },
-      { property: "og:description", content: "Set up your Verdant beta account, connect sensors and start tracking your houseplants." },
+      { property: "og:description", content: "Join the Verdant beta: set up your account, add plants, connect optional sensors and become part of Europe's network of connected plant lovers." },
+      { property: "og:url", content: CANONICAL },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
+      { name: "twitter:title", content: "Get Started — Verdant (Beta)" },
+      { name: "twitter:description", content: "Join the Verdant beta: set up your account, add plants, connect optional sensors and become part of Europe's network of connected plant lovers." },
       { name: "robots", content: "index, follow" },
     ],
-    links: [{ rel: "canonical", href: "https://leaf-buddy-system.lovable.app/get-started" }],
+    links: [{ rel: "canonical", href: CANONICAL }],
   }),
 });
 
@@ -35,7 +40,7 @@ function GetStartedPage() {
       <main className="mx-auto max-w-3xl px-4 py-12">
         <h1 className="font-display text-4xl font-semibold">Get started with Verdant</h1>
         <p className="mt-2 text-muted-foreground">
-          A quick guide for beta testers: set up your account, add a plant, and start logging data.
+          A quick guide for beta testers: set up your account, add a plant, and start tracking data.
         </p>
 
         <div className="mt-8 space-y-6">
@@ -53,7 +58,7 @@ function GetStartedPage() {
             </p>
           </Step>
 
-          <Step number={3} title="Connect sensors" icon={Cpu}>
+          <Step number={3} title="Connect sensors (optional)" icon={Cpu}>
             <p className="text-sm text-muted-foreground">
               If you have an Arduino or Raspberry Pi, copy the ingestion URL and secret from Settings and point your
               device at it. Supported readings include soil moisture, temperature, humidity, light and motion events.
@@ -95,6 +100,7 @@ function GetStartedPage() {
         <div className="mx-auto max-w-6xl px-4 py-6 text-sm text-muted-foreground flex flex-wrap gap-4 justify-between">
           <span>© 2026 Verdant <BetaBadge /></span>
           <div className="flex gap-4">
+            <Link to="/about" className="hover:text-foreground">About</Link>
             <Link to="/privacy" className="hover:text-foreground">Privacy</Link>
             <Link to="/terms" className="hover:text-foreground">Terms</Link>
             <Link to="/cookies" className="hover:text-foreground">Cookies</Link>
