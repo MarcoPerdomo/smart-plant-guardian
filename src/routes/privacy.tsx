@@ -1,18 +1,21 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { BetaBadge } from "@/components/beta-banner";
+import { SimpleHeader, SimpleFooter } from "@/components/simple-layout";
 
-const CANONICAL = "https://leaf-buddy-system.lovable.app/privacy";
+const CANONICAL = "https://verdant-nl.app/privacy";
 
 export const Route = createFileRoute("/privacy")({
   component: PrivacyPage,
   head: () => ({
     meta: [
       { title: "Privacy Policy — Verdant (Beta)" },
-      { name: "description", content: "How Verdant handles your personal data during the beta." },
+      { name: "description", content: "How Verdant handles your personal data while building Europe's network of connected plant lovers." },
       { property: "og:title", content: "Privacy Policy — Verdant (Beta)" },
-      { property: "og:description", content: "How Verdant handles your personal data during the beta." },
+      { property: "og:description", content: "How Verdant handles your personal data while building Europe's network of connected plant lovers." },
+      { property: "og:url", content: CANONICAL },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
+      { name: "twitter:title", content: "Privacy Policy — Verdant (Beta)" },
+      { name: "twitter:description", content: "How Verdant handles your personal data while building Europe's network of connected plant lovers." },
       { name: "robots", content: "index, follow" },
     ],
     links: [{ rel: "canonical", href: CANONICAL }],
@@ -107,36 +110,5 @@ function PrivacyPage() {
       </main>
       <SimpleFooter />
     </div>
-  );
-}
-
-function SimpleHeader() {
-  return (
-    <header className="border-b border-border">
-      <div className="mx-auto max-w-6xl px-4 h-14 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2 font-display text-lg font-semibold">
-          <span className="text-primary">Verdant</span>
-          <BetaBadge />
-        </Link>
-        <Link to="/auth" className="text-sm px-3 py-1.5 rounded-md bg-primary text-primary-foreground">
-          Sign in
-        </Link>
-      </div>
-    </header>
-  );
-}
-
-function SimpleFooter() {
-  return (
-    <footer className="border-t border-border">
-      <div className="mx-auto max-w-6xl px-4 py-6 text-sm text-muted-foreground flex flex-wrap gap-4 justify-between">
-        <span>© 2026 Verdant (Beta)</span>
-        <div className="flex gap-4">
-          <Link to="/privacy" className="hover:text-foreground">Privacy</Link>
-          <Link to="/terms" className="hover:text-foreground">Terms</Link>
-          <Link to="/cookies" className="hover:text-foreground">Cookies</Link>
-        </div>
-      </div>
-    </footer>
   );
 }
