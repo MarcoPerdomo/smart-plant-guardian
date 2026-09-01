@@ -43,12 +43,15 @@ function ChatPage() {
           Authorization: `Bearer ${token}`,
         };
 
-        if (pendingAudioRef.current) {
+        const audio = pendingAudioRef.current;
+        if (audio) {
+          pendingAudioRef.current = null;
           const formData = new FormData();
           formData.append("messages", JSON.stringify(messages));
-          formData.append("audio", pendingAudioRef.current, "recording.wav");
+          formData.append("audio", audio, "recording.wav");
           return { headers, body: formData as unknown as object };
         }
+
 
         headers["Content-Type"] = "application/json";
         return { headers, body: { messages } };
@@ -80,10 +83,12 @@ function ChatPage() {
   const handleAudio = (blob: Blob) => {
     pendingAudioRef.current = blob;
     setAudioLoading(true);
-    chat.sendMessage({ text: " " });
-    pendingAudioRef.current = null;
-    setAudioLoading(false);
+    void Promise.resolve(chat.sendMessage({ text: " " })).finally(() => {
+      pendingAudioRef.current = null;
+      setAudioLoading(false);
+    });
   };
+
 
   const isLoading = chat.status === "submitted" || chat.status === "streaming" || audioLoading;
 

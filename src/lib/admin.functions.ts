@@ -163,8 +163,9 @@ export const adminListSpecies = createServerFn({ method: "POST" })
     let query = context.supabase
       .from("plant_species")
       .select(
-        "id, common_name, scientific_name, slug, light, water_frequency_days, care_tips, image_url, source, archived_at",
+        "id, common_name, scientific_name, slug, light, water_frequency_days, care_tips, image_url, source, archived_at, environment, environment_notes",
       )
+
       .order("common_name")
       .limit(1000);
     if (!data.includeArchived) query = query.is("archived_at", null);
