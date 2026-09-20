@@ -297,7 +297,9 @@ export const generateSummary = createServerFn({ method: "POST" })
     }
     const allowedStatus = ["healthy", "attention", "thirsty", "unknown"];
     if (!parsed.status || !allowedStatus.includes(parsed.status)) parsed.status = "unknown";
-    if (!Array.isArray(parsed.recommendations)) parsed.recommendations = [];
+    const recommendations: string[] = Array.isArray(parsed.recommendations)
+      ? parsed.recommendations.filter((r): r is string => typeof r === "string")
+      : [];
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const plantEmail = (plant as { user_email?: string | null }).user_email;
@@ -306,7 +308,7 @@ export const generateSummary = createServerFn({ method: "POST" })
       user_email: plantEmail,
       status: parsed.status ?? "unknown",
       summary: parsed.summary ?? "No summary available.",
-      recommendations: parsed.recommendations ?? [],
+      recommendations,
     }).select().single();
     if (error) throw new Error(error.message);
 
