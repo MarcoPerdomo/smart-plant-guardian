@@ -9,8 +9,8 @@ Web dashboard (built with Lovable, TanStack Start + Supabase) that ingests Ardui
 - `.lovable/plan/` Lovable planning docs
 
 ## AI summaries (cost-reduced)
-- `generateSummary` in `src/lib/plants.functions.ts` calls Groq (OpenAI-compatible) with `llama-3.1-8b-instant`.
-- Env: `GROQ_API_KEY` (required), `AI_SUMMARY_BASE_URL`, `AI_SUMMARY_MODEL` (optional overrides, e.g. Together AI / Qwen 2.5 7B).
+- `generateSummary` in `src/lib/plants.functions.ts` calls Groq (OpenAI-compatible) with `qwen/qwen3.8-27b` (Groq retired llama-3.1-8b-instant).
+- Env: `GROQ_API_KEY` (required), `AI_SUMMARY_BASE_URL`, `AI_SUMMARY_MODEL` (optional overrides, e.g. Together AI).
 - JSON parse is defensive; status falls back to `unknown`.
 
 ## Out of scope for now (to be handled differently later)

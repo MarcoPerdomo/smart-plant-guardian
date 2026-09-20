@@ -272,7 +272,7 @@ export const generateSummary = createServerFn({ method: "POST" })
     const apiKey = process.env.GROQ_API_KEY;
     if (!apiKey) throw new Error("AI unavailable");
     const baseUrl = process.env.AI_SUMMARY_BASE_URL ?? "https://api.groq.com/openai/v1";
-    const model = process.env.AI_SUMMARY_MODEL ?? "llama-3.1-8b-instant";
+    const model = process.env.AI_SUMMARY_MODEL ?? "qwen/qwen3.8-27b";
     const resp = await fetch(`${baseUrl}/chat/completions`, {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
