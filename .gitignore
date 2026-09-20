@@ -31,7 +31,7 @@ dist-ssr
 *.sln
 *.sw?
 
-# Environment / secrets
-.env
+# Environment: .env holds only public Supabase values (Lovable reads it).
+# Secrets such as GROQ_API_KEY go in .env.local (ignored) and in Supabase/Lovable secrets.
 .env.*
 !.env.example

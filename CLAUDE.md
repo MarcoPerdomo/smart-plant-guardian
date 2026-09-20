@@ -18,4 +18,4 @@ Chat assistant (`src/routes/api/chat.ts`), catalog import, and image generation 
 
 ## Notes
 - Connected to Lovable: never rewrite published git history (see AGENTS.md).
-- Never print `.env` contents.
+- `.env` is tracked and must contain only public Supabase values (Lovable reads it). Secrets like `GROQ_API_KEY` go in `.env.local` (ignored) and in Supabase/Lovable secrets. Never print env contents.
