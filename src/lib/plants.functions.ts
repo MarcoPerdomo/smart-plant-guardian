@@ -260,20 +260,25 @@ export const generateSummary = createServerFn({ method: "POST" })
       .order("recorded_at", { ascending: false }).limit(50);
 
     const species = (plant as { plant_species: Record<string, unknown> | null }).plant_species;
+    // Compact JSON (no indent) and only the 10 latest readings keep the prompt small for the 8B model.
     const context_str = JSON.stringify({
       nickname: plant.nickname,
       species,
       last_watered_at: plant.last_watered_at,
-      recent_readings: (readings ?? []).slice(0, 20),
-    }, null, 2);
+      recent_readings: (readings ?? []).slice(0, 10),
+    });
 
-    const apiKey = process.env.LOVABLE_API_KEY;
+    // Summaries run on Groq (OpenAI-compatible). Base URL and model are overridable via env.
+    const apiKey = process.env.GROQ_API_KEY;
     if (!apiKey) throw new Error("AI unavailable");
-    const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const baseUrl = process.env.AI_SUMMARY_BASE_URL ?? "https://api.groq.com/openai/v1";
+    const model = process.env.AI_SUMMARY_MODEL ?? "llama-3.1-8b-instant";
+    const resp = await fetch(`${baseUrl}/chat/completions`, {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
       body: JSON.stringify({
-        model: "google/gemini-3.6-flash",
+        model,
+        temperature: 0.4,
         messages: [
           { role: "system", content: "You are a warm, expert houseplant care assistant. Return ONLY JSON with keys: status ('healthy'|'attention'|'thirsty'|'unknown'), summary (2-3 friendly sentences addressed to the owner), recommendations (array of 2-5 short action items)." },
           { role: "user", content: `Plant context:\n${context_str}` },
@@ -284,7 +289,15 @@ export const generateSummary = createServerFn({ method: "POST" })
     if (!resp.ok) throw new Error(`AI error ${resp.status}`);
     const json = await resp.json();
     const content = json.choices?.[0]?.message?.content ?? "{}";
-    const parsed = JSON.parse(content);
+    let parsed: { status?: string; summary?: string; recommendations?: unknown } = {};
+    try {
+      parsed = JSON.parse(content);
+    } catch {
+      // Small models occasionally return malformed JSON; fall back to defaults below.
+    }
+    const allowedStatus = ["healthy", "attention", "thirsty", "unknown"];
+    if (!parsed.status || !allowedStatus.includes(parsed.status)) parsed.status = "unknown";
+    if (!Array.isArray(parsed.recommendations)) parsed.recommendations = [];
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const plantEmail = (plant as { user_email?: string | null }).user_email;
