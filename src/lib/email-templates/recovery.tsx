@@ -8,6 +8,7 @@ import {
   Heading,
   Html,
   Preview,
+  Section,
   Text,
 } from '@react-email/components'
 import { BrandMark, brandStyles as s, darkModeCss } from './auth-shared'
