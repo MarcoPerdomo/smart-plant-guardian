@@ -52,5 +52,5 @@ A person is Premium if they have a grant that hasn't been revoked and hasn't pas
   - `src/lib/marketplace.functions.ts` — admin check in every listing/order/wallet server function.
 - New `src/lib/premium.functions.ts`: `myAccess()` (isAdmin, isPremium, premiumSince, expiresAt), `listPremiumMembers`, `grantPremium`, `revokePremium` (admin-gated).
 - New route `src/routes/_authenticated/admin/premium.tsx` plus an entry in the admin tab list.
-- Route guards: `beforeLoad` on `/chat` and `/marketplace/*` using `myAccess()`; `src/routes/_authenticated/route.tsx` hides/tags the menu entries.
+- Route guards: `beforeLoad` on `/chat` and `/marketplace/*` using `myAccess()`; non-admins on marketplace routes redirect to a new `/marketplace/coming-soon` page linking to the newsletter signup; `src/routes/_authenticated/route.tsx` tags the menu entries.
 - Regenerate Supabase types and the MCP manifest; verify typecheck and build.
