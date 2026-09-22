@@ -33,12 +33,22 @@ function AuthPage() {
   const navigate = useNavigate();
   const { next: rawNext } = Route.useSearch();
   const next = validateNext(rawNext);
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [mode, setMode] = useState<"signin" | "signup" | "verify">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [code, setCode] = useState("");
+  const [resendIn, setResendIn] = useState(0);
+  const [pendingConsent, setPendingConsent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [consent, setConsent] = useState(false);
   const [needsConsent, setNeedsConsent] = useState(false);
+
+  useEffect(() => {
+    if (resendIn <= 0) return;
+    const t = setTimeout(() => setResendIn((s) => s - 1), 1000);
+    return () => clearTimeout(t);
+  }, [resendIn]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -62,11 +72,24 @@ function AuthPage() {
     });
   }, [navigate, next]);
 
+  const passwordMismatch = mode === "signup" && confirmPassword.length > 0 && password !== confirmPassword;
+  const signupReady = password.length >= 8 && password === confirmPassword && consent;
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (mode === "signup" && !consent) {
-      toast.error("Please accept the Terms and Privacy Policy to continue.");
-      return;
+    if (mode === "signup") {
+      if (!consent) {
+        toast.error("Please accept the Terms and Privacy Policy to continue.");
+        return;
+      }
+      if (password.length < 8) {
+        toast.error("Please use a password of at least 8 characters.");
+        return;
+      }
+      if (password !== confirmPassword) {
+        toast.error("The passwords don't match.");
+        return;
+      }
     }
     setLoading(true);
     try {
@@ -77,13 +100,37 @@ function AuthPage() {
             options: { emailRedirectTo: `${window.location.origin}/auth?${new URLSearchParams({ next }).toString()}` },
           });
           if (error) throw error;
-          toast.success("Check your email to confirm, or sign in if confirmation is off.");
-          if (data.user) {
-            await recordAcceptance(data.user.id);
+          if (data.session) {
+            // Confirmation disabled: already signed in.
+            if (data.user) await recordAcceptance(data.user.id);
+            navigate({ href: next || "/dashboard", replace: true });
+            return;
           }
+          setPendingConsent(true);
+          setCode("");
+          setResendIn(60);
+          setMode("verify");
+          toast.success("We sent a 6-digit code to your email.");
         } else {
           const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-          if (error) throw error;
+          if (error) {
+            const unconfirmed =
+              (error as { code?: string }).code === "email_not_confirmed" ||
+              /not confirmed/i.test(error.message);
+            if (unconfirmed) {
+              await supabase.auth.resend({
+                type: "signup",
+                email,
+                options: { emailRedirectTo: `${window.location.origin}/auth?${new URLSearchParams({ next }).toString()}` },
+              });
+              setCode("");
+              setResendIn(60);
+              setMode("verify");
+              toast.message("Please verify your email first — we sent you a new code.");
+              return;
+            }
+            throw error;
+          }
           if (data.user) {
             const accepted = await checkLegalAcceptance(data.user.id);
             if (!accepted) {
@@ -101,6 +148,50 @@ function AuthPage() {
       }
     }
 
+  async function handleVerify(e: React.FormEvent) {
+    e.preventDefault();
+    const token = code.replace(/\D/g, "");
+    if (token.length !== 6) {
+      toast.error("Please enter the 6-digit code from your email.");
+      return;
+    }
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.auth.verifyOtp({ email, token, type: "signup" });
+      if (error) throw error;
+      if (data.user && pendingConsent) {
+        await recordAcceptance(data.user.id);
+        setPendingConsent(false);
+      }
+      if (data.user) {
+        const accepted = await checkLegalAcceptance(data.user.id);
+        if (!accepted) {
+          setNeedsConsent(true);
+          return;
+        }
+      }
+      toast.success("Email verified — welcome to Verdant!");
+      navigate({ href: next || "/dashboard", replace: true });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "That code didn't work. Try again or resend.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleResend() {
+    if (resendIn > 0) return;
+    setResendIn(60);
+    const { error } = await supabase.auth.resend({
+      type: "signup",
+      email,
+      options: { emailRedirectTo: `${window.location.origin}/auth?${new URLSearchParams({ next }).toString()}` },
+    });
+    if (error) toast.error(error.message);
+    else toast.success("New code sent.");
+  }
+
+
     async function handleGoogle() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
@@ -117,6 +208,61 @@ function AuthPage() {
     }
     await recordAcceptance(data.user.id);
     navigate({ href: next || "/dashboard", replace: true });
+  }
+
+  if (mode === "verify" && !needsConsent) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background px-4">
+        <div className="w-full max-w-md rounded-2xl border border-border bg-card p-6">
+          <div className="mb-4 flex items-center gap-2 font-display text-xl font-semibold">
+            <Leaf className="w-6 h-6 text-primary" /> Verdant <BetaBadge />
+          </div>
+          <h2 className="font-display text-lg font-semibold">Verify your email</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            We sent a 6-digit code to <span className="font-medium text-foreground">{email}</span>. Enter it below, or
+            use the confirmation link in the same email.
+          </p>
+          <form onSubmit={handleVerify} className="mt-4 space-y-3">
+            <input
+              inputMode="numeric"
+              autoComplete="one-time-code"
+              maxLength={6}
+              placeholder="123456"
+              value={code}
+              onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+              className="w-full px-3 py-2.5 rounded-lg border border-input bg-background text-center text-lg tracking-[0.4em] font-mono"
+            />
+            <button
+              type="submit"
+              disabled={loading || code.length !== 6}
+              className="w-full px-4 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 disabled:opacity-50"
+            >
+              {loading ? "..." : "Verify and continue"}
+            </button>
+          </form>
+          <div className="mt-4 flex items-center justify-between text-xs">
+            <button
+              onClick={handleResend}
+              disabled={resendIn > 0}
+              className="text-muted-foreground hover:text-foreground disabled:opacity-50"
+            >
+              {resendIn > 0 ? `Resend code in ${resendIn}s` : "Resend code"}
+            </button>
+            <button
+              onClick={() => {
+                setMode("signup");
+                setCode("");
+                setPassword("");
+                setConfirmPassword("");
+              }}
+              className="text-muted-foreground hover:text-foreground"
+            >
+              Use a different email
+            </button>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (needsConsent) {
@@ -187,10 +333,27 @@ function AuthPage() {
               className="w-full px-3 py-2.5 rounded-lg border border-input bg-background text-sm"
             />
             <input
-              type="password" required minLength={6} placeholder="Password" value={password}
+              type="password" required minLength={mode === "signup" ? 8 : 6} placeholder="Password" value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-3 py-2.5 rounded-lg border border-input bg-background text-sm"
             />
+
+            {mode === "signup" && (
+              <>
+                <input
+                  type="password" required minLength={8} placeholder="Repeat password" value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className={`w-full px-3 py-2.5 rounded-lg border bg-background text-sm ${passwordMismatch ? "border-destructive" : "border-input"}`}
+                />
+                <p className="text-xs text-muted-foreground">
+                  {passwordMismatch
+                    ? "The passwords don't match yet."
+                    : password.length > 0 && password.length < 8
+                      ? "Use at least 8 characters."
+                      : "Use at least 8 characters — a mix of words and numbers works well."}
+                </p>
+              </>
+            )}
 
             {mode === "signup" && (
               <label className="flex items-start gap-3 rounded-lg border border-border p-3 cursor-pointer">
@@ -211,7 +374,7 @@ function AuthPage() {
             )}
 
             <button
-              type="submit" disabled={loading}
+              type="submit" disabled={loading || (mode === "signup" && !signupReady)}
               className="w-full px-4 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 disabled:opacity-50"
             >
               {loading ? "..." : mode === "signin" ? "Sign in" : "Create account"}
