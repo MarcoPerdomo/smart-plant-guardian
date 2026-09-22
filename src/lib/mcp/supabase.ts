@@ -80,3 +80,27 @@ export function supabaseForUser(ctx: ToolContext) {
     auth: { persistSession: false, autoRefreshToken: false },
   });
 }
+
+/** True when the caller has an active Premium grant (admins always count). */
+export async function hasPremium(
+  supabase: ReturnType<typeof supabaseForUser>,
+  ctx: ToolContext,
+): Promise<boolean> {
+  const userId = ctx.getUserId();
+  if (!userId) return false;
+  const { data } = await supabase.rpc("is_premium", { _user_id: userId });
+  return Boolean(data);
+}
+
+export async function isAdminUser(
+  supabase: ReturnType<typeof supabaseForUser>,
+  ctx: ToolContext,
+): Promise<boolean> {
+  const userId = ctx.getUserId();
+  if (!userId) return false;
+  const { data } = await supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
+  return Boolean(data);
+}
+
+export const PREMIUM_REQUIRED_MESSAGE =
+  "Ask Verdant is a Verdant Premium feature. Ask a Verdant admin to enable Premium on your account.";
