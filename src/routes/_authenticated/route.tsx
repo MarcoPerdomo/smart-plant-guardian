@@ -2,6 +2,7 @@ import { createFileRoute, Outlet, redirect, Link, useNavigate, useMatch } from "
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { amIAdmin } from "@/lib/admin.functions";
+import { myAccess } from "@/lib/premium.functions";
 import { getUnreadCount } from "@/lib/chat.functions";
 import { getBadgeCounts } from "@/lib/notifications.functions";
 import { NotificationBell } from "@/components/notifications/notification-bell";
