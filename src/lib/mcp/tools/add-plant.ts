@@ -1,7 +1,7 @@
 import { defineTool } from "@lovable.dev/mcp-js";
 import { z } from "zod";
 import { addUserPlant } from "@/lib/assistant/tool-helpers.server";
-import { supabaseForUser } from "../supabase";
+import { supabaseForUser, hasPremium, PREMIUM_REQUIRED_MESSAGE } from "../supabase";
 
 export default defineTool({
   name: "add_plant",
@@ -19,6 +19,9 @@ export default defineTool({
     const email = ctx.getUserEmail();
     if (!email) return { content: [{ type: "text", text: "No email in token" }], isError: true };
     const supabase = supabaseForUser(ctx);
+    if (!(await hasPremium(supabase, ctx))) {
+      return { content: [{ type: "text", text: PREMIUM_REQUIRED_MESSAGE }], isError: true };
+    }
     const result = await addUserPlant(supabase, email, nickname, species_name);
     return {
       content: [{ type: "text", text: `Added ${result.plant.nickname} to your garden.` }],
