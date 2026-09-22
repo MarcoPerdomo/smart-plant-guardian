@@ -72,11 +72,24 @@ function AuthPage() {
     });
   }, [navigate, next]);
 
+  const passwordMismatch = mode === "signup" && confirmPassword.length > 0 && password !== confirmPassword;
+  const signupReady = password.length >= 8 && password === confirmPassword && consent;
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (mode === "signup" && !consent) {
-      toast.error("Please accept the Terms and Privacy Policy to continue.");
-      return;
+    if (mode === "signup") {
+      if (!consent) {
+        toast.error("Please accept the Terms and Privacy Policy to continue.");
+        return;
+      }
+      if (password.length < 8) {
+        toast.error("Please use a password of at least 8 characters.");
+        return;
+      }
+      if (password !== confirmPassword) {
+        toast.error("The passwords don't match.");
+        return;
+      }
     }
     setLoading(true);
     try {
@@ -87,13 +100,37 @@ function AuthPage() {
             options: { emailRedirectTo: `${window.location.origin}/auth?${new URLSearchParams({ next }).toString()}` },
           });
           if (error) throw error;
-          toast.success("Check your email to confirm, or sign in if confirmation is off.");
-          if (data.user) {
-            await recordAcceptance(data.user.id);
+          if (data.session) {
+            // Confirmation disabled: already signed in.
+            if (data.user) await recordAcceptance(data.user.id);
+            navigate({ href: next || "/dashboard", replace: true });
+            return;
           }
+          setPendingConsent(true);
+          setCode("");
+          setResendIn(60);
+          setMode("verify");
+          toast.success("We sent a 6-digit code to your email.");
         } else {
           const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-          if (error) throw error;
+          if (error) {
+            const unconfirmed =
+              (error as { code?: string }).code === "email_not_confirmed" ||
+              /not confirmed/i.test(error.message);
+            if (unconfirmed) {
+              await supabase.auth.resend({
+                type: "signup",
+                email,
+                options: { emailRedirectTo: `${window.location.origin}/auth?${new URLSearchParams({ next }).toString()}` },
+              });
+              setCode("");
+              setResendIn(60);
+              setMode("verify");
+              toast.message("Please verify your email first — we sent you a new code.");
+              return;
+            }
+            throw error;
+          }
           if (data.user) {
             const accepted = await checkLegalAcceptance(data.user.id);
             if (!accepted) {
@@ -110,6 +147,50 @@ function AuthPage() {
         setLoading(false);
       }
     }
+
+  async function handleVerify(e: React.FormEvent) {
+    e.preventDefault();
+    const token = code.replace(/\D/g, "");
+    if (token.length !== 6) {
+      toast.error("Please enter the 6-digit code from your email.");
+      return;
+    }
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.auth.verifyOtp({ email, token, type: "signup" });
+      if (error) throw error;
+      if (data.user && pendingConsent) {
+        await recordAcceptance(data.user.id);
+        setPendingConsent(false);
+      }
+      if (data.user) {
+        const accepted = await checkLegalAcceptance(data.user.id);
+        if (!accepted) {
+          setNeedsConsent(true);
+          return;
+        }
+      }
+      toast.success("Email verified — welcome to Verdant!");
+      navigate({ href: next || "/dashboard", replace: true });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "That code didn't work. Try again or resend.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleResend() {
+    if (resendIn > 0) return;
+    setResendIn(60);
+    const { error } = await supabase.auth.resend({
+      type: "signup",
+      email,
+      options: { emailRedirectTo: `${window.location.origin}/auth?${new URLSearchParams({ next }).toString()}` },
+    });
+    if (error) toast.error(error.message);
+    else toast.success("New code sent.");
+  }
+
 
     async function handleGoogle() {
       const { error } = await supabase.auth.signInWithOAuth({
