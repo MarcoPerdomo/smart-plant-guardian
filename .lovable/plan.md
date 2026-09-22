@@ -39,7 +39,7 @@ A person is Premium if they have a grant that hasn't been revoked and hasn't pas
 ## What free users see
 
 - "Ask Verdant" stays in the menu with a small Premium tag. Opening it shows a short page explaining it's a Premium feature and how to request access, instead of the chat.
-- Marketplace disappears from the menu for non-admins, and direct links send them back to the dashboard.
+- Marketplace stays visible but, for non-admins, opening it shows a "coming soon" page explaining the Marketplace is still being built, with a link to sign up for the newsletter to hear when it launches. Direct links to any marketplace page land on the same page.
 - On Add Plant, typing a name that isn't in the catalogue no longer creates it. Instead they get a message that the plant can be requested, with a button that notifies admins.
 
 ## Technical notes
@@ -52,5 +52,5 @@ A person is Premium if they have a grant that hasn't been revoked and hasn't pas
   - `src/lib/marketplace.functions.ts` — admin check in every listing/order/wallet server function.
 - New `src/lib/premium.functions.ts`: `myAccess()` (isAdmin, isPremium, premiumSince, expiresAt), `listPremiumMembers`, `grantPremium`, `revokePremium` (admin-gated).
 - New route `src/routes/_authenticated/admin/premium.tsx` plus an entry in the admin tab list.
-- Route guards: `beforeLoad` on `/chat` and `/marketplace/*` using `myAccess()`; `src/routes/_authenticated/route.tsx` hides/tags the menu entries.
+- Route guards: `beforeLoad` on `/chat` and `/marketplace/*` using `myAccess()`; non-admins on marketplace routes redirect to a new `/marketplace/coming-soon` page linking to the newsletter signup; `src/routes/_authenticated/route.tsx` tags the menu entries.
 - Regenerate Supabase types and the MCP manifest; verify typecheck and build.
