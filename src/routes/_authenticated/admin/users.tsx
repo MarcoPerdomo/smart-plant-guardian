@@ -3,7 +3,8 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
 import { searchUsers, grantRole, revokeRole, amIAdmin } from "@/lib/admin.functions";
-import { Search, Shield, ShieldOff } from "lucide-react";
+import { Search, Shield, ShieldOff, Crown } from "lucide-react";
+import { listPremiumMembers } from "@/lib/premium.functions";
 
 export const Route = createFileRoute("/_authenticated/admin/users")({
   component: AdminUsers,
@@ -24,6 +25,10 @@ function AdminUsers() {
   const qc = useQueryClient();
 
   const me = useQuery({ queryKey: ["admin", "me"], queryFn: () => amIAdmin() });
+  const premium = useQuery({ queryKey: ["admin", "premium"], queryFn: () => listPremiumMembers() });
+  const premiumIds = new Set(
+    ((premium.data ?? []) as any[]).filter((g) => g.state === "active").map((g) => g.user_id),
+  );
   const { data: users, isLoading } = useQuery({
     queryKey: ["admin", "users", q],
     queryFn: () => searchUsers({ data: { q } }),
