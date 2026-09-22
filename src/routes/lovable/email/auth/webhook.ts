@@ -9,7 +9,7 @@ import { EmailChangeEmail } from '@/lib/email-templates/email-change'
 import { ReauthenticationEmail } from '@/lib/email-templates/reauthentication'
 
 // Configuration
-const SITE_NAME = "Smart Plant Guardian"
+const SITE_NAME = "Verdant"
 const SENDER_DOMAIN = "notify.verdant-nl.app"
 const ROOT_DOMAIN = "verdant-nl.app"
 const FROM_DOMAIN = "notify.verdant-nl.app"
@@ -28,13 +28,14 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
           sendUrl: process.env['LOVABLE_SEND_URL'],
           emails: {
             signup: {
-              subject: 'Confirm your email',
+              subject: 'Your Verdant verification code',
               render: (data) =>
                 React.createElement(SignupEmail, {
                   siteName: SITE_NAME,
                   siteUrl: SITE_URL,
                   recipient: data.email,
                   confirmationUrl: data.url,
+                  token: data.token ?? '',
                 }),
             },
             invite: {
