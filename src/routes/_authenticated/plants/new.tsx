@@ -67,6 +67,14 @@ function NewPlant() {
     });
   })();
 
+  const access = useQuery({ queryKey: ["my-access"], queryFn: () => myAccess() });
+
+  const requestMut = useMutation({
+    mutationFn: (name: string) => requestSpecies({ data: { name } }),
+    onSuccess: () => toast.success("Request sent to the Verdant team"),
+    onError: (e: Error) => toast.error(e.message),
+  });
+
   const aiLookup = useMutation({
     mutationFn: (name: string) => lookupOrCreateSpecies({ data: { name } }),
     onSuccess: (row) => { selectSpecies(row); toast.success(`Added ${row.common_name} to your catalog`); },
