@@ -33,12 +33,22 @@ function AuthPage() {
   const navigate = useNavigate();
   const { next: rawNext } = Route.useSearch();
   const next = validateNext(rawNext);
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [mode, setMode] = useState<"signin" | "signup" | "verify">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [code, setCode] = useState("");
+  const [resendIn, setResendIn] = useState(0);
+  const [pendingConsent, setPendingConsent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [consent, setConsent] = useState(false);
   const [needsConsent, setNeedsConsent] = useState(false);
+
+  useEffect(() => {
+    if (resendIn <= 0) return;
+    const t = setTimeout(() => setResendIn((s) => s - 1), 1000);
+    return () => clearTimeout(t);
+  }, [resendIn]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
