@@ -278,10 +278,27 @@ function AuthPage() {
               className="w-full px-3 py-2.5 rounded-lg border border-input bg-background text-sm"
             />
             <input
-              type="password" required minLength={6} placeholder="Password" value={password}
+              type="password" required minLength={mode === "signup" ? 8 : 6} placeholder="Password" value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-3 py-2.5 rounded-lg border border-input bg-background text-sm"
             />
+
+            {mode === "signup" && (
+              <>
+                <input
+                  type="password" required minLength={8} placeholder="Repeat password" value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className={`w-full px-3 py-2.5 rounded-lg border bg-background text-sm ${passwordMismatch ? "border-destructive" : "border-input"}`}
+                />
+                <p className="text-xs text-muted-foreground">
+                  {passwordMismatch
+                    ? "The passwords don't match yet."
+                    : password.length > 0 && password.length < 8
+                      ? "Use at least 8 characters."
+                      : "Use at least 8 characters — a mix of words and numbers works well."}
+                </p>
+              </>
+            )}
 
             {mode === "signup" && (
               <label className="flex items-start gap-3 rounded-lg border border-border p-3 cursor-pointer">
