@@ -105,6 +105,8 @@ function AuthedLayout() {
   const settingsActive = !!useMatch({ from: "/_authenticated/settings", shouldThrow: false });
   const adminActive = !!useMatch({ from: "/_authenticated/admin", shouldThrow: false });
 
+  const accessQuery = useQuery({ queryKey: ["my-access"], queryFn: () => myAccess() });
+
   const activeItem = (active: boolean) => (active ? "bg-muted text-primary" : "");
   const mobileItem = "flex items-center gap-2 px-3 py-2 rounded-md hover:bg-muted text-sm";
 
@@ -159,8 +161,15 @@ function AuthedLayout() {
                     asChild
                     className={cn("flex items-center gap-2 cursor-pointer", activeItem(chatActive))}
                   >
-                    <Link to="/chat">
-                      <Bot className="w-4 h-4" /> Ask Verdant
+                    <Link to="/chat" className="justify-between">
+                      <span className="flex items-center gap-2">
+                        <Bot className="w-4 h-4" /> Ask Verdant
+                      </span>
+                      {!accessQuery.data?.isPremium && (
+                        <span className="ml-2 px-1.5 py-0.5 rounded-full border border-primary text-primary bg-primary/10 text-[10px]">
+                          Premium
+                        </span>
+                      )}
                     </Link>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
