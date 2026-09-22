@@ -14,6 +14,8 @@ type ToolDeps = {
   supabase: SupabaseClient<Database>;
   userEmail: string;
   claims?: Record<string, unknown>;
+  /** Only admins may create brand-new catalogue species. */
+  allowCreateSpecies?: boolean;
 };
 
 export function createAssistantTools(deps: ToolDeps) {
@@ -54,7 +56,9 @@ export function createAssistantTools(deps: ToolDeps) {
         species_name: z.string().describe("The plant species or common name, e.g. 'Monstera deliciosa'."),
       }),
       execute: async ({ nickname, species_name }) => {
-        return await addUserPlant(deps.supabase, deps.userEmail, nickname, species_name, deps.claims);
+        return await addUserPlant(deps.supabase, deps.userEmail, nickname, species_name, deps.claims, {
+          allowCreateSpecies: deps.allowCreateSpecies === true,
+        });
       },
     }),
 
