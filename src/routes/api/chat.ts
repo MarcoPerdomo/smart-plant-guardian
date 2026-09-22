@@ -60,6 +60,18 @@ export const Route = createFileRoute("/api/chat")({
           return new Response("Token missing email claim", { status: 401 });
         }
 
+        const userId = typeof claims.sub === "string" ? claims.sub : "";
+        const { data: premium } = await supabase.rpc("is_premium", { _user_id: userId });
+        if (!premium) {
+          return new Response("Ask Verdant is available to Verdant Premium members.", {
+            status: 403,
+          });
+        }
+        const { data: adminFlag } = await supabase.rpc("has_role", {
+          _user_id: userId,
+          _role: "admin",
+        });
+
         let messages: UIMessage[] = [];
         let audio: File | null = null;
 
@@ -135,7 +147,12 @@ export const Route = createFileRoute("/api/chat")({
         }
 
         const gateway = createLovableAiGatewayProvider(apiKey);
-        const tools = createAssistantTools({ supabase, userEmail, claims });
+        const tools = createAssistantTools({
+          supabase,
+          userEmail,
+          claims,
+          allowCreateSpecies: Boolean(adminFlag),
+        });
 
         const result = streamText({
           model: gateway("openai/gpt-5.6-sol"),

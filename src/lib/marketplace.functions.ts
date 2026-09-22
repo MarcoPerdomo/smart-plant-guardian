@@ -6,13 +6,23 @@ const sizeEnum = z.enum(["xs", "s", "m", "l", "xl"]);
 const boxEnum = z.enum(["s", "m", "l", "xl"]);
 const countryEnum = z.enum(["NL", "BE", "DE"]);
 
-function commissionOf(itemCents: number, bps: number) {
+async function assertMarketplaceAccess(context: { supabase: any; userId: string }) {
+  const { data: isAdmin } = await context.supabase.rpc("has_role", {
+    _user_id: context.userId,
+    _role: "admin",
+  });
+  if (!isAdmin) throw new Error("The Verdant marketplace is not open yet.");
+}
+
+function commissionOf
+(itemCents: number, bps: number) {
   return Math.round((itemCents * bps) / 10000);
 }
 
 export const getMarketplaceSettings = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
+    await assertMarketplaceAccess(context);
     const { data } = await context.supabase
       .from("marketplace_settings")
       .select("commission_bps, active_countries")
@@ -51,6 +61,7 @@ export const searchListings = createServerFn({ method: "POST" })
       .parse(i ?? {}),
   )
   .handler(async ({ data, context }) => {
+    await assertMarketplaceAccess(context);
     let query = context.supabase
       .from("marketplace_listings")
       .select("*, plant_species(common_name, scientific_name, aliases, image_url)")
@@ -101,6 +112,7 @@ export const getListing = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((i: unknown) => z.object({ id: z.string().uuid() }).parse(i))
   .handler(async ({ data, context }) => {
+    await assertMarketplaceAccess(context);
     const { data: listing, error } = await context.supabase
       .from("marketplace_listings")
       .select("*, plant_species(*)")
@@ -161,6 +173,7 @@ export const getListing = createServerFn({ method: "POST" })
 export const listMyListings = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
+    await assertMarketplaceAccess(context);
     const { data, error } = await context.supabase
       .from("marketplace_listings")
       .select("*")
@@ -176,6 +189,7 @@ export const getListingDraftForPlant = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((i: unknown) => z.object({ plant_id: z.string().uuid() }).parse(i))
   .handler(async ({ data, context }) => {
+    await assertMarketplaceAccess(context);
     const { data: plant, error } = await context.supabase
       .from("user_plants")
       .select("*, plant_species(*)")
@@ -259,6 +273,7 @@ export const createListing = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((i: unknown) => listingInput.parse(i))
   .handler(async ({ data, context }) => {
+    await assertMarketplaceAccess(context);
     if (!data.allow_pickup && !data.allow_shipping) throw new Error("Pick at least one delivery option");
     if (data.plant_id) {
       const { data: plant } = await context.supabase
@@ -295,6 +310,7 @@ export const updateListing = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((i: unknown) => listingInput.extend({ id: z.string().uuid() }).parse(i))
   .handler(async ({ data, context }) => {
+    await assertMarketplaceAccess(context);
     const { id, disclosures, publish, ...fields } = data;
     const { error } = await context.supabase
       .from("marketplace_listings")
@@ -320,6 +336,7 @@ export const setListingStatus = createServerFn({ method: "POST" })
     z.object({ id: z.string().uuid(), status: z.enum(["draft", "active", "archived"]) }).parse(i),
   )
   .handler(async ({ data, context }) => {
+    await assertMarketplaceAccess(context);
     const patch = {
       status: data.status,
       published_at: data.status === "active" ? new Date().toISOString() : null,
@@ -350,6 +367,7 @@ export const placeOrder = createServerFn({ method: "POST" })
       .parse(i),
   )
   .handler(async ({ data, context }) => {
+    await assertMarketplaceAccess(context);
     const { data: listing, error } = await context.supabase
       .from("marketplace_listings")
       .select("*")
@@ -451,6 +469,7 @@ async function adjustWallet(admin: any, userId: string, delta: { available?: num
 export const listMyOrders = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
+    await assertMarketplaceAccess(context);
     const { data, error } = await context.supabase
       .from("marketplace_orders")
       .select("*, marketplace_listings(title, cover_photo_path)")
@@ -464,6 +483,7 @@ export const getOrder = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((i: unknown) => z.object({ id: z.string().uuid() }).parse(i))
   .handler(async ({ data, context }) => {
+    await assertMarketplaceAccess(context);
     const { data: order, error } = await context.supabase
       .from("marketplace_orders")
       .select("*, marketplace_listings(title, cover_photo_path, size, country_code)")
@@ -511,6 +531,7 @@ export const advanceOrder = createServerFn({ method: "POST" })
       .parse(i),
   )
   .handler(async ({ data, context }) => {
+    await assertMarketplaceAccess(context);
     const { data: order, error } = await context.supabase
       .from("marketplace_orders")
       .select("*")

@@ -170,6 +170,7 @@ export async function addUserPlant(
   nickname: string,
   speciesName: string,
   claims?: Record<string, unknown>,
+  options?: { allowCreateSpecies?: boolean },
 ) {
   const email = userEmail || getUserEmailFromClaims(claims ?? {}) || "";
   if (!email) throw new Error("User email is required");
@@ -188,6 +189,11 @@ export async function addUserPlant(
   let speciesCommonName = existingSpecies?.common_name ?? null;
 
   if (!speciesId) {
+    if (!options?.allowCreateSpecies) {
+      throw new Error(
+        `"${speciesName}" is not in the Verdant catalogue yet. Pick an existing catalogue plant, or ask an admin to add this species.`,
+      );
+    }
     const helpers = await import("@/lib/plants.server");
     const apiKey = process.env.LOVABLE_API_KEY;
     if (!apiKey) throw new Error("AI unavailable");

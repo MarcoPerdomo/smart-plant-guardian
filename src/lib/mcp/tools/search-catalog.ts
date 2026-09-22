@@ -1,7 +1,7 @@
 import { defineTool } from "@lovable.dev/mcp-js";
 import { z } from "zod";
 import { searchPlantCatalog } from "@/lib/assistant/tool-helpers.server";
-import { supabaseForUser } from "../supabase";
+import { supabaseForUser, hasPremium, PREMIUM_REQUIRED_MESSAGE } from "../supabase";
 
 export default defineTool({
   name: "search_catalog",
@@ -16,6 +16,9 @@ export default defineTool({
       return { content: [{ type: "text", text: "Not authenticated" }], isError: true };
     }
     const supabase = supabaseForUser(ctx);
+    if (!(await hasPremium(supabase, ctx))) {
+      return { content: [{ type: "text", text: PREMIUM_REQUIRED_MESSAGE }], isError: true };
+    }
     const results = await searchPlantCatalog(supabase, q);
     return {
       content: [{ type: "text", text: JSON.stringify(results, null, 2) }],

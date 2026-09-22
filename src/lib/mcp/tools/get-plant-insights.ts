@@ -1,7 +1,7 @@
 import { defineTool } from "@lovable.dev/mcp-js";
 import { z } from "zod";
 import { getPlantInsights } from "@/lib/assistant/tool-helpers.server";
-import { supabaseForUser } from "../supabase";
+import { supabaseForUser, hasPremium, PREMIUM_REQUIRED_MESSAGE } from "../supabase";
 
 export default defineTool({
   name: "get_plant_insights",
@@ -18,6 +18,9 @@ export default defineTool({
     const email = ctx.getUserEmail();
     if (!email) return { content: [{ type: "text", text: "No email in token" }], isError: true };
     const supabase = supabaseForUser(ctx);
+    if (!(await hasPremium(supabase, ctx))) {
+      return { content: [{ type: "text", text: PREMIUM_REQUIRED_MESSAGE }], isError: true };
+    }
     const insights = await getPlantInsights(supabase, email, identifier);
     return {
       content: [{ type: "text", text: JSON.stringify(insights, null, 2) }],

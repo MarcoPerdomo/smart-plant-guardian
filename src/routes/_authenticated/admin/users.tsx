@@ -3,7 +3,8 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
 import { searchUsers, grantRole, revokeRole, amIAdmin } from "@/lib/admin.functions";
-import { Search, Shield, ShieldOff } from "lucide-react";
+import { Search, Shield, ShieldOff, Crown } from "lucide-react";
+import { listPremiumMembers } from "@/lib/premium.functions";
 
 export const Route = createFileRoute("/_authenticated/admin/users")({
   component: AdminUsers,
@@ -24,6 +25,10 @@ function AdminUsers() {
   const qc = useQueryClient();
 
   const me = useQuery({ queryKey: ["admin", "me"], queryFn: () => amIAdmin() });
+  const premium = useQuery({ queryKey: ["admin", "premium"], queryFn: () => listPremiumMembers() });
+  const premiumIds = new Set(
+    ((premium.data ?? []) as any[]).filter((g) => g.state === "active").map((g) => g.user_id),
+  );
   const { data: users, isLoading } = useQuery({
     queryKey: ["admin", "users", q],
     queryFn: () => searchUsers({ data: { q } }),
@@ -64,7 +69,14 @@ function AdminUsers() {
           {users!.map((u: any) => (
             <div key={u.id} className="p-4 flex flex-wrap items-center gap-3 justify-between">
               <div className="min-w-0">
-                <div className="font-medium truncate">{u.display_name ?? "—"}</div>
+                <div className="font-medium truncate flex items-center gap-2">
+                  {u.display_name ?? "—"}
+                  {premiumIds.has(u.id) && (
+                    <span className="px-1.5 py-0.5 rounded-full border border-primary text-primary bg-primary/10 text-[10px] flex items-center gap-1">
+                      <Crown className="w-2.5 h-2.5" /> Premium
+                    </span>
+                  )}
+                </div>
                 <div className="text-sm text-muted-foreground truncate">{u.email ?? u.id}</div>
                 <div className="text-xs text-muted-foreground mt-0.5">
                   Joined {new Date(u.created_at).toLocaleDateString()} · {u.plant_count} plant

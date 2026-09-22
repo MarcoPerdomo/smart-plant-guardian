@@ -1,7 +1,8 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { searchSpecies, lookupOrCreateSpecies, createPlant } from "@/lib/plants.functions";
+import { searchSpecies, lookupOrCreateSpecies, createPlant, requestSpecies } from "@/lib/plants.functions";
+import { myAccess } from "@/lib/premium.functions";
 import { toast } from "sonner";
 import { ArrowLeft, Search, Sparkles, Leaf } from "lucide-react";
 import { EnvironmentBadge, normalizeEnvironment } from "@/components/environment-badge";
@@ -65,6 +66,14 @@ function NewPlant() {
       return hay.includes(q);
     });
   })();
+
+  const access = useQuery({ queryKey: ["my-access"], queryFn: () => myAccess() });
+
+  const requestMut = useMutation({
+    mutationFn: (name: string) => requestSpecies({ data: { name } }),
+    onSuccess: () => toast.success("Request sent to the Verdant team"),
+    onError: (e: Error) => toast.error(e.message),
+  });
 
   const aiLookup = useMutation({
     mutationFn: (name: string) => lookupOrCreateSpecies({ data: { name } }),
@@ -147,14 +156,34 @@ function NewPlant() {
               </button>
             ))}
             {query.length > 2 && results.length === 0 && (
-              <button
-                onClick={() => aiLookup.mutate(query)}
-                disabled={aiLookup.isPending}
-                className="w-full text-left px-3 py-2 rounded-md border border-dashed border-accent/40 text-sm flex items-center gap-2 hover:bg-accent/5"
-              >
-                <Sparkles className="w-4 h-4 text-accent" />
-                {aiLookup.isPending ? "Asking AI…" : `Ask AI for care of "${query}"`}
-              </button>
+              access.data?.isAdmin ? (
+                <button
+                  onClick={() => aiLookup.mutate(query)}
+                  disabled={aiLookup.isPending}
+                  className="w-full text-left px-3 py-2 rounded-md border border-dashed border-accent/40 text-sm flex items-center gap-2 hover:bg-accent/5"
+                >
+                  <Sparkles className="w-4 h-4 text-accent" />
+                  {aiLookup.isPending ? "Asking AI…" : `Ask AI for care of "${query}"`}
+                </button>
+              ) : (
+                <div className="rounded-md border border-dashed border-border p-3 text-sm space-y-2">
+                  <p className="text-muted-foreground">
+                    "{query}" isn't in the Verdant catalogue yet. You can ask the Verdant team to
+                    add it — we'll notify you once it's available.
+                  </p>
+                  <button
+                    onClick={() => requestMut.mutate(query)}
+                    disabled={requestMut.isPending || requestMut.isSuccess}
+                    className="px-3 py-1.5 rounded-md border border-primary text-primary bg-primary/10 text-xs disabled:opacity-60"
+                  >
+                    {requestMut.isSuccess
+                      ? "Request sent"
+                      : requestMut.isPending
+                        ? "Sending…"
+                        : "Request this plant"}
+                  </button>
+                </div>
+              )
             )}
           </div>
 

@@ -274,7 +274,7 @@ function NewsletterSection() {
   const active = status === "pending" || status === "confirmed";
 
   return (
-    <section className="rounded-2xl border border-border bg-card p-5">
+    <section id="newsletter" className="scroll-mt-24 rounded-2xl border border-border bg-card p-5">
       <h2 className="font-display text-lg font-semibold flex items-center gap-2">
         <Megaphone className="w-5 h-5 text-primary" /> Product newsletter
       </h2>

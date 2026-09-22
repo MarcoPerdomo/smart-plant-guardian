@@ -24,6 +24,11 @@ export const lookupOrCreateSpecies = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => z.object({ name: z.string().min(2) }).parse(input))
   .handler(async ({ data, context }) => {
+    const { data: isAdmin } = await context.supabase.rpc("has_role", {
+      _user_id: context.userId,
+      _role: "admin",
+    });
+    if (!isAdmin) throw new Error("Forbidden: admin role required");
     const name = data.name.trim();
     const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
     const { data: existing } = await context.supabase
@@ -88,6 +93,35 @@ If the plant name is unknown, still return your best general guess.`;
     }).select().single();
     if (error) throw new Error(error.message);
     return created;
+  });
+
+/** Any signed-in user can ask admins to add a species that is missing from the catalogue. */
+export const requestSpecies = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ name: z.string().min(2).max(120) }).parse(input))
+  .handler(async ({ data, context }) => {
+    const name = data.name.trim();
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: admins } = await supabaseAdmin
+      .from("user_roles")
+      .select("user_id")
+      .eq("role", "admin");
+    const { data: me } = await supabaseAdmin
+      .from("profiles")
+      .select("email, display_name")
+      .eq("id", context.userId)
+      .maybeSingle();
+    const who = me?.display_name || me?.email || "A member";
+    const rows = (admins ?? []).map((a: { user_id: string }) => ({
+      user_id: a.user_id,
+      kind: "species_request",
+      actor_id: context.userId,
+      title: "Plant catalogue request",
+      body: `${who} asked for "${name}" to be added to the catalogue`,
+      link: "/admin/plants/import",
+    }));
+    if (rows.length) await supabaseAdmin.from("notifications").insert(rows);
+    return { ok: true, requested: name };
   });
 
 // ============ User plants ============

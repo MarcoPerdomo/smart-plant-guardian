@@ -1,4 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { Crown } from "lucide-react";
+import { myAccess } from "@/lib/premium.functions";
 import { useChat, type UIMessage } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { useState, useRef, useEffect } from "react";
@@ -91,6 +94,35 @@ function ChatPage() {
 
 
   const isLoading = chat.status === "submitted" || chat.status === "streaming" || audioLoading;
+
+  const access = useQuery({ queryKey: ["my-access"], queryFn: () => myAccess() });
+
+  if (access.isLoading) {
+    return <p className="text-sm text-muted-foreground p-6">Loading…</p>;
+  }
+
+  if (!access.data?.isPremium) {
+    return (
+      <div className="max-w-xl mx-auto py-10 text-center space-y-4">
+        <span className="mx-auto w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center">
+          <Crown className="w-7 h-7 text-primary" />
+        </span>
+        <h1 className="font-display text-2xl font-semibold">Ask Verdant is a Premium feature</h1>
+        <p className="text-muted-foreground">
+          Verdant Premium unlocks the AI assistant: ask about your plants by voice or text, log
+          watering, and get insights across your whole collection. Everything else — your plants,
+          photos, watering log, AI Check summaries and the social side — stays free.
+        </p>
+        <p className="text-muted-foreground">
+          Premium is granted by the Verdant team during the beta. Email us or message an admin to
+          request access.
+        </p>
+        <Button asChild>
+          <Link to="/dashboard">Back to my plants</Link>
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-2xl mx-auto h-[calc(100vh-8rem)]">
