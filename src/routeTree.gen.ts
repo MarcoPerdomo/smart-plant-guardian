@@ -57,6 +57,8 @@ import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.
 import { Route as AuthenticatedMarketplaceOrdersIndexRouteImport } from './routes/_authenticated/marketplace/orders/index'
 import { Route as AuthenticatedAdminPlantsIndexRouteImport } from './routes/_authenticated/admin/plants/index'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
+import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
+import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
 import { Route as AuthenticatedPlantsIdPhotosRouteImport } from './routes/_authenticated/plants/$id_.photos'
 import { Route as AuthenticatedMarketplaceOrdersIdRouteImport } from './routes/_authenticated/marketplace/orders/$id'
 import { Route as AuthenticatedAdminPlantsImportRouteImport } from './routes/_authenticated/admin/plants/import'
@@ -318,6 +320,16 @@ const LovableEmailTransactionalPreviewRoute =
     path: '/lovable/email/transactional/preview',
     getParentRoute: () => rootRouteImport,
   } as any)
+const LovableEmailAuthWebhookRoute = LovableEmailAuthWebhookRouteImport.update({
+  id: '/lovable/email/auth/webhook',
+  path: '/lovable/email/auth/webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LovableEmailAuthPreviewRoute = LovableEmailAuthPreviewRouteImport.update({
+  id: '/lovable/email/auth/preview',
+  path: '/lovable/email/auth/preview',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedPlantsIdPhotosRoute =
   AuthenticatedPlantsIdPhotosRouteImport.update({
     id: '/plants/$id_/photos',
@@ -385,6 +397,8 @@ export interface FileRoutesByFullPath {
   '/admin/plants/import': typeof AuthenticatedAdminPlantsImportRoute
   '/marketplace/orders/$id': typeof AuthenticatedMarketplaceOrdersIdRoute
   '/plants/$id/photos': typeof AuthenticatedPlantsIdPhotosRoute
+  '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
+  '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/admin/plants/': typeof AuthenticatedAdminPlantsIndexRoute
   '/marketplace/orders/': typeof AuthenticatedMarketplaceOrdersIndexRoute
@@ -435,6 +449,8 @@ export interface FileRoutesByTo {
   '/admin/plants/import': typeof AuthenticatedAdminPlantsImportRoute
   '/marketplace/orders/$id': typeof AuthenticatedMarketplaceOrdersIdRoute
   '/plants/$id/photos': typeof AuthenticatedPlantsIdPhotosRoute
+  '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
+  '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/admin/plants': typeof AuthenticatedAdminPlantsIndexRoute
   '/marketplace/orders': typeof AuthenticatedMarketplaceOrdersIndexRoute
@@ -489,6 +505,8 @@ export interface FileRoutesById {
   '/_authenticated/admin/plants/import': typeof AuthenticatedAdminPlantsImportRoute
   '/_authenticated/marketplace/orders/$id': typeof AuthenticatedMarketplaceOrdersIdRoute
   '/_authenticated/plants/$id_/photos': typeof AuthenticatedPlantsIdPhotosRoute
+  '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
+  '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/_authenticated/admin/plants/': typeof AuthenticatedAdminPlantsIndexRoute
   '/_authenticated/marketplace/orders/': typeof AuthenticatedMarketplaceOrdersIndexRoute
@@ -543,6 +561,8 @@ export interface FileRouteTypes {
     | '/admin/plants/import'
     | '/marketplace/orders/$id'
     | '/plants/$id/photos'
+    | '/lovable/email/auth/preview'
+    | '/lovable/email/auth/webhook'
     | '/lovable/email/transactional/preview'
     | '/admin/plants/'
     | '/marketplace/orders/'
@@ -593,6 +613,8 @@ export interface FileRouteTypes {
     | '/admin/plants/import'
     | '/marketplace/orders/$id'
     | '/plants/$id/photos'
+    | '/lovable/email/auth/preview'
+    | '/lovable/email/auth/webhook'
     | '/lovable/email/transactional/preview'
     | '/admin/plants'
     | '/marketplace/orders'
@@ -646,6 +668,8 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/plants/import'
     | '/_authenticated/marketplace/orders/$id'
     | '/_authenticated/plants/$id_/photos'
+    | '/lovable/email/auth/preview'
+    | '/lovable/email/auth/webhook'
     | '/lovable/email/transactional/preview'
     | '/_authenticated/admin/plants/'
     | '/_authenticated/marketplace/orders/'
@@ -671,6 +695,8 @@ export interface RootRouteChildren {
   ApiPublicIngestRoute: typeof ApiPublicIngestRoute
   ApiPublicSnapshotUploadRoute: typeof ApiPublicSnapshotUploadRoute
   ApiPublicWeatherDigestRoute: typeof ApiPublicWeatherDigestRoute
+  LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
+  LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
   LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
 }
 
@@ -1012,6 +1038,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LovableEmailTransactionalPreviewRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/lovable/email/auth/webhook': {
+      id: '/lovable/email/auth/webhook'
+      path: '/lovable/email/auth/webhook'
+      fullPath: '/lovable/email/auth/webhook'
+      preLoaderRoute: typeof LovableEmailAuthWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/auth/preview': {
+      id: '/lovable/email/auth/preview'
+      path: '/lovable/email/auth/preview'
+      fullPath: '/lovable/email/auth/preview'
+      preLoaderRoute: typeof LovableEmailAuthPreviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/plants/$id_/photos': {
       id: '/_authenticated/plants/$id_/photos'
       path: '/plants/$id/photos'
@@ -1156,6 +1196,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicIngestRoute: ApiPublicIngestRoute,
   ApiPublicSnapshotUploadRoute: ApiPublicSnapshotUploadRoute,
   ApiPublicWeatherDigestRoute: ApiPublicWeatherDigestRoute,
+  LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
+  LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
   LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,
 }
 export const routeTree = rootRouteImport
