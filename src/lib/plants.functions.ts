@@ -95,6 +95,35 @@ If the plant name is unknown, still return your best general guess.`;
     return created;
   });
 
+/** Any signed-in user can ask admins to add a species that is missing from the catalogue. */
+export const requestSpecies = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ name: z.string().min(2).max(120) }).parse(input))
+  .handler(async ({ data, context }) => {
+    const name = data.name.trim();
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: admins } = await supabaseAdmin
+      .from("user_roles")
+      .select("user_id")
+      .eq("role", "admin");
+    const { data: me } = await supabaseAdmin
+      .from("profiles")
+      .select("email, display_name")
+      .eq("id", context.userId)
+      .maybeSingle();
+    const who = me?.display_name || me?.email || "A member";
+    const rows = (admins ?? []).map((a: { user_id: string }) => ({
+      user_id: a.user_id,
+      kind: "species_request",
+      actor_id: context.userId,
+      title: "Plant catalogue request",
+      body: `${who} asked for "${name}" to be added to the catalogue`,
+      link: "/admin/plants/import",
+    }));
+    if (rows.length) await supabaseAdmin.from("notifications").insert(rows);
+    return { ok: true, requested: name };
+  });
+
 // ============ User plants ============
 export const listUserPlants = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
