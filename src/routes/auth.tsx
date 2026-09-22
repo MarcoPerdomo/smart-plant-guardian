@@ -210,6 +210,61 @@ function AuthPage() {
     navigate({ href: next || "/dashboard", replace: true });
   }
 
+  if (mode === "verify" && !needsConsent) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background px-4">
+        <div className="w-full max-w-md rounded-2xl border border-border bg-card p-6">
+          <div className="mb-4 flex items-center gap-2 font-display text-xl font-semibold">
+            <Leaf className="w-6 h-6 text-primary" /> Verdant <BetaBadge />
+          </div>
+          <h2 className="font-display text-lg font-semibold">Verify your email</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            We sent a 6-digit code to <span className="font-medium text-foreground">{email}</span>. Enter it below, or
+            use the confirmation link in the same email.
+          </p>
+          <form onSubmit={handleVerify} className="mt-4 space-y-3">
+            <input
+              inputMode="numeric"
+              autoComplete="one-time-code"
+              maxLength={6}
+              placeholder="123456"
+              value={code}
+              onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+              className="w-full px-3 py-2.5 rounded-lg border border-input bg-background text-center text-lg tracking-[0.4em] font-mono"
+            />
+            <button
+              type="submit"
+              disabled={loading || code.length !== 6}
+              className="w-full px-4 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 disabled:opacity-50"
+            >
+              {loading ? "..." : "Verify and continue"}
+            </button>
+          </form>
+          <div className="mt-4 flex items-center justify-between text-xs">
+            <button
+              onClick={handleResend}
+              disabled={resendIn > 0}
+              className="text-muted-foreground hover:text-foreground disabled:opacity-50"
+            >
+              {resendIn > 0 ? `Resend code in ${resendIn}s` : "Resend code"}
+            </button>
+            <button
+              onClick={() => {
+                setMode("signup");
+                setCode("");
+                setPassword("");
+                setConfirmPassword("");
+              }}
+              className="text-muted-foreground hover:text-foreground"
+            >
+              Use a different email
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (needsConsent) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background px-4">
