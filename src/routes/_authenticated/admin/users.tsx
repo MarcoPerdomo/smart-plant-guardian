@@ -69,7 +69,14 @@ function AdminUsers() {
           {users!.map((u: any) => (
             <div key={u.id} className="p-4 flex flex-wrap items-center gap-3 justify-between">
               <div className="min-w-0">
-                <div className="font-medium truncate">{u.display_name ?? "—"}</div>
+                <div className="font-medium truncate flex items-center gap-2">
+                  {u.display_name ?? "—"}
+                  {premiumIds.has(u.id) && (
+                    <span className="px-1.5 py-0.5 rounded-full border border-primary text-primary bg-primary/10 text-[10px] flex items-center gap-1">
+                      <Crown className="w-2.5 h-2.5" /> Premium
+                    </span>
+                  )}
+                </div>
                 <div className="text-sm text-muted-foreground truncate">{u.email ?? u.id}</div>
                 <div className="text-xs text-muted-foreground mt-0.5">
                   Joined {new Date(u.created_at).toLocaleDateString()} · {u.plant_count} plant
