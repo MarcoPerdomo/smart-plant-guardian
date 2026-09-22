@@ -43,9 +43,11 @@ import { Route as AuthenticatedPlantsIdRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedMessagesIdRouteImport } from './routes/_authenticated/messages.$id'
 import { Route as AuthenticatedMarketplaceNewRouteImport } from './routes/_authenticated/marketplace/new'
 import { Route as AuthenticatedMarketplaceMineRouteImport } from './routes/_authenticated/marketplace/mine'
+import { Route as AuthenticatedMarketplaceComingSoonRouteImport } from './routes/_authenticated/marketplace/coming-soon'
 import { Route as AuthenticatedMarketplaceIdRouteImport } from './routes/_authenticated/marketplace/$id'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin/users'
 import { Route as AuthenticatedAdminSpeciesRouteImport } from './routes/_authenticated/admin/species'
+import { Route as AuthenticatedAdminPremiumRouteImport } from './routes/_authenticated/admin/premium'
 import { Route as AuthenticatedAdminPayoutsRouteImport } from './routes/_authenticated/admin/payouts'
 import { Route as AuthenticatedAdminNewsletterRouteImport } from './routes/_authenticated/admin/newsletter'
 import { Route as AuthenticatedAdminArchiveRouteImport } from './routes/_authenticated/admin/archive'
@@ -233,6 +235,12 @@ const AuthenticatedMarketplaceMineRoute =
     path: '/marketplace/mine',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedMarketplaceComingSoonRoute =
+  AuthenticatedMarketplaceComingSoonRouteImport.update({
+    id: '/marketplace/coming-soon',
+    path: '/marketplace/coming-soon',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedMarketplaceIdRoute =
   AuthenticatedMarketplaceIdRouteImport.update({
     id: '/marketplace/$id',
@@ -248,6 +256,12 @@ const AuthenticatedAdminSpeciesRoute =
   AuthenticatedAdminSpeciesRouteImport.update({
     id: '/species',
     path: '/species',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminPremiumRoute =
+  AuthenticatedAdminPremiumRouteImport.update({
+    id: '/premium',
+    path: '/premium',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
 const AuthenticatedAdminPayoutsRoute =
@@ -343,9 +357,11 @@ export interface FileRoutesByFullPath {
   '/admin/archive': typeof AuthenticatedAdminArchiveRoute
   '/admin/newsletter': typeof AuthenticatedAdminNewsletterRoute
   '/admin/payouts': typeof AuthenticatedAdminPayoutsRoute
+  '/admin/premium': typeof AuthenticatedAdminPremiumRoute
   '/admin/species': typeof AuthenticatedAdminSpeciesRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/marketplace/$id': typeof AuthenticatedMarketplaceIdRoute
+  '/marketplace/coming-soon': typeof AuthenticatedMarketplaceComingSoonRoute
   '/marketplace/mine': typeof AuthenticatedMarketplaceMineRoute
   '/marketplace/new': typeof AuthenticatedMarketplaceNewRoute
   '/messages/$id': typeof AuthenticatedMessagesIdRoute
@@ -391,9 +407,11 @@ export interface FileRoutesByTo {
   '/admin/archive': typeof AuthenticatedAdminArchiveRoute
   '/admin/newsletter': typeof AuthenticatedAdminNewsletterRoute
   '/admin/payouts': typeof AuthenticatedAdminPayoutsRoute
+  '/admin/premium': typeof AuthenticatedAdminPremiumRoute
   '/admin/species': typeof AuthenticatedAdminSpeciesRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/marketplace/$id': typeof AuthenticatedMarketplaceIdRoute
+  '/marketplace/coming-soon': typeof AuthenticatedMarketplaceComingSoonRoute
   '/marketplace/mine': typeof AuthenticatedMarketplaceMineRoute
   '/marketplace/new': typeof AuthenticatedMarketplaceNewRoute
   '/messages/$id': typeof AuthenticatedMessagesIdRoute
@@ -442,9 +460,11 @@ export interface FileRoutesById {
   '/_authenticated/admin/archive': typeof AuthenticatedAdminArchiveRoute
   '/_authenticated/admin/newsletter': typeof AuthenticatedAdminNewsletterRoute
   '/_authenticated/admin/payouts': typeof AuthenticatedAdminPayoutsRoute
+  '/_authenticated/admin/premium': typeof AuthenticatedAdminPremiumRoute
   '/_authenticated/admin/species': typeof AuthenticatedAdminSpeciesRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/marketplace/$id': typeof AuthenticatedMarketplaceIdRoute
+  '/_authenticated/marketplace/coming-soon': typeof AuthenticatedMarketplaceComingSoonRoute
   '/_authenticated/marketplace/mine': typeof AuthenticatedMarketplaceMineRoute
   '/_authenticated/marketplace/new': typeof AuthenticatedMarketplaceNewRoute
   '/_authenticated/messages/$id': typeof AuthenticatedMessagesIdRoute
@@ -493,9 +513,11 @@ export interface FileRouteTypes {
     | '/admin/archive'
     | '/admin/newsletter'
     | '/admin/payouts'
+    | '/admin/premium'
     | '/admin/species'
     | '/admin/users'
     | '/marketplace/$id'
+    | '/marketplace/coming-soon'
     | '/marketplace/mine'
     | '/marketplace/new'
     | '/messages/$id'
@@ -541,9 +563,11 @@ export interface FileRouteTypes {
     | '/admin/archive'
     | '/admin/newsletter'
     | '/admin/payouts'
+    | '/admin/premium'
     | '/admin/species'
     | '/admin/users'
     | '/marketplace/$id'
+    | '/marketplace/coming-soon'
     | '/marketplace/mine'
     | '/marketplace/new'
     | '/messages/$id'
@@ -591,9 +615,11 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/archive'
     | '/_authenticated/admin/newsletter'
     | '/_authenticated/admin/payouts'
+    | '/_authenticated/admin/premium'
     | '/_authenticated/admin/species'
     | '/_authenticated/admin/users'
     | '/_authenticated/marketplace/$id'
+    | '/_authenticated/marketplace/coming-soon'
     | '/_authenticated/marketplace/mine'
     | '/_authenticated/marketplace/new'
     | '/_authenticated/messages/$id'
@@ -877,6 +903,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedMarketplaceMineRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/marketplace/coming-soon': {
+      id: '/_authenticated/marketplace/coming-soon'
+      path: '/marketplace/coming-soon'
+      fullPath: '/marketplace/coming-soon'
+      preLoaderRoute: typeof AuthenticatedMarketplaceComingSoonRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/marketplace/$id': {
       id: '/_authenticated/marketplace/$id'
       path: '/marketplace/$id'
@@ -896,6 +929,13 @@ declare module '@tanstack/react-router' {
       path: '/species'
       fullPath: '/admin/species'
       preLoaderRoute: typeof AuthenticatedAdminSpeciesRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/premium': {
+      id: '/_authenticated/admin/premium'
+      path: '/premium'
+      fullPath: '/admin/premium'
+      preLoaderRoute: typeof AuthenticatedAdminPremiumRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
     '/_authenticated/admin/payouts': {
@@ -982,6 +1022,7 @@ interface AuthenticatedAdminRouteRouteChildren {
   AuthenticatedAdminArchiveRoute: typeof AuthenticatedAdminArchiveRoute
   AuthenticatedAdminNewsletterRoute: typeof AuthenticatedAdminNewsletterRoute
   AuthenticatedAdminPayoutsRoute: typeof AuthenticatedAdminPayoutsRoute
+  AuthenticatedAdminPremiumRoute: typeof AuthenticatedAdminPremiumRoute
   AuthenticatedAdminSpeciesRoute: typeof AuthenticatedAdminSpeciesRoute
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
@@ -994,6 +1035,7 @@ const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren
     AuthenticatedAdminArchiveRoute: AuthenticatedAdminArchiveRoute,
     AuthenticatedAdminNewsletterRoute: AuthenticatedAdminNewsletterRoute,
     AuthenticatedAdminPayoutsRoute: AuthenticatedAdminPayoutsRoute,
+    AuthenticatedAdminPremiumRoute: AuthenticatedAdminPremiumRoute,
     AuthenticatedAdminSpeciesRoute: AuthenticatedAdminSpeciesRoute,
     AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
     AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
@@ -1016,6 +1058,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedWalletRoute: typeof AuthenticatedWalletRoute
   AuthenticatedWhatsNewRoute: typeof AuthenticatedWhatsNewRoute
   AuthenticatedMarketplaceIdRoute: typeof AuthenticatedMarketplaceIdRoute
+  AuthenticatedMarketplaceComingSoonRoute: typeof AuthenticatedMarketplaceComingSoonRoute
   AuthenticatedMarketplaceMineRoute: typeof AuthenticatedMarketplaceMineRoute
   AuthenticatedMarketplaceNewRoute: typeof AuthenticatedMarketplaceNewRoute
   AuthenticatedMessagesIdRoute: typeof AuthenticatedMessagesIdRoute
@@ -1039,6 +1082,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedWalletRoute: AuthenticatedWalletRoute,
   AuthenticatedWhatsNewRoute: AuthenticatedWhatsNewRoute,
   AuthenticatedMarketplaceIdRoute: AuthenticatedMarketplaceIdRoute,
+  AuthenticatedMarketplaceComingSoonRoute:
+    AuthenticatedMarketplaceComingSoonRoute,
   AuthenticatedMarketplaceMineRoute: AuthenticatedMarketplaceMineRoute,
   AuthenticatedMarketplaceNewRoute: AuthenticatedMarketplaceNewRoute,
   AuthenticatedMessagesIdRoute: AuthenticatedMessagesIdRoute,
