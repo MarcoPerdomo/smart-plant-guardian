@@ -34,7 +34,7 @@ export function BetaBanner() {
       <div className="mx-auto max-w-6xl flex items-center gap-3 text-sm">
         <AlertTriangle className="h-4 w-4 shrink-0 text-primary" />
         <span className="flex-1">
-          Verdant is in beta. Features may change, and plant advice is a helper — not a replacement for your own judgment.
+          Verdant is in beta. Features may change. The plant advice is a only helper, not a replacement for your own judgment.
         </span>
         <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0" onClick={dismiss} aria-label="Dismiss beta banner">
           <X className="h-4 w-4" />
