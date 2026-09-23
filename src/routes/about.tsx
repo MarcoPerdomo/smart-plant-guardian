@@ -56,7 +56,7 @@ function AboutPage() {
               <h2 className="font-display text-xl font-semibold">Our Mission</h2>
             </div>
             <blockquote className="text-lg leading-relaxed text-foreground">
-              "Our Mission is to seamlessly integrate nature into modern living by providing a balanced
+              "Our Mission is to integrate nature into modern living by providing a balanced
               ecosystem of AI and community. Verdant combines an intelligent digital assistant and
               embedded physical sensors with a vibrant social marketplace, empowering plant owners to
               chat, trade, and expertly nurture their living companions together."
