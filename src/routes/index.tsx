@@ -99,7 +99,7 @@ function Landing() {
           { icon: Users, title: "Plant community", body: "Follow friends, celebrate new growth, comment on photos and message fellow plant lovers." },
           { icon: Store, title: "Trusted marketplace", body: "Buy, sell and trade plants with transparent history. Verdant charges a small commission on completed sales." },
           { icon: Cpu, title: "Optional sensors", body: "Plug in an Arduino or Raspberry Pi to log soil moisture, humidity, light and motion events automatically." },
-          { icon: Droplets, title: "Track everything", body: "Soil moisture, humidity, temperature, light and pest activity — all timestamped in one place." },
+          { icon: Droplets, title: "Track everything", body: "Soil moisture, humidity, temperature and light. All timestamped in one place." },
           { icon: Sun, title: "Ideal conditions", body: "Every plant is matched against a growing catalogue of care profiles for indoor and outdoor life." },
         ].map(({ icon: Icon, title, body }) => (
           <div key={title} className="rounded-xl border border-border bg-card p-6">
