@@ -501,6 +501,14 @@ function AuthedLayout() {
                            <Megaphone className="w-4 h-4" /> What's new
                          </Link>
                        </SheetClose>
+                       <SheetClose asChild>
+                         <Link
+                           to="/get-started"
+                           className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-muted text-sm"
+                         >
+                           <Rocket className="w-4 h-4" /> Get started
+                         </Link>
+                       </SheetClose>
                       {isAdmin && (
                         <SheetClose asChild>
                           <Link
