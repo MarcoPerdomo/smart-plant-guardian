@@ -28,6 +28,8 @@ import {
   FileText,
   Cookie,
   Bot,
+  Info,
+  Rocket,
 } from "lucide-react";
 
 import { WeatherChip } from "@/components/weather-chip";
@@ -83,7 +85,7 @@ function AuthedLayout() {
     await qc.cancelQueries();
     qc.clear();
     await supabase.auth.signOut();
-    navigate({ to: "/auth", replace: true });
+    navigate({ to: "/", replace: true });
   }
 
   const dashboardActive = !!useMatch({ from: "/_authenticated/dashboard", shouldThrow: false });
