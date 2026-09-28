@@ -12,7 +12,7 @@ export const Route = createFileRoute("/_authenticated/admin/plants/import")({
   component: ImportPlants,
   head: () => ({
     meta: [
-      { title: "Import plants — Verdant" },
+      { title: "Import plants — Sentia" },
       { name: "description", content: "Batch import new plant species into the catalog." },
     ],
   }),

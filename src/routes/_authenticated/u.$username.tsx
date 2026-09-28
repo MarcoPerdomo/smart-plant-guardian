@@ -11,10 +11,10 @@ export const Route = createFileRoute("/_authenticated/u/$username")({
   component: ProfilePage,
   head: ({ params }) => ({
     meta: [
-      { title: `@${params.username} — Verdant` },
-      { name: "description", content: `See @${params.username}'s plant collection stats and connect on Verdant.` },
-      { property: "og:title", content: `@${params.username} on Verdant` },
-      { property: "og:description", content: `See @${params.username}'s plant collection stats and connect on Verdant.` },
+      { title: `@${params.username} — Sentia` },
+      { name: "description", content: `See @${params.username}'s plant collection stats and connect on Sentia.` },
+      { property: "og:title", content: `@${params.username} on Sentia` },
+      { property: "og:description", content: `See @${params.username}'s plant collection stats and connect on Sentia.` },
       { property: "og:type", content: "profile" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -84,7 +84,7 @@ function ProfilePage() {
     return (
       <div className="max-w-xl mx-auto rounded-2xl border border-border bg-card p-8 text-center">
         <h1 className="font-display text-2xl font-semibold">Gardener not found</h1>
-        <p className="text-sm text-muted-foreground mt-2">That username doesn&apos;t exist on Verdant.</p>
+        <p className="text-sm text-muted-foreground mt-2">That username doesn&apos;t exist on Sentia.</p>
       </div>
     );
 

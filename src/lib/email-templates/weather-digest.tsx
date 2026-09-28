@@ -39,7 +39,7 @@ const Email = ({
   low,
   condition,
   alerts = [],
-  appUrl = 'https://verdant-nl.app',
+  appUrl = 'https://sentia-plants.com',
 }: Props) => (
   <Html lang="en" dir="ltr">
     <Head />
@@ -50,7 +50,7 @@ const Email = ({
     </Preview>
     <Body style={main}>
       <Container style={container}>
-        <Text style={brand}>Verdant</Text>
+        <Text style={brand}>Sentia</Text>
         <Heading style={h1}>
           {alerts.length > 0
             ? `${alerts.length} plant care alert${alerts.length === 1 ? '' : 's'} today`

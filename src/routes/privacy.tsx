@@ -1,21 +1,21 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SimpleHeader, SimpleFooter } from "@/components/simple-layout";
 
-const CANONICAL = "https://verdant-nl.app/privacy";
+const CANONICAL = "https://sentia-plants.com/privacy";
 
 export const Route = createFileRoute("/privacy")({
   component: PrivacyPage,
   head: () => ({
     meta: [
-      { title: "Privacy Policy — Verdant (Beta)" },
-      { name: "description", content: "How Verdant handles your personal data while building Europe's network of connected plant lovers." },
-      { property: "og:title", content: "Privacy Policy — Verdant (Beta)" },
-      { property: "og:description", content: "How Verdant handles your personal data while building Europe's network of connected plant lovers." },
+      { title: "Privacy Policy — Sentia (Beta)" },
+      { name: "description", content: "How Sentia handles your personal data while building Europe's network of connected plant lovers." },
+      { property: "og:title", content: "Privacy Policy — Sentia (Beta)" },
+      { property: "og:description", content: "How Sentia handles your personal data while building Europe's network of connected plant lovers." },
       { property: "og:url", content: CANONICAL },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:title", content: "Privacy Policy — Verdant (Beta)" },
-      { name: "twitter:description", content: "How Verdant handles your personal data while building Europe's network of connected plant lovers." },
+      { name: "twitter:title", content: "Privacy Policy — Sentia (Beta)" },
+      { name: "twitter:description", content: "How Sentia handles your personal data while building Europe's network of connected plant lovers." },
       { name: "robots", content: "index, follow" },
     ],
     links: [{ rel: "canonical", href: CANONICAL }],
@@ -28,13 +28,13 @@ function PrivacyPage() {
       <SimpleHeader />
       <main className="mx-auto max-w-3xl px-4 py-12">
         <h1 className="font-display text-4xl font-semibold">Privacy Policy</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Last updated: 20 August 2026 · Verdant is in beta.</p>
+        <p className="mt-2 text-sm text-muted-foreground">Last updated: 28 September 2026 · Sentia (formerly Verdant) is in beta.</p>
 
         <div className="mt-8 space-y-8 text-sm leading-relaxed text-foreground">
           <section>
             <h2 className="font-display text-xl font-semibold">Who is responsible for your data?</h2>
             <p className="mt-2">
-              Verdant is run by Marco, an individual data controller based in the Netherlands.
+              Sentia is run by Marco, an individual data controller based in the Netherlands.
               For privacy questions, reach out through the feedback form once you are signed in.
             </p>
           </section>
@@ -54,7 +54,7 @@ function PrivacyPage() {
           <section>
             <h2 className="font-display text-xl font-semibold">Why we process it</h2>
             <p className="mt-2 text-muted-foreground">
-              We process your data to provide the Verdant service: tracking your plants, generating care advice,
+              We process your data to provide the Sentia service: tracking your plants, generating care advice,
               sending you notifications, connecting you with other plant lovers and operating the marketplace.
               The legal basis is performance of the contract with you and, where applicable, your consent.
             </p>
@@ -102,7 +102,7 @@ function PrivacyPage() {
           <section>
             <h2 className="font-display text-xl font-semibold">Changes</h2>
             <p className="mt-2 text-muted-foreground">
-              This policy may change as Verdant grows. We will notify you of material changes via email or the
+              This policy may change as Sentia grows. We will notify you of material changes via email or the
               in-app notification bell.
             </p>
           </section>

@@ -9,9 +9,9 @@ import { EmailChangeEmail } from '@/lib/email-templates/email-change'
 import { ReauthenticationEmail } from '@/lib/email-templates/reauthentication'
 
 // Configuration
-const SITE_NAME = "Verdant"
+const SITE_NAME = "Sentia"
 const SENDER_DOMAIN = "notify.verdant-nl.app"
-const ROOT_DOMAIN = "verdant-nl.app"
+const ROOT_DOMAIN = "sentia-plants.com"
 const FROM_DOMAIN = "notify.verdant-nl.app"
 const SITE_URL = `https://${ROOT_DOMAIN}`
 
@@ -28,7 +28,7 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
           sendUrl: process.env['LOVABLE_SEND_URL'],
           emails: {
             signup: {
-              subject: 'Your Verdant verification code',
+              subject: 'Your Sentia verification code',
               render: (data) =>
                 React.createElement(SignupEmail, {
                   siteName: SITE_NAME,
@@ -39,7 +39,7 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
                 }),
             },
             invite: {
-              subject: 'You have been invited to Verdant',
+              subject: 'You have been invited to Sentia',
               render: (data) =>
                 React.createElement(InviteEmail, {
                   siteName: SITE_NAME,
@@ -48,7 +48,7 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
                 }),
             },
             magiclink: {
-              subject: 'Your Verdant login link',
+              subject: 'Your Sentia login link',
               render: (data) =>
                 React.createElement(MagicLinkEmail, {
                   siteName: SITE_NAME,
@@ -56,7 +56,7 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
                 }),
             },
             recovery: {
-              subject: 'Reset your Verdant password',
+              subject: 'Reset your Sentia password',
               render: (data) =>
                 React.createElement(RecoveryEmail, {
                   siteName: SITE_NAME,
@@ -64,7 +64,7 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
                 }),
             },
             email_change: {
-              subject: 'Confirm your new email — Verdant',
+              subject: 'Confirm your new email — Sentia',
               render: (data) =>
                 React.createElement(EmailChangeEmail, {
                   siteName: SITE_NAME,
@@ -75,7 +75,7 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
                 }),
             },
             reauthentication: {
-              subject: 'Your Verdant verification code',
+              subject: 'Your Sentia verification code',
               render: (data) =>
                 React.createElement(ReauthenticationEmail, { token: data.token ?? '' }),
             },

@@ -18,16 +18,16 @@ interface Props {
   confirmUrl?: string
 }
 
-const Email = ({ displayName, confirmUrl = 'https://verdant-nl.app' }: Props) => (
+const Email = ({ displayName, confirmUrl = 'https://sentia-plants.com' }: Props) => (
   <Html lang="en" dir="ltr">
     <Head />
-    <Preview>Confirm your Verdant product updates</Preview>
+    <Preview>Confirm your Sentia product updates</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Text style={brand}>Verdant</Text>
+        <Text style={brand}>Sentia</Text>
         <Heading style={h1}>Confirm your subscription</Heading>
         <Text style={intro}>
-          {displayName ? `Hi ${displayName},` : 'Hi there,'} you asked to receive Verdant product
+          {displayName ? `Hi ${displayName},` : 'Hi there,'} you asked to receive Sentia product
           updates — new features, upgrades and other platform news. Tap the button below to confirm.
         </Text>
         <Section style={{ margin: '24px 0' }}>
@@ -49,9 +49,9 @@ const Email = ({ displayName, confirmUrl = 'https://verdant-nl.app' }: Props) =>
 
 export const template = {
   component: Email,
-  subject: 'Confirm your Verdant product updates',
+  subject: 'Confirm your Sentia product updates',
   displayName: 'Newsletter confirmation',
-  previewData: { displayName: 'Marco', confirmUrl: 'https://verdant-nl.app/newsletter/confirm?token=demo' },
+  previewData: { displayName: 'Marco', confirmUrl: 'https://sentia-plants.com/newsletter/confirm?token=demo' },
 } satisfies TemplateEntry
 
 const main = { backgroundColor: '#ffffff', fontFamily: 'Helvetica, Arial, sans-serif' }

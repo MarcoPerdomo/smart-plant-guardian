@@ -3,21 +3,21 @@ import { Heart, Users, Sprout, Cpu, Sparkles, Store, ArrowRight } from "lucide-r
 import { SimpleHeader, SimpleFooter } from "@/components/simple-layout";
 import { BetaBadge } from "@/components/beta-banner";
 
-const CANONICAL = "https://verdant-nl.app/about";
+const CANONICAL = "https://sentia-plants.com/about";
 
 export const Route = createFileRoute("/about")({
   component: AboutPage,
   head: () => ({
     meta: [
-      { title: "About Us — Verdant (Beta)" },
-      { name: "description", content: "Verdant's vision is to create Europe's most vibrant network of connected plant lovers, blending AI and community to turn every home into a thriving green sanctuary." },
-      { property: "og:title", content: "About Us — Verdant (Beta)" },
-      { property: "og:description", content: "Verdant's vision is to create Europe's most vibrant network of connected plant lovers, blending AI and community to turn every home into a thriving green sanctuary." },
+      { title: "About Us — Sentia (Beta)" },
+      { name: "description", content: "Sentia's vision is to create Europe's most vibrant network of connected plant lovers, blending AI and community to turn every home into a thriving green sanctuary." },
+      { property: "og:title", content: "About Us — Sentia (Beta)" },
+      { property: "og:description", content: "Sentia's vision is to create Europe's most vibrant network of connected plant lovers, blending AI and community to turn every home into a thriving green sanctuary." },
       { property: "og:url", content: CANONICAL },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:title", content: "About Us — Verdant (Beta)" },
-      { name: "twitter:description", content: "Verdant's vision is to create Europe's most vibrant network of connected plant lovers, blending AI and community to turn every home into a thriving green sanctuary." },
+      { name: "twitter:title", content: "About Us — Sentia (Beta)" },
+      { name: "twitter:description", content: "Sentia's vision is to create Europe's most vibrant network of connected plant lovers, blending AI and community to turn every home into a thriving green sanctuary." },
       { name: "robots", content: "index, follow" },
     ],
     links: [{ rel: "canonical", href: CANONICAL }],
@@ -32,7 +32,7 @@ function AboutPage() {
         <div className="flex items-center gap-2 text-sm font-medium text-primary mb-4">
           <BetaBadge /> Now in beta
         </div>
-        <h1 className="font-display text-4xl font-semibold">About Verdant</h1>
+        <h1 className="font-display text-4xl font-semibold">About Sentia</h1>
         <p className="mt-2 text-muted-foreground">
           We're building a place where plants and people grow together.
         </p>
@@ -57,17 +57,17 @@ function AboutPage() {
             </div>
             <blockquote className="text-lg leading-relaxed text-foreground">
               "Our Mission is to integrate nature into modern living by providing a balanced
-              ecosystem of AI and community. Verdant combines an intelligent digital assistant and
+              ecosystem of AI and community. Sentia combines an intelligent digital assistant and
               embedded physical sensors with a vibrant social marketplace, empowering plant owners to
               chat, trade, and expertly nurture their living companions together."
             </blockquote>
           </section>
 
           <section>
-            <h2 className="font-display text-2xl font-semibold">Why Verdant?</h2>
+            <h2 className="font-display text-2xl font-semibold">Why Sentia?</h2>
             <p className="mt-3 text-muted-foreground leading-relaxed">
               Plants make homes healthier and happier, but keeping them alive can feel like guesswork.
-              Verdant brings together three things we believe every plant owner deserves:
+              Sentia brings together three things we believe every plant owner deserves:
             </p>
             <div className="mt-6 grid sm:grid-cols-3 gap-4">
               <ReasonCard
@@ -92,7 +92,7 @@ function AboutPage() {
             <h2 className="font-display text-2xl font-semibold">How it works today</h2>
             <div className="mt-4 space-y-4">
               <Step icon={Sprout} title="Add your plants" body="Search our growing catalogue, give each plant a nickname and note whether it lives indoors or outdoors." />
-              <Step icon={Sparkles} title="Get AI-powered advice" body="Verdant reads your local weather and your plant's care profile to suggest water, shade and pest checks." />
+              <Step icon={Sparkles} title="Get AI-powered advice" body="Sentia reads your local weather and your plant's care profile to suggest water, shade and pest checks." />
               <Step icon={Cpu} title="Optional sensors" body="Connect Arduino or Raspberry Pi sensors to log soil moisture, humidity, light and motion events automatically." />
               <Step icon={Users} title="Share and trade" body="Post updates for friends, list plants on the marketplace and message other growers." />
             </div>
@@ -101,7 +101,7 @@ function AboutPage() {
           <section className="rounded-2xl border border-dashed border-border p-6">
             <h2 className="font-display text-xl font-semibold">From the founder</h2>
             <p className="mt-3 text-muted-foreground leading-relaxed">
-              Verdant started from a simple belief: technology should help us stay closer to nature,
+              Sentia started from a simple belief: technology should help us stay closer to nature,
               not pull us away. More of the founder story — how this idea grew from a single plant on a
               windowsill into a community — is coming soon.
             </p>

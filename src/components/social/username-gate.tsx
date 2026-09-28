@@ -28,7 +28,7 @@ export function UsernameGate() {
   const save = useMutation({
     mutationFn: () => setUsername({ data: { username: value.trim().toLowerCase(), bio: bio.trim() || null } }),
     onSuccess: () => {
-      toast.success("Welcome to Verdant Social");
+      toast.success("Welcome to Sentia Social");
       qc.invalidateQueries({ queryKey: ["my_username"] });
     },
     onError: (e: Error) => toast.error(e.message),

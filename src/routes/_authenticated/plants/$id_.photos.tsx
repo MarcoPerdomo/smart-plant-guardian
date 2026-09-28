@@ -11,7 +11,7 @@ export const Route = createFileRoute("/_authenticated/plants/$id_/photos")({
   component: PlantPhotosPage,
   head: () => ({
     meta: [
-      { title: "Plant photo journal — Verdant" },
+      { title: "Plant photo journal — Sentia" },
       { name: "description", content: "Every photo of your plant over time, newest first." },
     ],
   }),

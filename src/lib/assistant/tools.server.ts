@@ -63,7 +63,7 @@ export function createAssistantTools(deps: ToolDeps) {
     }),
 
     search_catalog: tool({
-      description: "Search the Verdant plant catalog for care information about a houseplant.",
+      description: "Search the Sentia plant catalog for care information about a houseplant.",
       inputSchema: z.object({
         q: z.string().describe("Search term such as a common name or scientific name."),
       }),

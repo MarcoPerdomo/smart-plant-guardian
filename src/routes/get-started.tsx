@@ -2,21 +2,21 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Leaf, Cpu, Droplets, Sun, Wifi, Camera, ArrowRight } from "lucide-react";
 import { BetaBadge } from "@/components/beta-banner";
 
-const CANONICAL = "https://verdant-nl.app/get-started";
+const CANONICAL = "https://sentia-plants.com/get-started";
 
 export const Route = createFileRoute("/get-started")({
   component: GetStartedPage,
   head: () => ({
     meta: [
-      { title: "Get Started — Verdant (Beta)" },
-      { name: "description", content: "Join the Verdant beta: set up your account, add plants, connect optional sensors and become part of Europe's network of connected plant lovers." },
-      { property: "og:title", content: "Get Started — Verdant (Beta)" },
-      { property: "og:description", content: "Join the Verdant beta: set up your account, add plants, connect optional sensors and become part of Europe's network of connected plant lovers." },
+      { title: "Get Started — Sentia (Beta)" },
+      { name: "description", content: "Join the Sentia beta: set up your account, add plants, connect optional sensors and become part of Europe's network of connected plant lovers." },
+      { property: "og:title", content: "Get Started — Sentia (Beta)" },
+      { property: "og:description", content: "Join the Sentia beta: set up your account, add plants, connect optional sensors and become part of Europe's network of connected plant lovers." },
       { property: "og:url", content: CANONICAL },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:title", content: "Get Started — Verdant (Beta)" },
-      { name: "twitter:description", content: "Join the Verdant beta: set up your account, add plants, connect optional sensors and become part of Europe's network of connected plant lovers." },
+      { name: "twitter:title", content: "Get Started — Sentia (Beta)" },
+      { name: "twitter:description", content: "Join the Sentia beta: set up your account, add plants, connect optional sensors and become part of Europe's network of connected plant lovers." },
       { name: "robots", content: "index, follow" },
     ],
     links: [{ rel: "canonical", href: CANONICAL }],
@@ -29,7 +29,7 @@ function GetStartedPage() {
       <header className="border-b border-border">
         <div className="mx-auto max-w-6xl px-4 h-14 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 font-display text-lg font-semibold">
-            <Leaf className="w-5 h-5 text-primary" /> Verdant <BetaBadge />
+            <Leaf className="w-5 h-5 text-primary" /> Sentia <BetaBadge />
           </Link>
           <Link to="/auth" className="text-sm px-3 py-1.5 rounded-md bg-primary text-primary-foreground">
             Sign in
@@ -38,7 +38,7 @@ function GetStartedPage() {
       </header>
 
       <main className="mx-auto max-w-3xl px-4 py-12">
-        <h1 className="font-display text-4xl font-semibold">Get started with Verdant</h1>
+        <h1 className="font-display text-4xl font-semibold">Get started with Sentia</h1>
         <p className="mt-2 text-muted-foreground">
           A quick guide for beta testers: set up your account, add a plant, and start tracking data.
         </p>
@@ -74,7 +74,7 @@ function GetStartedPage() {
 
           <Step number={5} title="Check the weather" icon={Sun}>
             <p className="text-sm text-muted-foreground">
-              Verdant fetches local weather and warns you when a plant may need extra water, shade or pest checks.
+              Sentia fetches local weather and warns you when a plant may need extra water, shade or pest checks.
             </p>
           </Step>
 
@@ -98,7 +98,7 @@ function GetStartedPage() {
 
       <footer className="border-t border-border">
         <div className="mx-auto max-w-6xl px-4 py-6 text-sm text-muted-foreground flex flex-wrap gap-4 justify-between">
-          <span>© 2026 Verdant <BetaBadge /></span>
+          <span>© 2026 Sentia <BetaBadge /></span>
           <div className="flex gap-4">
             <Link to="/about" className="hover:text-foreground">About</Link>
             <Link to="/privacy" className="hover:text-foreground">Privacy</Link>

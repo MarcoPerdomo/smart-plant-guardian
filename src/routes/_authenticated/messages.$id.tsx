@@ -12,10 +12,10 @@ export const Route = createFileRoute("/_authenticated/messages/$id")({
   component: ConversationPage,
   head: () => ({
     meta: [
-      { title: "Chat — Verdant" },
-      { name: "description", content: "A private plant chat with your Verdant friend." },
-      { property: "og:title", content: "Chat — Verdant" },
-      { property: "og:description", content: "A private plant chat with your Verdant friend." },
+      { title: "Chat — Sentia" },
+      { name: "description", content: "A private plant chat with your Sentia friend." },
+      { property: "og:title", content: "Chat — Sentia" },
+      { property: "og:description", content: "A private plant chat with your Sentia friend." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],

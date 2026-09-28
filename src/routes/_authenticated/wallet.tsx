@@ -11,9 +11,9 @@ export const Route = createFileRoute("/_authenticated/wallet")({
   component: WalletPage,
   head: () => ({
     meta: [
-      { title: "Wallet — Verdant" },
+      { title: "Wallet — Sentia" },
       { name: "description", content: "Your marketplace balance, escrow funds, transactions and payout requests." },
-      { property: "og:title", content: "Wallet — Verdant" },
+      { property: "og:title", content: "Wallet — Sentia" },
       { property: "og:description", content: "Your marketplace balance, escrow funds and payouts." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

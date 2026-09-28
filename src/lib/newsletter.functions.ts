@@ -52,7 +52,7 @@ export const subscribeNewsletter = createServerFn({ method: "POST" })
       );
     if (error) throw new Error(error.message);
 
-    const appUrl = (process.env["APP_URL"] ?? "https://verdant-nl.app").replace(/\/$/, "");
+    const appUrl = (process.env["APP_URL"] ?? "https://sentia-plants.com").replace(/\/$/, "");
     const confirmUrl = `${appUrl}/newsletter/confirm?token=${token}`;
 
     try {

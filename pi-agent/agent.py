@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""Verdant Pi agent — reads the sensors wired to a Raspberry Pi 5 / BST-4WD
-expansion board and POSTs a reading to the Verdant ingest endpoint.
+"""Sentia Pi agent — reads the sensors wired to a Raspberry Pi 5 / BST-4WD
+expansion board and POSTs a reading to the Sentia ingest endpoint.
 
 Usage:
     python agent.py --config config.yaml          # run forever
@@ -20,7 +20,7 @@ import yaml
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s"
 )
-log = logging.getLogger("verdant")
+log = logging.getLogger("sentia")
 
 # Fields the ingest endpoint accepts at the top level. Anything else we collect
 # is nested under "extra" (jsonb) so it is still stored with the reading.

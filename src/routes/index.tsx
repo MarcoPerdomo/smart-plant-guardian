@@ -5,22 +5,22 @@ import { Leaf, Droplets, Sun, Bug, Cpu, Sparkles, Users, Store } from "lucide-re
 import { VisitorWeatherChip } from "@/components/weather-chip";
 import { BetaBadge, BetaBanner } from "@/components/beta-banner";
 
-const CANONICAL = "https://verdant-nl.app/";
+const CANONICAL = "https://sentia-plants.com/";
 
 export const Route = createFileRoute("/")({
   component: Landing,
   head: () => ({
     meta: [
-      { title: "Verdant (Beta) — Europe's network of connected plant lovers" },
-      { name: "description", content: "Join the Verdant beta. Track your plants with AI care advice, connect with fellow plant lovers, and trade plants in a community-powered marketplace." },
-      { property: "og:title", content: "Verdant (Beta) — Europe's network of connected plant lovers" },
-      { property: "og:description", content: "Join the Verdant beta. Track your plants with AI care advice, connect with fellow plant lovers, and trade plants in a community-powered marketplace." },
+      { title: "Sentia (Beta) — Europe's network of connected plant lovers" },
+      { name: "description", content: "Join the Sentia beta. Track your plants with AI care advice, connect with fellow plant lovers, and trade plants in a community-powered marketplace." },
+      { property: "og:title", content: "Sentia (Beta) — Europe's network of connected plant lovers" },
+      { property: "og:description", content: "Join the Sentia beta. Track your plants with AI care advice, connect with fellow plant lovers, and trade plants in a community-powered marketplace." },
       { property: "og:url", content: CANONICAL },
       { property: "og:type", content: "website" },
       { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/da919765-0158-4e54-ae2e-6664086f85cd" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Verdant (Beta) — Europe's network of connected plant lovers" },
-      { name: "twitter:description", content: "Join the Verdant beta. Track your plants with AI care advice, connect with fellow plant lovers, and trade plants in a community-powered marketplace." },
+      { name: "twitter:title", content: "Sentia (Beta) — Europe's network of connected plant lovers" },
+      { name: "twitter:description", content: "Join the Sentia beta. Track your plants with AI care advice, connect with fellow plant lovers, and trade plants in a community-powered marketplace." },
       { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/da919765-0158-4e54-ae2e-6664086f85cd" },
       { name: "robots", content: "index, follow" },
     ],
@@ -47,7 +47,7 @@ function Landing() {
       <header className="border-b border-border">
         <div className="mx-auto max-w-6xl px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-2 font-display text-lg font-semibold">
-            <Leaf className="w-5 h-5 text-primary" /> Verdant <BetaBadge />
+            <Leaf className="w-5 h-5 text-primary" /> Sentia <BetaBadge />
           </div>
           <div className="flex items-center gap-3">
             <Link to="/about" className="hidden sm:inline-flex text-sm px-3 py-1.5 rounded-md border border-border hover:bg-muted">
@@ -69,7 +69,7 @@ function Landing() {
             Turn every home<br/>into a green sanctuary.
           </h1>
           <p className="mt-6 text-lg text-muted-foreground max-w-lg">
-            Verdant blends AI plant care with a community of plant lovers.
+            Sentia blends AI plant care with a community of plant lovers.
             Track your indoor jungle, get weekly care summaries, and trade plants
             with friends across Europe.
           </p>
@@ -97,7 +97,7 @@ function Landing() {
         {[
           { icon: Sparkles, title: "AI care advisor", body: "Get watering predictions, disease warnings, and a friendly summary a few times per week based on your plants and local weather." },
           { icon: Users, title: "Plant community", body: "Follow friends, celebrate new growth, comment on photos and message fellow plant lovers." },
-          { icon: Store, title: "Trusted marketplace", body: "Buy, sell and trade plants with transparent history. Verdant charges a small commission on completed sales." },
+          { icon: Store, title: "Trusted marketplace", body: "Buy, sell and trade plants with transparent history. Sentia charges a small commission on completed sales." },
           { icon: Cpu, title: "Optional sensors", body: "Plug in an Arduino or Raspberry Pi to log soil moisture, humidity, light and motion events automatically." },
           { icon: Droplets, title: "Track everything", body: "Soil moisture, humidity, temperature and light. All timestamped in one place." },
           { icon: Sun, title: "Ideal conditions", body: "Every plant is matched against a growing catalogue of care profiles for indoor and outdoor life." },
@@ -112,7 +112,7 @@ function Landing() {
 
       <footer className="border-t border-border">
         <div className="mx-auto max-w-6xl px-4 py-6 text-sm text-muted-foreground flex flex-col sm:flex-row gap-4 justify-between">
-          <span>© 2026 Verdant <BetaBadge /></span>
+          <span>© 2026 Sentia <BetaBadge /></span>
           <div className="flex flex-wrap gap-4">
             <Link to="/about" className="hover:text-foreground">About</Link>
             <Link to="/privacy" className="hover:text-foreground">Privacy</Link>

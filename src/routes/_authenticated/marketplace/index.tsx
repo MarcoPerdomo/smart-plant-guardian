@@ -9,9 +9,9 @@ export const Route = createFileRoute("/_authenticated/marketplace/")({
   component: MarketplaceBrowse,
   head: () => ({
     meta: [
-      { title: "Plant Marketplace — Verdant" },
+      { title: "Plant Marketplace — Sentia" },
       { name: "description", content: "Browse plants for sale from fellow growers in the Netherlands, Belgium and Germany." },
-      { property: "og:title", content: "Plant Marketplace — Verdant" },
+      { property: "og:title", content: "Plant Marketplace — Sentia" },
       { property: "og:description", content: "Buy and sell houseplants with full care history transparency." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

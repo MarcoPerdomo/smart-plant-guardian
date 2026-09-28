@@ -103,4 +103,4 @@ export async function isAdminUser(
 }
 
 export const PREMIUM_REQUIRED_MESSAGE =
-  "Ask Verdant is a Verdant Premium feature. Ask a Verdant admin to enable Premium on your account.";
+  "Ask Sentia is a Sentia Premium feature. Ask a Sentia admin to enable Premium on your account.";

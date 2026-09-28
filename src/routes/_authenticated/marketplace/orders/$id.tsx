@@ -11,9 +11,9 @@ export const Route = createFileRoute("/_authenticated/marketplace/orders/$id")({
   component: OrderDetail,
   head: () => ({
     meta: [
-      { title: "Order — Verdant Marketplace" },
+      { title: "Order — Sentia Marketplace" },
       { name: "description", content: "Order status, escrow state and delivery timeline for your marketplace purchase." },
-      { property: "og:title", content: "Order — Verdant Marketplace" },
+      { property: "og:title", content: "Order — Sentia Marketplace" },
       { property: "og:description", content: "Order status, escrow state and delivery timeline." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -92,7 +92,7 @@ function OrderDetail() {
       <div className="rounded-2xl border border-border p-5 space-y-2 text-sm">
         <Row label="Plant" value={euros(order.item_cents)} />
         <Row label="Shipping" value={euros(order.shipping_cents)} />
-        <Row label="Verdant commission" value={`-${euros(order.commission_cents)}`} muted />
+        <Row label="Sentia commission" value={`-${euros(order.commission_cents)}`} muted />
         <Row label={isBuyer ? "You paid" : "Buyer paid"} value={euros(order.total_cents)} bold />
         {isSeller && (
           <Row

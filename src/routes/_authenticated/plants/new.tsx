@@ -9,7 +9,7 @@ import { EnvironmentBadge, normalizeEnvironment } from "@/components/environment
 
 export const Route = createFileRoute("/_authenticated/plants/new")({
   component: NewPlant,
-  head: () => ({ meta: [{ title: "Add plant — Verdant" }, { name: "description", content: "Add a new plant and pair it with an Arduino device." }] }),
+  head: () => ({ meta: [{ title: "Add plant — Sentia" }, { name: "description", content: "Add a new plant and pair it with an Arduino device." }] }),
 });
 
 function NewPlant() {
@@ -71,7 +71,7 @@ function NewPlant() {
 
   const requestMut = useMutation({
     mutationFn: (name: string) => requestSpecies({ data: { name } }),
-    onSuccess: () => toast.success("Request sent to the Verdant team"),
+    onSuccess: () => toast.success("Request sent to the Sentia team"),
     onError: (e: Error) => toast.error(e.message),
   });
 
@@ -168,7 +168,7 @@ function NewPlant() {
               ) : (
                 <div className="rounded-md border border-dashed border-border p-3 text-sm space-y-2">
                   <p className="text-muted-foreground">
-                    "{query}" isn't in the Verdant catalogue yet. You can ask the Verdant team to
+                    "{query}" isn't in the Sentia catalogue yet. You can ask the Sentia team to
                     add it — we'll notify you once it's available.
                   </p>
                   <button

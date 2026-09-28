@@ -4,4 +4,4 @@ Disallow: /auth
 Disallow: /_authenticated
 Disallow: /api/
 
-Sitemap: https://verdant-nl.app/sitemap.xml
+Sitemap: https://sentia-plants.com/sitemap.xml

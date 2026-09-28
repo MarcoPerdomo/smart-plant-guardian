@@ -32,13 +32,13 @@ export const SignupEmail = ({
     <Head>
       <style>{darkModeCss}</style>
     </Head>
-    <Preview>Your Verdant verification code</Preview>
+    <Preview>Your Sentia verification code</Preview>
     <Body style={s.main}>
       <Container style={s.container}>
         <BrandMark />
         <Heading style={s.h1}>Verify your email</Heading>
         <Text style={s.text}>
-          Welcome to Verdant! To finish creating your account for{' '}
+          Welcome to Sentia! To finish creating your account for{' '}
           <Link href={`mailto:${recipient}`} style={s.link}>
             {recipient}
           </Link>

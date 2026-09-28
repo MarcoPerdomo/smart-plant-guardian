@@ -13,9 +13,9 @@ export const Route = createFileRoute("/_authenticated/feed")({
   component: FeedPage,
   head: () => ({
     meta: [
-      { title: "Plant feed — Verdant" },
+      { title: "Plant feed — Sentia" },
       { name: "description", content: "See what your plant friends are growing, watering and rescuing." },
-      { property: "og:title", content: "Plant feed — Verdant" },
+      { property: "og:title", content: "Plant feed — Sentia" },
       { property: "og:description", content: "See what your plant friends are growing, watering and rescuing." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

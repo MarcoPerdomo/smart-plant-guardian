@@ -76,11 +76,11 @@ function Consent() {
     <main className="min-h-screen flex items-center justify-center bg-background px-4">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>Connect {clientName} to Verdant</CardTitle>
+          <CardTitle>Connect {clientName} to Sentia</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-muted-foreground">
-            <strong>{clientName}</strong> wants to access your Verdant plant data as you.
+            <strong>{clientName}</strong> wants to access your Sentia plant data as you.
           </p>
           <p className="text-sm text-muted-foreground">
             It will be able to read your plants, log watering, add new plants, and search the plant catalog.

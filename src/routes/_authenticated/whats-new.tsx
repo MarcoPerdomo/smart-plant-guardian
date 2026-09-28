@@ -8,10 +8,10 @@ export const Route = createFileRoute("/_authenticated/whats-new")({
   component: WhatsNew,
   head: () => ({
     meta: [
-      { title: "What's new — Verdant" },
-      { name: "description", content: "Product announcements: new features, upgrades and platform news from Verdant." },
-      { property: "og:title", content: "What's new — Verdant" },
-      { property: "og:description", content: "Product announcements: new features, upgrades and platform news from Verdant." },
+      { title: "What's new — Sentia" },
+      { name: "description", content: "Product announcements: new features, upgrades and platform news from Sentia." },
+      { property: "og:title", content: "What's new — Sentia" },
+      { property: "og:description", content: "Product announcements: new features, upgrades and platform news from Sentia." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],

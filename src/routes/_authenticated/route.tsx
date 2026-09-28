@@ -118,7 +118,7 @@ function AuthedLayout() {
         <div className="mx-auto max-w-6xl px-4 h-14 flex items-center justify-between">
           <Link to="/dashboard" className="flex items-center gap-2 font-display text-lg font-semibold">
             <Leaf className="w-5 h-5 text-primary" />
-            Verdant <BetaBadge className="ml-1" />
+            Sentia <BetaBadge className="ml-1" />
           </Link>
 
           <div className="flex items-center gap-1">
@@ -164,7 +164,7 @@ function AuthedLayout() {
                   >
                     <Link to="/chat" className="justify-between">
                       <span className="flex items-center gap-2">
-                        <Bot className="w-4 h-4" /> Ask Verdant
+                        <Bot className="w-4 h-4" /> Ask Sentia
                       </span>
                       {!accessQuery.data?.isPremium && (
                         <span className="ml-2 px-1.5 py-0.5 rounded-full border border-primary text-primary bg-primary/10 text-[10px]">
@@ -372,7 +372,7 @@ function AuthedLayout() {
                             chatActive && "bg-muted text-primary"
                           )}
                         >
-                          <Bot className="w-4 h-4" /> Ask Verdant
+                          <Bot className="w-4 h-4" /> Ask Sentia
                         </Link>
                       </SheetClose>
                     </div>

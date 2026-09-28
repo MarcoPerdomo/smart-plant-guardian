@@ -23,13 +23,13 @@ export const MagicLinkEmail = ({ confirmationUrl }: MagicLinkEmailProps) => (
     <Head>
       <style>{darkModeCss}</style>
     </Head>
-    <Preview>Your Verdant login link</Preview>
+    <Preview>Your Sentia login link</Preview>
     <Body style={s.main}>
       <Container style={s.container}>
         <BrandMark />
         <Heading style={s.h1}>Your login link</Heading>
         <Text style={s.text}>
-          Click the button below to log in to Verdant. This link will expire
+          Click the button below to log in to Sentia. This link will expire
           shortly.
         </Text>
         <Section style={{ margin: '8px 0 16px' }}>
