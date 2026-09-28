@@ -14,6 +14,7 @@ import { Route as SubprocessorsRouteImport } from './routes/subprocessors'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as GetStartedRouteImport } from './routes/get-started'
+import { Route as FounderRouteImport } from './routes/founder'
 import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AboutRouteImport } from './routes/about'
@@ -86,6 +87,11 @@ const McpRoute = McpRouteImport.update({
 const GetStartedRoute = GetStartedRouteImport.update({
   id: '/get-started',
   path: '/get-started',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FounderRoute = FounderRouteImport.update({
+  id: '/founder',
+  path: '/founder',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CookiesRoute = CookiesRouteImport.update({
@@ -354,6 +360,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/cookies': typeof CookiesRoute
+  '/founder': typeof FounderRoute
   '/get-started': typeof GetStartedRoute
   '/mcp': typeof McpRoute
   '/privacy': typeof PrivacyRoute
@@ -408,6 +415,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/cookies': typeof CookiesRoute
+  '/founder': typeof FounderRoute
   '/get-started': typeof GetStartedRoute
   '/mcp': typeof McpRoute
   '/privacy': typeof PrivacyRoute
@@ -462,6 +470,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/cookies': typeof CookiesRoute
+  '/founder': typeof FounderRoute
   '/get-started': typeof GetStartedRoute
   '/mcp': typeof McpRoute
   '/privacy': typeof PrivacyRoute
@@ -518,6 +527,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/auth'
     | '/cookies'
+    | '/founder'
     | '/get-started'
     | '/mcp'
     | '/privacy'
@@ -572,6 +582,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/auth'
     | '/cookies'
+    | '/founder'
     | '/get-started'
     | '/mcp'
     | '/privacy'
@@ -625,6 +636,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/auth'
     | '/cookies'
+    | '/founder'
     | '/get-started'
     | '/mcp'
     | '/privacy'
@@ -681,6 +693,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AuthRoute: typeof AuthRoute
   CookiesRoute: typeof CookiesRoute
+  FounderRoute: typeof FounderRoute
   GetStartedRoute: typeof GetStartedRoute
   McpRoute: typeof McpRoute
   PrivacyRoute: typeof PrivacyRoute
@@ -735,6 +748,13 @@ declare module '@tanstack/react-router' {
       path: '/get-started'
       fullPath: '/get-started'
       preLoaderRoute: typeof GetStartedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/founder': {
+      id: '/founder'
+      path: '/founder'
+      fullPath: '/founder'
+      preLoaderRoute: typeof FounderRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cookies': {
@@ -1181,6 +1201,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AuthRoute: AuthRoute,
   CookiesRoute: CookiesRoute,
+  FounderRoute: FounderRoute,
   GetStartedRoute: GetStartedRoute,
   McpRoute: McpRoute,
   PrivacyRoute: PrivacyRoute,

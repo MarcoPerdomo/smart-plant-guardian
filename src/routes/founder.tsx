@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, Linkedin } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { SimpleFooter, SimpleHeader } from "@/components/simple-layout";
 
 const CANONICAL = "https://sentia-plants.com/founder";
@@ -73,12 +73,6 @@ function FounderPage() {
           <p className="font-display text-2xl font-semibold text-primary">Happy planting!</p>
         </article>
 
-        <div className="mt-10 border-t border-border pt-8">
-          <p className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Linkedin className="h-4 w-4" />
-            Marco's LinkedIn profile will be added here once the address is available.
-          </p>
-        </div>
       </main>
       <SimpleFooter />
     </div>
