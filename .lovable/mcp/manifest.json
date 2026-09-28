@@ -11,9 +11,9 @@
   },
   "mcp": {
     "server": {
-      "name": "verdant",
+      "name": "sentia",
       "version": "0.1.0",
-      "title": "Verdant"
+      "title": "Sentia"
     },
     "tools": [
       {
@@ -119,7 +119,7 @@
       {
         "name": "search_catalog",
         "title": "Search plant catalog",
-        "description": "Search the Verdant plant catalog for care information about a houseplant.",
+        "description": "Search the Sentia plant catalog for care information about a houseplant.",
         "annotations": {
           "readOnlyHint": true,
           "idempotentHint": true,
