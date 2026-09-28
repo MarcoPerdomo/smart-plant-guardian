@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Public founder content lives at `/founder`, linked from `/about` and public footers, so Marco's authored story remains distinct from product copy.

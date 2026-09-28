@@ -101,10 +101,15 @@ function AboutPage() {
           <section className="rounded-2xl border border-dashed border-border p-6">
             <h2 className="font-display text-xl font-semibold">From the founder</h2>
             <p className="mt-3 text-muted-foreground leading-relaxed">
-              Sentia started from a simple belief: technology should help us stay closer to nature,
-              not pull us away. More of the founder story — how this idea grew from a single plant on a
-              windowsill into a community — is coming soon.
+              Sentia grew from Marco's lifelong connection with nature and his belief that technology
+              should help people live closer to it, not pull them away.
             </p>
+            <Link
+              to="/founder"
+              className="mt-4 inline-flex items-center gap-2 font-medium text-primary hover:opacity-80"
+            >
+              Read Marco's story <ArrowRight className="w-4 h-4" />
+            </Link>
           </section>
 
           <div className="flex flex-wrap gap-3">
