@@ -10,9 +10,9 @@ import { ReauthenticationEmail } from '@/lib/email-templates/reauthentication'
 
 // Configuration
 const SITE_NAME = "Sentia"
-const SENDER_DOMAIN = "notify.verdant-nl.app"
+const SENDER_DOMAIN = "notify.sentia-plants.com"
 const ROOT_DOMAIN = "sentia-plants.com"
-const FROM_DOMAIN = "notify.verdant-nl.app"
+const FROM_DOMAIN = "notify.sentia-plants.com"
 const SITE_URL = `https://${ROOT_DOMAIN}`
 
 // The SDK handler owns verification, dispatch, and retry semantics; this file
