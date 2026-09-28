@@ -123,15 +123,19 @@ export function HomepageFeatureShowcase() {
         </Button>
         <div className="flex gap-2" role="tablist" aria-label="Feature slides">
           {slides.map((item, index) => (
-            <button
+            <Button
               key={item.title}
               type="button"
+              variant="ghost"
+              size="icon"
               role="tab"
               aria-selected={active === index}
               aria-label={`Show ${item.title}`}
               onClick={() => setActive(index)}
-              className={`h-2 rounded-full transition-[width,background-color] ${active === index ? "w-7 bg-primary" : "w-2 bg-border hover:bg-muted-foreground"}`}
-            />
+              className="group h-7 w-7 p-0"
+            >
+              <span className={`h-2 rounded-full transition-[width,background-color] ${active === index ? "w-7 bg-primary" : "w-2 bg-border group-hover:bg-muted-foreground"}`} />
+            </Button>
           ))}
         </div>
         <Button type="button" variant="ghost" size="icon" onClick={() => move(1)} aria-label="Next feature">

@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getPlant, generateSummary, logWatering, logPlantEvent, archivePlant, addManualReading, deletePlant, updatePlantEnvironment } from "@/lib/plants.functions";
+import { getPlant, generateSummary, logPlantEvent, archivePlant, addManualReading, deletePlant, updatePlantEnvironment } from "@/lib/plants.functions";
 import { computeStatus, predictNextWatering } from "@/lib/plant-status";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -84,10 +84,6 @@ function PlantDetail() {
     mutationFn: () => generateSummary({ data: { plant_id: id } }),
     onSuccess: () => { toast.success("New AI summary"); invalidate(); },
     onError: (e: Error) => toast.error(e.message),
-  });
-  const waterMut = useMutation({
-    mutationFn: () => logWatering({ data: { plant_id: id, amount_ml: null } }),
-    onSuccess: () => { toast.success("Watered!"); invalidate(); },
   });
   const deleteMut = useMutation({
     mutationFn: () => deletePlant({ data: { id } }),
@@ -177,6 +173,7 @@ function PlantDetail() {
       {showActivity && (
         <ActivityForm
           plantId={id}
+          onCancel={() => setShowActivity(false)}
           onDone={(eventType) => {
             setShowActivity(false);
             invalidate();
@@ -340,7 +337,7 @@ const EVENT_OPTIONS: { value: EventType; label: string; icon: React.ElementType 
   { value: "deceased", label: "Deceased", icon: Leaf },
 ];
 
-function ActivityForm({ plantId, onDone }: { plantId: string; onDone: (eventType: EventType) => void }) {
+function ActivityForm({ plantId, onCancel, onDone }: { plantId: string; onCancel: () => void; onDone: (eventType: EventType) => void }) {
   const [eventType, setEventType] = useState<EventType>("watering");
   const [amount, setAmount] = useState("");
   const [notes, setNotes] = useState("");
@@ -366,7 +363,7 @@ function ActivityForm({ plantId, onDone }: { plantId: string; onDone: (eventType
     <section className="mt-4 rounded-lg border border-border bg-card p-5 animate-fade-in">
       <div className="flex items-center justify-between gap-3">
         <div><h2 className="font-display text-lg font-semibold">Log care activity</h2><p className="text-sm text-muted-foreground">Add this moment to the plant’s journal.</p></div>
-        <Button type="button" variant="ghost" size="sm" onClick={() => onDone(eventType)}>Cancel</Button>
+        <Button type="button" variant="ghost" size="sm" onClick={onCancel}>Cancel</Button>
       </div>
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         <label className="text-sm">
