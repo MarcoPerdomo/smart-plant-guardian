@@ -321,6 +321,17 @@ function AuthedLayout() {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+
+              <Button variant="ghost" size="sm" asChild className="gap-1.5">
+                <Link to="/about">
+                  <Info className="w-4 h-4" /> About us
+                </Link>
+              </Button>
+              <Button variant="ghost" size="sm" asChild className="gap-1.5">
+                <Link to="/get-started">
+                  <Rocket className="w-4 h-4" /> Get started
+                </Link>
+              </Button>
             </nav>
 
             {/* Mobile hamburger menu */}
