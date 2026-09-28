@@ -35,7 +35,7 @@ export const InviteEmail = ({ siteUrl, confirmationUrl }: InviteEmailProps) => (
           <Link href={siteUrl} style={s.link}>
             <strong>Sentia</strong>
           </Link>
-          , the network of connected plant lovers. Click the button below to
+         , the network of connected plant lovers. Click the button below to
           accept the invitation and create your account.
         </Text>
         <Section style={{ margin: '8px 0 16px' }}>

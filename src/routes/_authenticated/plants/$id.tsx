@@ -30,9 +30,9 @@ export const Route = createFileRoute("/_authenticated/plants/$id")({
   component: PlantDetail,
   head: ({ params }) => ({
     meta: [
-      { title: "Plant , Sentia" },
+      { title: "Plant, Sentia" },
       { name: "description", content: "Detailed sensor history and AI care guidance for your plant." },
-      { property: "og:title", content: "Plant , Sentia" },
+      { property: "og:title", content: "Plant, Sentia" },
       { property: "og:description", content: "Detailed sensor history and AI care guidance for your plant." },
       { property: "og:url", content: `https://sentia-plants.com/plants/${params.id}` },
       { property: "og:type", content: "website" },

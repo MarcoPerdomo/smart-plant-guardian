@@ -10,7 +10,7 @@ export const Route = createFileRoute("/_authenticated/admin/premium")({
   component: AdminPremium,
   head: () => ({
     meta: [
-      { title: "Premium members , Sentia admin" },
+      { title: "Premium members, Sentia admin" },
       {
         name: "description",
         content: "Grant, review and revoke Sentia Premium access for members.",
@@ -118,7 +118,7 @@ function AdminPremium() {
             value={expiresAt}
             onChange={(e) => setExpiresAt(e.target.value)}
             className="rounded-md border border-border bg-background px-3 py-2 text-sm"
-            title="Optional end date , leave empty for open-ended Premium"
+            title="Optional end date, leave empty for open-ended Premium"
           />
           <input
             value={note}

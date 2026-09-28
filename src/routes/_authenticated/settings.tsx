@@ -14,7 +14,7 @@ import { exportMyData, requestAccountDeletion } from "@/lib/privacy.functions";
 
 export const Route = createFileRoute("/_authenticated/settings")({
   component: Settings,
-  head: () => ({ meta: [{ title: "Settings , Sentia" }, { name: "description", content: "Notification preferences, privacy and Arduino ingestion details." }] }),
+  head: () => ({ meta: [{ title: "Settings, Sentia" }, { name: "description", content: "Notification preferences, privacy and Arduino ingestion details." }] }),
 });
 
 function Settings() {
@@ -59,7 +59,7 @@ function Settings() {
         <div className="mt-3 space-y-3">
           <UsernameField />
           <input value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder="Display name" className="w-full px-3 py-2.5 rounded-lg border border-input bg-background text-sm" />
-          <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Phone (E.164, e.g. +14155551234) , for SMS" className="w-full px-3 py-2.5 rounded-lg border border-input bg-background text-sm" />
+          <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Phone (E.164, e.g. +14155551234), for SMS" className="w-full px-3 py-2.5 rounded-lg border border-input bg-background text-sm" />
         </div>
       </section>
 
@@ -258,7 +258,7 @@ function NewsletterSection() {
   const subscribe = useMutation({
     mutationFn: () => subscribeNewsletter({ data: {} }),
     onSuccess: (r) => {
-      toast.success(r.emailed ? "Check your inbox to confirm" : "Subscribed , confirmation email could not be sent");
+      toast.success(r.emailed ? "Check your inbox to confirm" : "Subscribed, confirmation email could not be sent");
       qc.invalidateQueries({ queryKey: ["newsletter_sub"] });
     },
     onError: (e: Error) => toast.error(e.message),
@@ -290,7 +290,7 @@ function NewsletterSection() {
           <>
             <span className="text-sm">
               {status === "confirmed" && <span className="text-primary font-medium">Subscribed &amp; confirmed</span>}
-              {status === "pending" && <span className="text-muted-foreground">Pending , check your email for the confirmation link</span>}
+              {status === "pending" && <span className="text-muted-foreground">Pending, check your email for the confirmation link</span>}
               {(status === "none" || status === "unsubscribed") && <span className="text-muted-foreground">Not subscribed</span>}
             </span>
             {active ? (

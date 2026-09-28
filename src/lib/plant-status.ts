@@ -1,4 +1,4 @@
-// Shared plant-status logic. No server imports , safe on client and server.
+// Shared plant-status logic. No server imports, safe on client and server.
 
 export type PlantStatus = "healthy" | "attention" | "thirsty" | "unknown";
 

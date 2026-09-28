@@ -9,7 +9,7 @@ export const Route = createFileRoute("/_authenticated/admin/plants/")({
   component: AdminPlants,
   head: () => ({
     meta: [
-      { title: "Plants , Sentia admin" },
+      { title: "Plants, Sentia admin" },
       { name: "description", content: "Browse every user's plants and archive entries with an audit trail." },
     ],
   }),

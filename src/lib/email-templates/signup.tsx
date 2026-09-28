@@ -42,7 +42,7 @@ export const SignupEmail = ({
           <Link href={`mailto:${recipient}`} style={s.link}>
             {recipient}
           </Link>
-          , enter this code in the app:
+         , enter this code in the app:
         </Text>
         {token ? (
           <Section style={{ margin: '8px 0 16px' }}>

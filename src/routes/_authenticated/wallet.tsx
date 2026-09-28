@@ -11,9 +11,9 @@ export const Route = createFileRoute("/_authenticated/wallet")({
   component: WalletPage,
   head: () => ({
     meta: [
-      { title: "Wallet , Sentia" },
+      { title: "Wallet, Sentia" },
       { name: "description", content: "Your marketplace balance, escrow funds, transactions and payout requests." },
-      { property: "og:title", content: "Wallet , Sentia" },
+      { property: "og:title", content: "Wallet, Sentia" },
       { property: "og:description", content: "Your marketplace balance, escrow funds and payouts." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -43,7 +43,7 @@ function WalletPage() {
     <div className="max-w-3xl space-y-6">
       <div>
         <h1 className="font-display text-3xl font-semibold">Wallet</h1>
-        <p className="text-sm text-muted-foreground">Simulated funds , no real money moves in test mode.</p>
+        <p className="text-sm text-muted-foreground">Simulated funds, no real money moves in test mode.</p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">

@@ -11,9 +11,9 @@ export const Route = createFileRoute("/_authenticated/marketplace/orders/$id")({
   component: OrderDetail,
   head: () => ({
     meta: [
-      { title: "Order , Sentia Marketplace" },
+      { title: "Order, Sentia Marketplace" },
       { name: "description", content: "Order status, escrow state and delivery timeline for your marketplace purchase." },
-      { property: "og:title", content: "Order , Sentia Marketplace" },
+      { property: "og:title", content: "Order, Sentia Marketplace" },
       { property: "og:description", content: "Order status, escrow state and delivery timeline." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -168,7 +168,7 @@ function OrderDetail() {
         <ul className="mt-3 space-y-2 text-sm">
           {events.map((e) => (
             <li key={e.id} className="flex justify-between gap-3">
-              <span>{statusLabel(e.status)}{e.note ? ` , ${e.note}` : ""}</span>
+              <span>{statusLabel(e.status)}{e.note ? `, ${e.note}` : ""}</span>
               <span className="text-xs text-muted-foreground shrink-0">{format(new Date(e.created_at), "d MMM HH:mm")}</span>
             </li>
           ))}

@@ -7,7 +7,7 @@ export const Route = createFileRoute("/_authenticated/admin/")({
   component: AdminHome,
   head: () => ({
     meta: [
-      { title: "Admin overview , Sentia" },
+      { title: "Admin overview, Sentia" },
       { name: "description", content: "Admin overview of users, plants and catalog data." },
     ],
   }),

@@ -8,14 +8,14 @@ export const Route = createFileRoute("/get-started")({
   component: GetStartedPage,
   head: () => ({
     meta: [
-      { title: "Get Started , Sentia (Beta)" },
+      { title: "Get Started, Sentia (Beta)" },
       { name: "description", content: "Join the Sentia beta: set up your account, add plants, connect optional sensors and become part of Europe's network of connected plant lovers." },
-      { property: "og:title", content: "Get Started , Sentia (Beta)" },
+      { property: "og:title", content: "Get Started, Sentia (Beta)" },
       { property: "og:description", content: "Join the Sentia beta: set up your account, add plants, connect optional sensors and become part of Europe's network of connected plant lovers." },
       { property: "og:url", content: CANONICAL },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:title", content: "Get Started , Sentia (Beta)" },
+      { name: "twitter:title", content: "Get Started, Sentia (Beta)" },
       { name: "twitter:description", content: "Join the Sentia beta: set up your account, add plants, connect optional sensors and become part of Europe's network of connected plant lovers." },
       { name: "robots", content: "index, follow" },
     ],

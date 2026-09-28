@@ -92,7 +92,7 @@ export function LocationSettings() {
         <MapPin className="w-5 h-5 text-primary" /> Location
       </h2>
       <p className="text-xs text-muted-foreground mt-1">
-        Used for live weather and weather-aware care alerts. City-level only , no street address.
+        Used for live weather and weather-aware care alerts. City-level only, no street address.
       </p>
 
       {hasLocation && (
@@ -121,7 +121,7 @@ export function LocationSettings() {
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="Search a city , e.g. Amsterdam"
+          placeholder="Search a city, e.g. Amsterdam"
           className="flex-1 px-3 py-2.5 rounded-lg border border-input bg-background text-sm"
         />
         <button type="submit" disabled={searchMut.isPending} className="px-3 rounded-lg border border-border hover:bg-muted">

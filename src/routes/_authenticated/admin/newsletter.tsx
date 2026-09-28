@@ -17,9 +17,9 @@ export const Route = createFileRoute("/_authenticated/admin/newsletter")({
   component: AdminNewsletter,
   head: () => ({
     meta: [
-      { title: "Newsletter , Sentia Admin" },
+      { title: "Newsletter, Sentia Admin" },
       { name: "description", content: "Write product announcements and manage newsletter subscribers." },
-      { property: "og:title", content: "Newsletter , Sentia Admin" },
+      { property: "og:title", content: "Newsletter, Sentia Admin" },
       { property: "og:description", content: "Write product announcements and manage newsletter subscribers." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -109,7 +109,7 @@ function AdminNewsletter() {
 
       <p className="text-xs text-muted-foreground max-w-2xl">
         Publishing sends an in-app announcement to every confirmed subscriber (bell + What's new). Email
-        blasts need a dedicated marketing email service , export the subscriber list and copy the HTML below
+        blasts need a dedicated marketing email service, export the subscriber list and copy the HTML below
         until one is connected.
       </p>
 

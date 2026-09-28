@@ -140,7 +140,7 @@ export function LatestPhotoCard({ plantId, plantName }: { plantId: string; plant
           )}
           <figcaption className="mt-2 text-xs text-muted-foreground">
             {format(new Date(latest.taken_at), "MMM d, yyyy · HH:mm")}
-            {latest.caption ? ` , ${latest.caption}` : ""}
+            {latest.caption ? `, ${latest.caption}` : ""}
           </figcaption>
         </figure>
       )}

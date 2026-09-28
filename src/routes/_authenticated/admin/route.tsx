@@ -31,7 +31,7 @@ function AdminLayout() {
     <div className="space-y-6">
       <div>
         <h1 className="font-display text-2xl font-semibold">Admin</h1>
-        <p className="text-sm text-muted-foreground">Restricted area , admin role required.</p>
+        <p className="text-sm text-muted-foreground">Restricted area, admin role required.</p>
       </div>
       <nav className="flex flex-wrap gap-1 border-b border-border pb-2 text-sm">
         {tabs.map((t) => (

@@ -9,14 +9,14 @@ export const Route = createFileRoute("/about")({
   component: AboutPage,
   head: () => ({
     meta: [
-      { title: "About Us , Sentia (Beta)" },
+      { title: "About Us, Sentia (Beta)" },
       { name: "description", content: "Sentia's vision is to create Europe's most vibrant network of connected plant lovers, blending AI and community to turn every home into a thriving green sanctuary." },
-      { property: "og:title", content: "About Us , Sentia (Beta)" },
+      { property: "og:title", content: "About Us, Sentia (Beta)" },
       { property: "og:description", content: "Sentia's vision is to create Europe's most vibrant network of connected plant lovers, blending AI and community to turn every home into a thriving green sanctuary." },
       { property: "og:url", content: CANONICAL },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:title", content: "About Us , Sentia (Beta)" },
+      { name: "twitter:title", content: "About Us, Sentia (Beta)" },
       { name: "twitter:description", content: "Sentia's vision is to create Europe's most vibrant network of connected plant lovers, blending AI and community to turn every home into a thriving green sanctuary." },
       { name: "robots", content: "index, follow" },
     ],

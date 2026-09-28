@@ -9,9 +9,9 @@ export const Route = createFileRoute("/_authenticated/marketplace/orders/")({
   component: Orders,
   head: () => ({
     meta: [
-      { title: "Orders , Sentia Marketplace" },
+      { title: "Orders, Sentia Marketplace" },
       { name: "description", content: "Track the plants you have bought and sold on Sentia." },
-      { property: "og:title", content: "Orders , Sentia Marketplace" },
+      { property: "og:title", content: "Orders, Sentia Marketplace" },
       { property: "og:description", content: "Track the plants you have bought and sold on Sentia." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

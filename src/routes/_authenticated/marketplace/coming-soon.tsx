@@ -5,13 +5,13 @@ export const Route = createFileRoute("/_authenticated/marketplace/coming-soon")(
   component: MarketplaceComingSoon,
   head: () => ({
     meta: [
-      { title: "Marketplace coming soon , Sentia" },
+      { title: "Marketplace coming soon, Sentia" },
       {
         name: "description",
         content:
           "The Sentia marketplace for buying, selling and trading plants with fellow growers is still being built.",
       },
-      { property: "og:title", content: "Marketplace coming soon , Sentia" },
+      { property: "og:title", content: "Marketplace coming soon, Sentia" },
       {
         property: "og:description",
         content: "Sign up for the Sentia newsletter to hear when the plant marketplace opens.",
@@ -30,7 +30,7 @@ function MarketplaceComingSoon() {
       </span>
       <h1 className="font-display text-2xl font-semibold">The Marketplace is still growing</h1>
       <p className="text-muted-foreground">
-        We're building a safe place to buy, sell and trade plants with other Sentia members ,
+        We're building a safe place to buy, sell and trade plants with other Sentia members,
         with honest condition histories, regional pickup and shipping, and protected payments.
         It isn't open yet.
       </p>

@@ -8,13 +8,13 @@ export const Route = createFileRoute("/founder")({
   component: FounderPage,
   head: () => ({
     meta: [
-      { title: "About Marco , Founder of Sentia" },
+      { title: "About Marco, Founder of Sentia" },
       {
         name: "description",
         content:
           "Read Marco's story, from growing up surrounded by nature in Mexico to founding Sentia and building technology for greener homes and communities.",
       },
-      { property: "og:title", content: "About Marco , Founder of Sentia" },
+      { property: "og:title", content: "About Marco, Founder of Sentia" },
       {
         property: "og:description",
         content:
@@ -23,7 +23,7 @@ export const Route = createFileRoute("/founder")({
       { property: "og:url", content: CANONICAL },
       { property: "og:type", content: "article" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:title", content: "About Marco , Founder of Sentia" },
+      { name: "twitter:title", content: "About Marco, Founder of Sentia" },
       {
         name: "twitter:description",
         content:
