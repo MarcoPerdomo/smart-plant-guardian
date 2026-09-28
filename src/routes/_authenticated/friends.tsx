@@ -16,9 +16,9 @@ export const Route = createFileRoute("/_authenticated/friends")({
   component: FriendsPage,
   head: () => ({
     meta: [
-      { title: "Plant friends — Verdant" },
+      { title: "Plant friends — Sentia" },
       { name: "description", content: "Find fellow plant people by username and manage your friend requests." },
-      { property: "og:title", content: "Plant friends — Verdant" },
+      { property: "og:title", content: "Plant friends — Sentia" },
       { property: "og:description", content: "Find fellow plant people by username and manage your friend requests." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

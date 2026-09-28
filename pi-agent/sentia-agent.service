@@ -1,5 +1,5 @@
 [Unit]
-Description=Verdant plant sensor agent
+Description=Sentia plant sensor agent
 After=network-online.target
 Wants=network-online.target
 

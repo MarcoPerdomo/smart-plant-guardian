@@ -11,7 +11,7 @@ async function assertMarketplaceAccess(context: { supabase: any; userId: string 
     _user_id: context.userId,
     _role: "admin",
   });
-  if (!isAdmin) throw new Error("The Verdant marketplace is not open yet.");
+  if (!isAdmin) throw new Error("The Sentia marketplace is not open yet.");
 }
 
 function commissionOf
@@ -437,7 +437,7 @@ export const placeOrder = createServerFn({ method: "POST" })
         order_id: order.id,
         kind: "commission",
         amount_cents: -commission,
-        description: `Verdant commission (${(bps / 100).toFixed(1)}%)`,
+        description: `Sentia commission (${(bps / 100).toFixed(1)}%)`,
       },
     ]);
 

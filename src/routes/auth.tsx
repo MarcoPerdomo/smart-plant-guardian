@@ -15,10 +15,10 @@ export const Route = createFileRoute("/auth")({
   component: AuthPage,
   head: () => ({
     meta: [
-      { title: "Sign in — Verdant (Beta)" },
-      { name: "description", content: "Sign in to Verdant to manage your plants." },
-      { property: "og:title", content: "Sign in — Verdant (Beta)" },
-      { property: "og:description", content: "Sign in to Verdant to manage your plants." },
+      { title: "Sign in — Sentia (Beta)" },
+      { name: "description", content: "Sign in to Sentia to manage your plants." },
+      { property: "og:title", content: "Sign in — Sentia (Beta)" },
+      { property: "og:description", content: "Sign in to Sentia to manage your plants." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex" },
@@ -170,7 +170,7 @@ function AuthPage() {
           return;
         }
       }
-      toast.success("Email verified — welcome to Verdant!");
+      toast.success("Email verified — welcome to Sentia!");
       navigate({ href: next || "/dashboard", replace: true });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "That code didn't work. Try again or resend.");
@@ -215,7 +215,7 @@ function AuthPage() {
       <div className="min-h-screen flex items-center justify-center bg-background px-4">
         <div className="w-full max-w-md rounded-2xl border border-border bg-card p-6">
           <div className="mb-4 flex items-center gap-2 font-display text-xl font-semibold">
-            <Leaf className="w-6 h-6 text-primary" /> Verdant <BetaBadge />
+            <Leaf className="w-6 h-6 text-primary" /> Sentia <BetaBadge />
           </div>
           <h2 className="font-display text-lg font-semibold">Verify your email</h2>
           <p className="mt-1 text-sm text-muted-foreground">
@@ -270,7 +270,7 @@ function AuthPage() {
       <div className="min-h-screen flex items-center justify-center bg-background px-4">
         <div className="w-full max-w-md rounded-2xl border border-border bg-card p-6">
           <div className="mb-4 flex items-center gap-2 font-display text-xl font-semibold">
-            <Leaf className="w-6 h-6 text-primary" /> Verdant <BetaBadge />
+            <Leaf className="w-6 h-6 text-primary" /> Sentia <BetaBadge />
           </div>
           <h2 className="font-display text-lg font-semibold">Welcome to the beta</h2>
           <p className="mt-1 text-sm text-muted-foreground">
@@ -307,9 +307,9 @@ function AuthPage() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 font-display text-2xl font-semibold">
-            <Leaf className="w-6 h-6 text-primary" /> Verdant <BetaBadge />
+            <Leaf className="w-6 h-6 text-primary" /> Sentia <BetaBadge />
           </div>
-          <h1 className="mt-3 font-display text-xl font-semibold">Sign in to Verdant</h1>
+          <h1 className="mt-3 font-display text-xl font-semibold">Sign in to Sentia</h1>
           <p className="mt-2 text-sm text-muted-foreground">Sign in to tend to your plants.</p>
         </div>
 
@@ -390,7 +390,7 @@ function AuthPage() {
         </div>
 
         <p className="mt-6 text-center text-xs text-muted-foreground">
-          Verdant is in beta. By signing in you accept our{" "}
+          Sentia is in beta. By signing in you accept our{" "}
           <Link to="/terms" className="underline hover:text-foreground">Terms</Link>{" "}
           and{" "}
           <Link to="/privacy" className="underline hover:text-foreground">Privacy Policy</Link>.

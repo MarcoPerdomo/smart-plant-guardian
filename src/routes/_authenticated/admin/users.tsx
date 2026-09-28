@@ -10,7 +10,7 @@ export const Route = createFileRoute("/_authenticated/admin/users")({
   component: AdminUsers,
   head: () => ({
     meta: [
-      { title: "Users & roles — Verdant admin" },
+      { title: "Users & roles — Sentia admin" },
       { name: "description", content: "Search accounts and manage admin, moderator and user roles." },
     ],
   }),

@@ -35,13 +35,13 @@ export const EmailChangeEmail = ({
     <Head>
       <style>{darkModeCss}</style>
     </Head>
-    <Preview>Confirm your new email for Verdant</Preview>
+    <Preview>Confirm your new email for Sentia</Preview>
     <Body style={s.main}>
       <Container style={s.container}>
         <BrandMark />
         <Heading style={s.h1}>Confirm your email change</Heading>
         <Text style={s.text}>
-          You requested to change your email address for Verdant from{' '}
+          You requested to change your email address for Sentia from{' '}
           <Link href={`mailto:${oldEmail}`} style={s.link}>
             {oldEmail}
           </Link>{' '}

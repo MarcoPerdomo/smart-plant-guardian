@@ -1,7 +1,7 @@
-# Verdant Pi agent (Raspberry Pi 5 + Yahboom BST-4WD)
+# Sentia Pi agent (Raspberry Pi 5 + Yahboom BST-4WD)
 
 A small Python service that reads the sensors on/around your Pi 5 and POSTs a
-reading to Verdant's ingest endpoint every few minutes. It reuses the same
+reading to Sentia's ingest endpoint every few minutes. It reuses the same
 endpoint the Arduino path uses, so nothing changes in the app.
 
 ```
@@ -55,7 +55,7 @@ Pi-Shop.ch (CH), The Pi Hut (UK), or Reichelt (DE). Prices are rough retail.
 | **Soil moisture** | Capacitive soil moisture sensor v2.0 (analog) ×N | Resistive probes corrode within weeks in wet soil; capacitive ones don't. One per plant. | 4–7 ea |
 | **Analog→digital** | ADS1115 16‑bit I²C ADC breakout | The Pi 5 has **no analog inputs at all**. This gives you 4 analog channels — i.e. 4 moisture probes — over two wires. Add a second at address 0x49 for 8. | 6–10 |
 | **Air temp + humidity** | AHT20 (or AHT20+BMP280 combo) I²C | Accurate, cheap, I²C, no timing-sensitive one-wire protocol like the DHT22. The BMP280 adds pressure if you want it. | 5–9 |
-| **Light** | BH1750 I²C lux meter | Reports real lux, which is what the care profiles in Verdant are written against. A photoresistor would need the ADC and gives arbitrary units. | 4–6 |
+| **Light** | BH1750 I²C lux meter | Reports real lux, which is what the care profiles in Sentia are written against. A photoresistor would need the ADC and gives arbitrary units. | 4–6 |
 | **Soil temperature** *(optional)* | DS18B20 waterproof probe + 4.7 kΩ resistor | Root-zone temperature; one-wire, natively supported by Raspbian. | 5–8 |
 | **Wiring** | Qwiic/STEMMA-QT cables or Dupont F-F jumpers + a small I²C hub | Chaining 3–4 I²C boards cleanly. | 8–12 |
 | **Pest trap** | Yellow sticky traps (pack of 20) | The actual fly sensor. Garden centres, or any online shop. | 5–8 |
@@ -129,16 +129,16 @@ Test one reading without uploading, then one for real:
 Run it as a service:
 
 ```bash
-sudo cp verdant-agent.service /etc/systemd/system/
-sudo systemctl enable --now verdant-agent
-journalctl -u verdant-agent -f
+sudo cp sentia-agent.service /etc/systemd/system/
+sudo systemctl enable --now sentia-agent
+journalctl -u sentia-agent -f
 ```
 
 ---
 
 ## 5. Connecting it to the app
 
-1. In Verdant → **Add plant**, set the plant's **Device ID** to exactly the
+1. In Sentia → **Add plant**, set the plant's **Device ID** to exactly the
    `device_id` in `config.yaml` (e.g. `pi5-monstera-01`).
 2. Copy the ingest secret into `config.yaml` — it's the `ARDUINO_INGEST_SECRET`
    value stored in the **app's backend secrets** (Lovable → Project Settings →

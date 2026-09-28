@@ -17,9 +17,9 @@ export const Route = createFileRoute("/_authenticated/admin/newsletter")({
   component: AdminNewsletter,
   head: () => ({
     meta: [
-      { title: "Newsletter — Verdant Admin" },
+      { title: "Newsletter — Sentia Admin" },
       { name: "description", content: "Write product announcements and manage newsletter subscribers." },
-      { property: "og:title", content: "Newsletter — Verdant Admin" },
+      { property: "og:title", content: "Newsletter — Sentia Admin" },
       { property: "og:description", content: "Write product announcements and manage newsletter subscribers." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -83,7 +83,7 @@ function AdminNewsletter() {
       const url = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
       const a = document.createElement("a");
       a.href = url;
-      a.download = `verdant-subscribers-${new Date().toISOString().slice(0, 10)}.csv`;
+      a.download = `sentia-subscribers-${new Date().toISOString().slice(0, 10)}.csv`;
       a.click();
       URL.revokeObjectURL(url);
     } catch (e) {

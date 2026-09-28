@@ -2,21 +2,21 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { SimpleHeader, SimpleFooter } from "@/components/simple-layout";
 import { BetaBadge } from "@/components/beta-banner";
 
-const CANONICAL = "https://verdant-nl.app/cookies";
+const CANONICAL = "https://sentia-plants.com/cookies";
 
 export const Route = createFileRoute("/cookies")({
   component: CookiesPage,
   head: () => ({
     meta: [
-      { title: "Cookie Policy — Verdant (Beta)" },
-      { name: "description", content: "What cookies and local storage Verdant uses during the beta." },
-      { property: "og:title", content: "Cookie Policy — Verdant (Beta)" },
-      { property: "og:description", content: "What cookies and local storage Verdant uses during the beta." },
+      { title: "Cookie Policy — Sentia (Beta)" },
+      { name: "description", content: "What cookies and local storage Sentia uses during the beta." },
+      { property: "og:title", content: "Cookie Policy — Sentia (Beta)" },
+      { property: "og:description", content: "What cookies and local storage Sentia uses during the beta." },
       { property: "og:url", content: CANONICAL },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:title", content: "Cookie Policy — Verdant (Beta)" },
-      { name: "twitter:description", content: "What cookies and local storage Verdant uses during the beta." },
+      { name: "twitter:title", content: "Cookie Policy — Sentia (Beta)" },
+      { name: "twitter:description", content: "What cookies and local storage Sentia uses during the beta." },
       { name: "robots", content: "index, follow" },
     ],
     links: [{ rel: "canonical", href: CANONICAL }],
@@ -29,13 +29,13 @@ function CookiesPage() {
       <SimpleHeader />
       <main className="mx-auto max-w-3xl px-4 py-12">
         <h1 className="font-display text-4xl font-semibold">Cookie Policy</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Last updated: 20 August 2026 · Verdant is in beta.</p>
+        <p className="mt-2 text-sm text-muted-foreground">Last updated: 20 August 2026 · Sentia is in beta.</p>
 
         <div className="mt-8 space-y-8 text-sm leading-relaxed text-foreground">
           <section>
             <h2 className="font-display text-xl font-semibold">What we store</h2>
             <p className="mt-2 text-muted-foreground">
-              During the beta, Verdant only stores what is strictly necessary to keep you signed in and remember
+              During the beta, Sentia only stores what is strictly necessary to keep you signed in and remember
               your cookie preference:
             </p>
             <ul className="mt-2 list-disc pl-5 space-y-1 text-muted-foreground">

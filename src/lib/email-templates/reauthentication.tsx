@@ -19,7 +19,7 @@ interface ReauthenticationEmailProps {
 export const ReauthenticationEmail = ({ token }: ReauthenticationEmailProps) => (
   <Html lang="en" dir="ltr">
     <Head />
-    <Preview>Your Verdant verification code</Preview>
+    <Preview>Your Sentia verification code</Preview>
     <Body style={s.main}>
       <Container style={s.container}>
         <BrandMark />

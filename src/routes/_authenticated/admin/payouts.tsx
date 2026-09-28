@@ -9,9 +9,9 @@ export const Route = createFileRoute("/_authenticated/admin/payouts")({
   component: AdminPayouts,
   head: () => ({
     meta: [
-      { title: "Payouts — Verdant Admin" },
+      { title: "Payouts — Sentia Admin" },
       { name: "description", content: "Review and process marketplace payout requests." },
-      { property: "og:title", content: "Payouts — Verdant Admin" },
+      { property: "og:title", content: "Payouts — Sentia Admin" },
       { property: "og:description", content: "Review and process marketplace payout requests." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

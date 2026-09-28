@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SimpleHeader, SimpleFooter } from "@/components/simple-layout";
 
-const CANONICAL = "https://verdant-nl.app/subprocessors";
+const CANONICAL = "https://sentia-plants.com/subprocessors";
 
 const processors = [
   { name: "Supabase", role: "Cloud database, authentication, file storage and transactional email", region: "EU (Frankfurt) / US depending on project settings", website: "https://supabase.com" },
@@ -14,15 +14,15 @@ export const Route = createFileRoute("/subprocessors")({
   component: SubprocessorsPage,
   head: () => ({
     meta: [
-      { title: "Subprocessors — Verdant (Beta)" },
-      { name: "description", content: "Third parties that process data on behalf of Verdant." },
-      { property: "og:title", content: "Subprocessors — Verdant (Beta)" },
-      { property: "og:description", content: "Third parties that process data on behalf of Verdant." },
+      { title: "Subprocessors — Sentia (Beta)" },
+      { name: "description", content: "Third parties that process data on behalf of Sentia." },
+      { property: "og:title", content: "Subprocessors — Sentia (Beta)" },
+      { property: "og:description", content: "Third parties that process data on behalf of Sentia." },
       { property: "og:url", content: CANONICAL },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:title", content: "Subprocessors — Verdant (Beta)" },
-      { name: "twitter:description", content: "Third parties that process data on behalf of Verdant." },
+      { name: "twitter:title", content: "Subprocessors — Sentia (Beta)" },
+      { name: "twitter:description", content: "Third parties that process data on behalf of Sentia." },
       { name: "robots", content: "index, follow" },
     ],
     links: [{ rel: "canonical", href: CANONICAL }],
@@ -36,7 +36,7 @@ function SubprocessorsPage() {
       <main className="mx-auto max-w-3xl px-4 py-12">
         <h1 className="font-display text-4xl font-semibold">Subprocessors</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          These third parties process personal data on behalf of Verdant. The list is current as of 20 August 2026.
+          These third parties process personal data on behalf of Sentia. The list is current as of 20 August 2026.
         </p>
 
         <div className="mt-8 overflow-hidden rounded-2xl border border-border">

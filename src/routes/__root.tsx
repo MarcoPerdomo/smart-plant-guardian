@@ -69,8 +69,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Verdant (Beta)" },
-      { property: "og:site_name", content: "Verdant" },
+      { title: "Sentia (Beta)" },
+      { property: "og:site_name", content: "Sentia" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "google-site-verification", content: "3LCRjNabzL0_wJEf1ix40AP71adExY9AJ7EFBKYmX24" },

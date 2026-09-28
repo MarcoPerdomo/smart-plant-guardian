@@ -63,7 +63,7 @@ export const Route = createFileRoute("/api/chat")({
         const userId = typeof claims.sub === "string" ? claims.sub : "";
         const { data: premium } = await supabase.rpc("is_premium", { _user_id: userId });
         if (!premium) {
-          return new Response("Ask Verdant is available to Verdant Premium members.", {
+          return new Response("Ask Sentia is available to Sentia Premium members.", {
             status: 403,
           });
         }

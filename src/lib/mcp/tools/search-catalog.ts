@@ -6,7 +6,7 @@ import { supabaseForUser, hasPremium, PREMIUM_REQUIRED_MESSAGE } from "../supaba
 export default defineTool({
   name: "search_catalog",
   title: "Search plant catalog",
-  description: "Search the Verdant plant catalog for care information about a houseplant.",
+  description: "Search the Sentia plant catalog for care information about a houseplant.",
   inputSchema: {
     q: z.string().describe("Search term such as a common name or scientific name."),
   },

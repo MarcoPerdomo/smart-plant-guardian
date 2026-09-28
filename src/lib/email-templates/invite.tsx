@@ -25,7 +25,7 @@ export const InviteEmail = ({ siteUrl, confirmationUrl }: InviteEmailProps) => (
     <Head>
       <style>{darkModeCss}</style>
     </Head>
-    <Preview>You have been invited to join Verdant</Preview>
+    <Preview>You have been invited to join Sentia</Preview>
     <Body style={s.main}>
       <Container style={s.container}>
         <BrandMark />
@@ -33,7 +33,7 @@ export const InviteEmail = ({ siteUrl, confirmationUrl }: InviteEmailProps) => (
         <Text style={s.text}>
           You have been invited to join{' '}
           <Link href={siteUrl} style={s.link}>
-            <strong>Verdant</strong>
+            <strong>Sentia</strong>
           </Link>
           , the network of connected plant lovers. Click the button below to
           accept the invitation and create your account.

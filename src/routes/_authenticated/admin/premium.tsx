@@ -10,10 +10,10 @@ export const Route = createFileRoute("/_authenticated/admin/premium")({
   component: AdminPremium,
   head: () => ({
     meta: [
-      { title: "Premium members — Verdant admin" },
+      { title: "Premium members — Sentia admin" },
       {
         name: "description",
-        content: "Grant, review and revoke Verdant Premium access for members.",
+        content: "Grant, review and revoke Sentia Premium access for members.",
       },
     ],
   }),

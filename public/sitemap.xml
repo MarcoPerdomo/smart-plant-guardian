@@ -1,37 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://verdant-nl.app/</loc>
+    <loc>https://sentia-plants.com/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://verdant-nl.app/about</loc>
+    <loc>https://sentia-plants.com/about</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://verdant-nl.app/get-started</loc>
+    <loc>https://sentia-plants.com/get-started</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://verdant-nl.app/privacy</loc>
+    <loc>https://sentia-plants.com/privacy</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://verdant-nl.app/terms</loc>
+    <loc>https://sentia-plants.com/terms</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://verdant-nl.app/cookies</loc>
+    <loc>https://sentia-plants.com/cookies</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://verdant-nl.app/subprocessors</loc>
+    <loc>https://sentia-plants.com/subprocessors</loc>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>

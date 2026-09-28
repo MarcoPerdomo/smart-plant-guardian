@@ -14,7 +14,7 @@ import { exportMyData, requestAccountDeletion } from "@/lib/privacy.functions";
 
 export const Route = createFileRoute("/_authenticated/settings")({
   component: Settings,
-  head: () => ({ meta: [{ title: "Settings — Verdant" }, { name: "description", content: "Notification preferences, privacy and Arduino ingestion details." }] }),
+  head: () => ({ meta: [{ title: "Settings — Sentia" }, { name: "description", content: "Notification preferences, privacy and Arduino ingestion details." }] }),
 });
 
 function Settings() {
@@ -70,7 +70,7 @@ function Settings() {
 
       <section className="rounded-2xl border border-border bg-card p-5">
         <h2 className="font-display text-lg font-semibold">Notifications</h2>
-        <p className="text-xs text-muted-foreground mt-1">Verdant sends you a short AI status summary a few times per week per plant.</p>
+        <p className="text-xs text-muted-foreground mt-1">Sentia sends you a short AI status summary a few times per week per plant.</p>
         <div className="mt-4 space-y-3">
           <Toggle icon={Bell} label="In-app" desc="Feed on this page and status badges." value={inApp} onChange={setInApp} />
           <Toggle icon={Mail} label="Email" desc="Needs an email provider connected." value={email} onChange={setEmail} />
@@ -339,7 +339,7 @@ function PrivacySection() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `verdant-export-${new Date().toISOString().slice(0, 10)}.json`;
+      a.download = `sentia-export-${new Date().toISOString().slice(0, 10)}.json`;
       a.click();
       URL.revokeObjectURL(url);
       toast.success("Export downloaded");

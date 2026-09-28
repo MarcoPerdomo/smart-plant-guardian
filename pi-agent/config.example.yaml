@@ -1,6 +1,6 @@
 # Copy to config.yaml and edit. Never commit config.yaml (it holds the secret).
 
-# Your Verdant deployment. Use the published URL once you publish,
+# Your Sentia deployment. Use the published URL once you publish,
 # or the preview URL while testing.
 endpoint: "https://project--a4e7f216-3697-4a14-8dd3-320be3ad8cc4.lovable.app/api/public/ingest"
 snapshot_endpoint: "https://project--a4e7f216-3697-4a14-8dd3-320be3ad8cc4.lovable.app/api/public/snapshot-upload"
@@ -10,7 +10,7 @@ snapshot_endpoint: "https://project--a4e7f216-3697-4a14-8dd3-320be3ad8cc4.lovabl
 # Paste it unquoted on one line — stray quotes/spaces cause 401.
 ingest_secret: "PUT-YOUR-INGEST-SECRET-HERE"
 
-# Must match the device_id you saved on the plant in the Verdant UI.
+# Must match the device_id you saved on the plant in the Sentia UI.
 device_id: "pi5-monstera-01"
 
 # Seconds between uploads. 300 = every 5 minutes.

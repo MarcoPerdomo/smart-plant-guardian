@@ -18,11 +18,11 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/_authenticated/chat")({
   component: ChatPage,
   head: () => ({
-    title: "Ask Verdant",
+    title: "Ask Sentia",
     meta: [
-      { name: "description", content: "Chat with Verdant's AI plant care assistant." },
-      { property: "og:title", content: "Ask Verdant" },
-      { property: "og:description", content: "Chat with Verdant's AI plant care assistant." },
+      { name: "description", content: "Chat with Sentia's AI plant care assistant." },
+      { property: "og:title", content: "Ask Sentia" },
+      { property: "og:description", content: "Chat with Sentia's AI plant care assistant." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -107,14 +107,14 @@ function ChatPage() {
         <span className="mx-auto w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center">
           <Crown className="w-7 h-7 text-primary" />
         </span>
-        <h1 className="font-display text-2xl font-semibold">Ask Verdant is a Premium feature</h1>
+        <h1 className="font-display text-2xl font-semibold">Ask Sentia is a Premium feature</h1>
         <p className="text-muted-foreground">
-          Verdant Premium unlocks the AI assistant: ask about your plants by voice or text, log
+          Sentia Premium unlocks the AI assistant: ask about your plants by voice or text, log
           watering, and get insights across your whole collection. Everything else — your plants,
           photos, watering log, AI Check summaries and the social side — stays free.
         </p>
         <p className="text-muted-foreground">
-          Premium is granted by the Verdant team during the beta. Email us or message an admin to
+          Premium is granted by the Sentia team during the beta. Email us or message an admin to
           request access.
         </p>
         <Button asChild>
@@ -130,7 +130,7 @@ function ChatPage() {
         <CardHeader className="border-b shrink-0">
           <CardTitle className="flex items-center gap-2 text-lg">
             <Bot className="w-5 h-5 text-primary" />
-            Ask Verdant
+            Ask Sentia
           </CardTitle>
         </CardHeader>
 

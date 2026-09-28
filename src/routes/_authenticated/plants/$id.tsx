@@ -18,15 +18,15 @@ export const Route = createFileRoute("/_authenticated/plants/$id")({
   component: PlantDetail,
   head: ({ params }) => ({
     meta: [
-      { title: "Plant — Verdant" },
+      { title: "Plant — Sentia" },
       { name: "description", content: "Detailed sensor history and AI care guidance for your plant." },
-      { property: "og:title", content: "Plant — Verdant" },
+      { property: "og:title", content: "Plant — Sentia" },
       { property: "og:description", content: "Detailed sensor history and AI care guidance for your plant." },
-      { property: "og:url", content: `https://verdant-nl.app/plants/${params.id}` },
+      { property: "og:url", content: `https://sentia-plants.com/plants/${params.id}` },
       { property: "og:type", content: "website" },
       { name: "robots", content: "noindex" },
     ],
-    links: [{ rel: "canonical", href: `https://verdant-nl.app/plants/${params.id}` }],
+    links: [{ rel: "canonical", href: `https://sentia-plants.com/plants/${params.id}` }],
   }),
 });
 

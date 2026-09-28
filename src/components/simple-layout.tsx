@@ -8,7 +8,7 @@ export function SimpleHeader() {
       <div className="mx-auto max-w-6xl px-4 h-14 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 font-display text-lg font-semibold">
           <Leaf className="w-5 h-5 text-primary" />
-          <span className="text-primary">Verdant</span>
+          <span className="text-primary">Sentia</span>
           <BetaBadge />
         </Link>
         <Link
@@ -26,7 +26,7 @@ export function SimpleFooter() {
   return (
     <footer className="border-t border-border">
       <div className="mx-auto max-w-6xl px-4 py-6 text-sm text-muted-foreground flex flex-wrap gap-4 justify-between">
-        <span>© 2026 Verdant (Beta)</span>
+        <span>© 2026 Sentia (Beta)</span>
         <div className="flex flex-wrap gap-4">
           <Link to="/about" className="hover:text-foreground">About</Link>
           <Link to="/privacy" className="hover:text-foreground">Privacy</Link>

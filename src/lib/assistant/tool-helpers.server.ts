@@ -191,7 +191,7 @@ export async function addUserPlant(
   if (!speciesId) {
     if (!options?.allowCreateSpecies) {
       throw new Error(
-        `"${speciesName}" is not in the Verdant catalogue yet. Pick an existing catalogue plant, or ask an admin to add this species.`,
+        `"${speciesName}" is not in the Sentia catalogue yet. Pick an existing catalogue plant, or ask an admin to add this species.`,
       );
     }
     const helpers = await import("@/lib/plants.server");

@@ -11,10 +11,10 @@ export const Route = createFileRoute("/_authenticated/messages/")({
   component: MessagesPage,
   head: () => ({
     meta: [
-      { title: "Messages — Verdant" },
-      { name: "description", content: "Private plant chats with your Verdant friends." },
-      { property: "og:title", content: "Messages — Verdant" },
-      { property: "og:description", content: "Private plant chats with your Verdant friends." },
+      { title: "Messages — Sentia" },
+      { name: "description", content: "Private plant chats with your Sentia friends." },
+      { property: "og:title", content: "Messages — Sentia" },
+      { property: "og:description", content: "Private plant chats with your Sentia friends." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],

@@ -1,7 +1,7 @@
-# Migrating Verdant to your own Supabase project
+# Migrating Sentia to your own Supabase project
 
-This guide moves the Verdant backend from the Lovable-managed project to your
-external Supabase project **"Verdant"**.
+This guide moves the Sentia backend from the Lovable-managed project to your
+external Supabase project **"Sentia"**.
 
 Scope (as agreed): schema + `plant_species` catalog + auth + empty storage
 bucket + secrets. **Not** migrated: user accounts, plants, sensor history,
@@ -11,7 +11,7 @@ watering events, AI summaries, notifications, existing snapshot files.
 
 ## 1. Create the storage bucket
 
-In the Verdant project dashboard: **Storage → New bucket**
+In the Sentia project dashboard: **Storage → New bucket**
 
 - Name: `plant-snapshots`
 - Public: **off** (private)
@@ -20,7 +20,7 @@ Do this *before* step 2 — the SQL adds policies that reference the bucket.
 
 ## 2. Run the schema + catalog migration
 
-Open **SQL Editor** in the Verdant project, paste the entire contents of
+Open **SQL Editor** in the Sentia project, paste the entire contents of
 [`verdant-external-migration.sql`](./verdant-external-migration.sql), run it.
 
 It creates:
@@ -43,7 +43,7 @@ It creates:
 
 ### 3.1 Enable Email provider
 
-In your Verdant Supabase project:
+In your Sentia Supabase project:
 
 1. Go to **Authentication → Providers**.
 2. Find **Email** in the list and turn it **on**.
@@ -59,7 +59,7 @@ You need a Google Cloud project (you can reuse an existing one or create a new o
 1. Open the [Google Cloud Console](https://console.cloud.google.com/) and select your project.
 2. Go to **APIs & Services → OAuth consent screen**.
    - Choose **External** (or **Internal** if this is a Google Workspace organization).
-   - Fill in the app name (e.g., "Verdant"), your email, and the developer contact email.
+   - Fill in the app name (e.g., "Sentia"), your email, and the developer contact email.
    - Under **Authorized domains**, add the domains you will use. For now add:
      - `lovable.app` (covers the Lovable preview URL)
      - Your future custom domain, if you have one
@@ -71,7 +71,7 @@ You need a Google Cloud project (you can reuse an existing one or create a new o
 3. Go to **APIs & Services → Credentials**.
    - Click **Create credentials → OAuth client ID**.
    - Application type: **Web application**.
-   - Name it "Verdant Web".
+   - Name it "Sentia Web".
    - Under **Authorized redirect URIs**, add the Supabase callback URL. You can find this in Supabase under **Authentication → Providers → Google** — it looks like:
      ```
      https://<your-project-ref>.supabase.co/auth/v1/callback
@@ -81,7 +81,7 @@ You need a Google Cloud project (you can reuse an existing one or create a new o
 
 ### 3.3 Enable Google provider in Supabase
 
-1. In your Verdant Supabase project, go to **Authentication → Providers**.
+1. In your Sentia Supabase project, go to **Authentication → Providers**.
 2. Find **Google** and turn it **on**.
 3. Paste the **Client ID** and **Client Secret** from Google Cloud into the fields.
 4. Save.
@@ -89,7 +89,7 @@ You need a Google Cloud project (you can reuse an existing one or create a new o
 ### 3.4 Configure redirect URLs
 
 1. Go to **Authentication → URL Configuration**.
-2. **Site URL**: set this to your published Verdant URL (or the Lovable preview URL for now if you have not published yet).
+2. **Site URL**: set this to your published Sentia URL (or the Lovable preview URL for now if you have not published yet).
 3. **Additional redirect URLs**: add every origin the app will use, one per line. At minimum include:
    - Your Lovable preview URL (e.g., `https://id-preview--...lovable.app`)
    - Your published URL, once you have one
@@ -110,7 +110,7 @@ The app reads these at runtime:
 
 | Variable | Where from |
 | --- | --- |
-| `SUPABASE_URL` / `VITE_SUPABASE_URL` | Verdant → Project Settings → API |
+| `SUPABASE_URL` / `VITE_SUPABASE_URL` | Sentia → Project Settings → API |
 | `SUPABASE_PUBLISHABLE_KEY` / `VITE_SUPABASE_PUBLISHABLE_KEY` | same page (publishable/anon key) |
 | `VITE_SUPABASE_PROJECT_ID` | the project ref in the URL |
 | `SUPABASE_SERVICE_ROLE_KEY` | same page — **server only, never commit** |

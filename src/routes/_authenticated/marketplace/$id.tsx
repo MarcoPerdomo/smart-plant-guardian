@@ -11,15 +11,15 @@ export const Route = createFileRoute("/_authenticated/marketplace/$id")({
   component: ListingDetail,
   head: ({ params }) => ({
     meta: [
-      { title: "Plant listing — Verdant Marketplace" },
+      { title: "Plant listing — Sentia Marketplace" },
       { name: "description", content: "Full care history, disclosures and delivery options for this plant." },
-      { property: "og:title", content: "Plant listing — Verdant Marketplace" },
+      { property: "og:title", content: "Plant listing — Sentia Marketplace" },
       { property: "og:description", content: "Full care history, disclosures and delivery options for this plant." },
-      { property: "og:url", content: `https://verdant-nl.app/marketplace/${params.id}` },
+      { property: "og:url", content: `https://sentia-plants.com/marketplace/${params.id}` },
       { property: "og:type", content: "product" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: `https://verdant-nl.app/marketplace/${params.id}` }],
+    links: [{ rel: "canonical", href: `https://sentia-plants.com/marketplace/${params.id}` }],
   }),
 });
 
@@ -71,12 +71,12 @@ function ListingDetail() {
     "@context": "https://schema.org",
     "@type": "Product",
     name: listing.title,
-    description: listing.description ?? species?.care_tips ?? "Houseplant listed on the Verdant marketplace.",
+    description: listing.description ?? species?.care_tips ?? "Houseplant listed on the Sentia marketplace.",
     ...(listing.cover_url ? { image: [listing.cover_url] } : {}),
     ...(species?.common_name ? { category: species.common_name } : {}),
     offers: {
       "@type": "Offer",
-      url: `https://verdant-nl.app/marketplace/${id}`,
+      url: `https://sentia-plants.com/marketplace/${id}`,
       price: (listing.price_cents / 100).toFixed(2),
       priceCurrency: "EUR",
       availability: available ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
@@ -239,7 +239,7 @@ function ListingDetail() {
               <dl className="text-sm space-y-1 border-t border-border pt-3">
                 <Row label="Plant" value={euros(q.itemCents)} />
                 <Row label="Shipping" value={euros(q.shippingCents)} />
-                <Row label={`Verdant fee (${(commission_bps / 100).toFixed(1)}% seller-side)`} value={`-${euros(q.commissionCents)}`} muted />
+                <Row label={`Sentia fee (${(commission_bps / 100).toFixed(1)}% seller-side)`} value={`-${euros(q.commissionCents)}`} muted />
                 <Row label="You pay" value={euros(q.totalCents)} bold />
               </dl>
 

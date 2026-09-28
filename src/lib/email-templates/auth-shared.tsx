@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Text } from '@react-email/components'
 
-// Shared Verdant branding for auth emails. Email Body stays #ffffff.
+// Shared Sentia branding for auth emails. Email Body stays #ffffff.
 
 export const brandStyles = {
   main: { backgroundColor: '#ffffff', fontFamily: 'Helvetica, Arial, sans-serif' },
@@ -39,7 +39,7 @@ export const brandText = {
   margin: '0 0 12px',
 }
 
-export const BrandMark = () => <Text style={brandText}>Verdant</Text>
+export const BrandMark = () => <Text style={brandText}>Sentia</Text>
 
 // Rendered as a text child, which React may HTML-escape: keep this CSS free of >, &, and quotes.
 export const darkModeCss = `

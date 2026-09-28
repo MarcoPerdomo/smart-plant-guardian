@@ -20,9 +20,9 @@ export const Route = createFileRoute("/_authenticated/marketplace/new")({
     typeof s['plant'] === "string" ? { plant: s['plant'] as string } : {},
   head: () => ({
     meta: [
-      { title: "List a plant — Verdant Marketplace" },
+      { title: "List a plant — Sentia Marketplace" },
       { name: "description", content: "Create a transparent marketplace listing for a plant from your garden." },
-      { property: "og:title", content: "List a plant — Verdant Marketplace" },
+      { property: "og:title", content: "List a plant — Sentia Marketplace" },
       { property: "og:description", content: "Create a transparent marketplace listing for a plant from your garden." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -244,7 +244,7 @@ function NewListing() {
           <span className="font-medium">{euros(priceCents)}</span>
         </div>
         <div className="flex justify-between text-sm">
-          <span className="text-muted-foreground">Verdant commission (7%)</span>
+          <span className="text-muted-foreground">Sentia commission (7%)</span>
           <span>-{euros(q.commissionCents)}</span>
         </div>
         <div className="flex justify-between text-sm font-semibold border-t border-border pt-2">

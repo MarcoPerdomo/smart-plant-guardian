@@ -23,13 +23,13 @@ export const RecoveryEmail = ({ confirmationUrl }: RecoveryEmailProps) => (
     <Head>
       <style>{darkModeCss}</style>
     </Head>
-    <Preview>Reset your Verdant password</Preview>
+    <Preview>Reset your Sentia password</Preview>
     <Body style={s.main}>
       <Container style={s.container}>
         <BrandMark />
         <Heading style={s.h1}>Reset your password</Heading>
         <Text style={s.text}>
-          We received a request to reset your Verdant password. Click the
+          We received a request to reset your Sentia password. Click the
           button below to choose a new one.
         </Text>
         <Section style={{ margin: '8px 0 16px' }}>

@@ -33,7 +33,7 @@ export function CookieBanner() {
     <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-background/95 backdrop-blur-sm p-4 shadow-lg">
       <div className="mx-auto max-w-6xl flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between">
         <p className="text-sm text-muted-foreground">
-          Verdant uses essential cookies and local storage to keep you signed in and remember this choice.
+          Sentia uses essential cookies and local storage to keep you signed in and remember this choice.
           We do not use advertising or analytics cookies during the beta.{" "}
           <Link to="/cookies" className="underline hover:text-foreground">
             Cookie Policy

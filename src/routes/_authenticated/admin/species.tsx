@@ -12,7 +12,7 @@ export const Route = createFileRoute("/_authenticated/admin/species")({
   component: AdminSpecies,
   head: () => ({
     meta: [
-      { title: "Species catalog — Verdant admin" },
+      { title: "Species catalog — Sentia admin" },
       { name: "description", content: "Edit plant species care data and archive bad catalog rows." },
     ],
   }),
