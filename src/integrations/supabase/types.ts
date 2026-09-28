@@ -757,6 +757,63 @@ export type Database = {
         }
         Relationships: []
       }
+      plant_events: {
+        Row: {
+          amount_ml: number | null
+          created_at: string
+          event_type: string
+          id: string
+          metadata: Json
+          notes: string | null
+          occurred_at: string
+          plant_id: string
+          source: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount_ml?: number | null
+          created_at?: string
+          event_type: string
+          id?: string
+          metadata?: Json
+          notes?: string | null
+          occurred_at?: string
+          plant_id: string
+          source?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount_ml?: number | null
+          created_at?: string
+          event_type?: string
+          id?: string
+          metadata?: Json
+          notes?: string | null
+          occurred_at?: string
+          plant_id?: string
+          source?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plant_events_plant_id_fkey"
+            columns: ["plant_id"]
+            isOneToOne: false
+            referencedRelation: "user_plants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "plant_events_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       plant_photos: {
         Row: {
           ai_analysis: Json | null
