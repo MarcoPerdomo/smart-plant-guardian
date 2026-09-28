@@ -11,7 +11,7 @@ import { ReauthenticationEmail } from '@/lib/email-templates/reauthentication'
 // Configuration
 const SITE_NAME = "Sentia"
 const SENDER_DOMAIN = "notify.verdant-nl.app"
-const ROOT_DOMAIN = "verdant-nl.app"
+const ROOT_DOMAIN = "sentia-plants.com"
 const FROM_DOMAIN = "notify.verdant-nl.app"
 const SITE_URL = `https://${ROOT_DOMAIN}`
 
