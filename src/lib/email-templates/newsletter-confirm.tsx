@@ -28,7 +28,7 @@ const Email = ({ displayName, confirmUrl = 'https://sentia-plants.com' }: Props)
         <Heading style={h1}>Confirm your subscription</Heading>
         <Text style={intro}>
           {displayName ? `Hi ${displayName},` : 'Hi there,'} you asked to receive Sentia product
-          updates — new features, upgrades and other platform news. Tap the button below to confirm.
+          updates, new features, upgrades and other platform news. Tap the button below to confirm.
         </Text>
         <Section style={{ margin: '24px 0' }}>
           <Button href={confirmUrl} style={button}>

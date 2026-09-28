@@ -45,7 +45,7 @@ export function euros(cents: number): string {
 }
 
 export function sizeLabel(size: string | null | undefined): string {
-  if (!size) return "—";
+  if (!size) return "Not available";
   return PLANT_SIZES.find((s) => s.value === size)?.label.split(" · ")[0] ?? size.toUpperCase();
 }
 

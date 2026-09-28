@@ -12,15 +12,15 @@ export const Route = createFileRoute("/")({
   component: Landing,
   head: () => ({
     meta: [
-      { title: "Sentia (Beta) — Europe's network of connected plant lovers" },
+      { title: "Sentia (Beta), Europe's network of connected plant lovers" },
       { name: "description", content: "Join the Sentia beta. Track your plants with AI care advice, connect with fellow plant lovers, and trade plants in a community-powered marketplace." },
-      { property: "og:title", content: "Sentia (Beta) — Europe's network of connected plant lovers" },
+      { property: "og:title", content: "Sentia (Beta), Europe's network of connected plant lovers" },
       { property: "og:description", content: "Join the Sentia beta. Track your plants with AI care advice, connect with fellow plant lovers, and trade plants in a community-powered marketplace." },
       { property: "og:url", content: CANONICAL },
       { property: "og:type", content: "website" },
       { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/da919765-0158-4e54-ae2e-6664086f85cd" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Sentia (Beta) — Europe's network of connected plant lovers" },
+      { name: "twitter:title", content: "Sentia (Beta), Europe's network of connected plant lovers" },
       { name: "twitter:description", content: "Join the Sentia beta. Track your plants with AI care advice, connect with fellow plant lovers, and trade plants in a community-powered marketplace." },
       { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/da919765-0158-4e54-ae2e-6664086f85cd" },
       { name: "robots", content: "index, follow" },

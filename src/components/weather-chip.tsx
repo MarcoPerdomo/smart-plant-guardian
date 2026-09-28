@@ -78,7 +78,7 @@ export function WeatherChip() {
             ? "Set location"
             : data?.weather?.current.temperature != null
               ? `${Math.round(data.weather.current.temperature)}°`
-              : "—"}
+              : "Not available"}
         </span>
         {alerts.length > 0 && (
           <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-warning/20 text-warning-foreground">
@@ -115,10 +115,10 @@ export function WeatherChip() {
               </div>
 
               <div className="mt-3 grid grid-cols-4 gap-2 text-center text-[11px]">
-                <Metric label="High" value={today?.temp_max != null ? `${Math.round(today.temp_max)}°` : "—"} />
-                <Metric label="Low" value={today?.temp_min != null ? `${Math.round(today.temp_min)}°` : "—"} />
-                <Metric label="Humidity" value={today?.humidity_mean != null ? `${today.humidity_mean}%` : "—"} />
-                <Metric label="UV" value={today?.uv_index_max != null ? `${Math.round(today.uv_index_max)}` : "—"} />
+                <Metric label="High" value={today?.temp_max != null ? `${Math.round(today.temp_max)}°` : "Not available"} />
+                <Metric label="Low" value={today?.temp_min != null ? `${Math.round(today.temp_min)}°` : "Not available"} />
+                <Metric label="Humidity" value={today?.humidity_mean != null ? `${today.humidity_mean}%` : "Not available"} />
+                <Metric label="UV" value={today?.uv_index_max != null ? `${Math.round(today.uv_index_max)}` : "Not available"} />
               </div>
               <div className="mt-2 text-[11px] text-muted-foreground flex items-center gap-1">
                 <Droplets className="w-3 h-3" /> {today?.precipitation_probability_max ?? 0}% chance of rain today

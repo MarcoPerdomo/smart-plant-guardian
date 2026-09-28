@@ -7,14 +7,14 @@ export const Route = createFileRoute("/terms")({
   component: TermsPage,
   head: () => ({
     meta: [
-      { title: "Terms of Service — Sentia (Beta)" },
+      { title: "Terms of Service, Sentia (Beta)" },
       { name: "description", content: "Terms for using the Sentia beta plant care community and marketplace." },
-      { property: "og:title", content: "Terms of Service — Sentia (Beta)" },
+      { property: "og:title", content: "Terms of Service, Sentia (Beta)" },
       { property: "og:description", content: "Terms for using the Sentia beta plant care community and marketplace." },
       { property: "og:url", content: CANONICAL },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:title", content: "Terms of Service — Sentia (Beta)" },
+      { name: "twitter:title", content: "Terms of Service, Sentia (Beta)" },
       { name: "twitter:description", content: "Terms for using the Sentia beta plant care community and marketplace." },
       { name: "robots", content: "index, follow" },
     ],

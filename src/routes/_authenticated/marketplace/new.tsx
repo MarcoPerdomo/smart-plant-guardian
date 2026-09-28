@@ -20,9 +20,9 @@ export const Route = createFileRoute("/_authenticated/marketplace/new")({
     typeof s['plant'] === "string" ? { plant: s['plant'] as string } : {},
   head: () => ({
     meta: [
-      { title: "List a plant — Sentia Marketplace" },
+      { title: "List a plant, Sentia Marketplace" },
       { name: "description", content: "Create a transparent marketplace listing for a plant from your garden." },
-      { property: "og:title", content: "List a plant — Sentia Marketplace" },
+      { property: "og:title", content: "List a plant, Sentia Marketplace" },
       { property: "og:description", content: "Create a transparent marketplace listing for a plant from your garden." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -105,7 +105,7 @@ function NewListing() {
       <div>
         <h1 className="font-display text-3xl font-semibold">List a plant</h1>
         <p className="text-sm text-muted-foreground">
-          Honest listings build the community — disclose any past pests or damage.
+          Honest listings build the community, disclose any past pests or damage.
         </p>
       </div>
 
@@ -206,7 +206,7 @@ function NewListing() {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="font-display text-lg font-semibold">Transparency log</h2>
-            <p className="text-xs text-muted-foreground">Past pests, diseases or leaf damage — buyers see these.</p>
+            <p className="text-xs text-muted-foreground">Past pests, diseases or leaf damage, buyers see these.</p>
           </div>
           <button
             type="button"

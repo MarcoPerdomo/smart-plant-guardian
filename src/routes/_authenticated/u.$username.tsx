@@ -11,7 +11,7 @@ export const Route = createFileRoute("/_authenticated/u/$username")({
   component: ProfilePage,
   head: ({ params }) => ({
     meta: [
-      { title: `@${params.username} — Sentia` },
+      { title: `@${params.username}, Sentia` },
       { name: "description", content: `See @${params.username}'s plant collection stats and connect on Sentia.` },
       { property: "og:title", content: `@${params.username} on Sentia` },
       { property: "og:description", content: `See @${params.username}'s plant collection stats and connect on Sentia.` },
@@ -157,7 +157,7 @@ function ProfilePage() {
       </section>
 
       <p className="text-xs text-muted-foreground text-center">
-        Plant updates are shared with friends only — connect to see {displayNameOf(profile)}&apos;s feed.
+        Plant updates are shared with friends only, connect to see {displayNameOf(profile)}&apos;s feed.
       </p>
     </div>
   );

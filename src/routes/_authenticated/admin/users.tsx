@@ -10,7 +10,7 @@ export const Route = createFileRoute("/_authenticated/admin/users")({
   component: AdminUsers,
   head: () => ({
     meta: [
-      { title: "Users & roles — Sentia admin" },
+      { title: "Users & roles, Sentia admin" },
       { name: "description", content: "Search accounts and manage admin, moderator and user roles." },
     ],
   }),
@@ -70,7 +70,7 @@ function AdminUsers() {
             <div key={u.id} className="p-4 flex flex-wrap items-center gap-3 justify-between">
               <div className="min-w-0">
                 <div className="font-medium truncate flex items-center gap-2">
-                  {u.display_name ?? "—"}
+                  {u.display_name ?? "Not available"}
                   {premiumIds.has(u.id) && (
                     <span className="px-1.5 py-0.5 rounded-full border border-primary text-primary bg-primary/10 text-[10px] flex items-center gap-1">
                       <Crown className="w-2.5 h-2.5" /> Premium

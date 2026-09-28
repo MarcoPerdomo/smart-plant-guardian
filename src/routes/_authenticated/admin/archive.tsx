@@ -9,7 +9,7 @@ export const Route = createFileRoute("/_authenticated/admin/archive")({
   component: AdminArchive,
   head: () => ({
     meta: [
-      { title: "Archive — Sentia admin" },
+      { title: "Archive, Sentia admin" },
       { name: "description", content: "Audit trail of archived plants and species, with restore." },
     ],
   }),

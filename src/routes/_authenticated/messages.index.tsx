@@ -11,9 +11,9 @@ export const Route = createFileRoute("/_authenticated/messages/")({
   component: MessagesPage,
   head: () => ({
     meta: [
-      { title: "Messages — Sentia" },
+      { title: "Messages, Sentia" },
       { name: "description", content: "Private plant chats with your Sentia friends." },
-      { property: "og:title", content: "Messages — Sentia" },
+      { property: "og:title", content: "Messages, Sentia" },
       { property: "og:description", content: "Private plant chats with your Sentia friends." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

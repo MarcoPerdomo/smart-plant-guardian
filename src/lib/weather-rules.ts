@@ -1,4 +1,4 @@
-// Pure weather + care rule engine. No server imports — safe on client and server.
+// Pure weather + care rule engine. No server imports, safe on client and server.
 
 export type LightNeed = "low" | "medium" | "bright" | "direct";
 
@@ -72,7 +72,7 @@ export function weatherCodeLabel(code: number | null | undefined): string {
   if (c >= 71 && c <= 77) return "Snow";
   if (c >= 80 && c <= 82) return "Showers";
   if (c >= 95) return "Thunderstorm";
-  return "—";
+  return "Not available";
 }
 
 /** Emoji-free icon key so callers can map to their own icon set. */
@@ -129,7 +129,7 @@ export function evaluateWeatherRules(
       rule: "dry_air",
       severity: "info",
       title: `${nickname}: dry air spell`,
-      message: `Humidity sits near ${Math.round(today.humidity_mean as number)}% for a second day, under its ${species.humidity_min}% preference. Mist it or group plants together — soil will dry faster too.`,
+      message: `Humidity sits near ${Math.round(today.humidity_mean as number)}% for a second day, under its ${species.humidity_min}% preference. Mist it or group plants together, soil will dry faster too.`,
     });
   }
 
@@ -138,7 +138,7 @@ export function evaluateWeatherRules(
       rule: "strong_sun",
       severity: "info",
       title: `${nickname}: strong sun today`,
-      message: `UV peaks around ${Math.round(today.uv_index_max ?? 0)}. This one prefers ${lightNeed === "low" ? "low" : "indirect"} light — pull it back from the window this afternoon.`,
+      message: `UV peaks around ${Math.round(today.uv_index_max ?? 0)}. This one prefers ${lightNeed === "low" ? "low" : "indirect"} light, pull it back from the window this afternoon.`,
     });
   }
 

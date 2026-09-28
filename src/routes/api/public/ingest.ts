@@ -92,7 +92,7 @@ const MOISTURE_SPIKE_PCT = 10;
 const AUTO_LOG_COOLDOWN_MS = 6 * 60 * 60 * 1000;
 const PREV_READING_MAX_AGE_MS = 24 * 60 * 60 * 1000;
 
-/** A sudden soil-moisture jump means the plant was just watered — log it and tell the owner. */
+/** A sudden soil-moisture jump means the plant was just watered, log it and tell the owner. */
 async function maybeAutoLogWatering(
   plant: { id: string; user_id: string; user_email: string | null; nickname: string },
   moisture: number | null,
@@ -138,7 +138,7 @@ async function maybeAutoLogWatering(
     plant_id: plant.id,
     kind: "watering_auto",
     title: "Watering logged automatically",
-    body: `Soil moisture on ${plant.nickname} jumped from ${from}% to ${to}% — we logged a watering for you.`,
+    body: `Soil moisture on ${plant.nickname} jumped from ${from}% to ${to}%, we logged a watering for you.`,
     link: `/plants/${plant.id}`,
   });
 

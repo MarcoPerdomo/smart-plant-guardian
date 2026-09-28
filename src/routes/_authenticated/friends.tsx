@@ -16,9 +16,9 @@ export const Route = createFileRoute("/_authenticated/friends")({
   component: FriendsPage,
   head: () => ({
     meta: [
-      { title: "Plant friends — Sentia" },
+      { title: "Plant friends, Sentia" },
       { name: "description", content: "Find fellow plant people by username and manage your friend requests." },
-      { property: "og:title", content: "Plant friends — Sentia" },
+      { property: "og:title", content: "Plant friends, Sentia" },
       { property: "og:description", content: "Find fellow plant people by username and manage your friend requests." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -153,7 +153,7 @@ function FriendsPage() {
         <h2 className="font-display text-lg font-semibold">Your friends</h2>
         {(friendships?.friends.length ?? 0) === 0 ? (
           <p className="text-sm text-muted-foreground mt-2">
-            No friends yet — search above and send your first request.
+            No friends yet, search above and send your first request.
           </p>
         ) : (
           <div className="mt-2 divide-y divide-border">

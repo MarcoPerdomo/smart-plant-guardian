@@ -8,9 +8,9 @@ export const Route = createFileRoute("/_authenticated/whats-new")({
   component: WhatsNew,
   head: () => ({
     meta: [
-      { title: "What's new — Sentia" },
+      { title: "What's new, Sentia" },
       { name: "description", content: "Product announcements: new features, upgrades and platform news from Sentia." },
-      { property: "og:title", content: "What's new — Sentia" },
+      { property: "og:title", content: "What's new, Sentia" },
       { property: "og:description", content: "Product announcements: new features, upgrades and platform news from Sentia." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -36,7 +36,7 @@ function WhatsNew() {
       {isLoading ? (
         <p className="text-sm text-muted-foreground">Loading…</p>
       ) : data.length === 0 ? (
-        <p className="text-sm text-muted-foreground">No announcements yet — the greenhouse is quiet.</p>
+        <p className="text-sm text-muted-foreground">No announcements yet, the greenhouse is quiet.</p>
       ) : (
         <div className="space-y-4">
           {data.map((a) => (

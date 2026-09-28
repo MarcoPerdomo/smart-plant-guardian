@@ -16,7 +16,7 @@ import { CountBadge } from "@/components/ui/count-badge";
 import { listNotifications, markAllNotificationsRead, markNotificationRead, type NotificationItem } from "@/lib/notifications.functions";
 
 const EMPTY_PHRASES = [
-  "Nothing new — your plants are behaving.",
+  "Nothing new, your plants are behaving.",
   "Nothing new, go outside!",
   "Nothing to report, enjoy your day!",
   "All quiet in the greenhouse.",

@@ -12,7 +12,7 @@ export const Route = createFileRoute("/_authenticated/admin/species")({
   component: AdminSpecies,
   head: () => ({
     meta: [
-      { title: "Species catalog — Sentia admin" },
+      { title: "Species catalog, Sentia admin" },
       { name: "description", content: "Edit plant species care data and archive bad catalog rows." },
     ],
   }),
@@ -94,7 +94,7 @@ function AdminSpecies() {
                   {s.archived_at && <span className="ml-2 text-xs text-muted-foreground">(archived)</span>}
                 </div>
                 <div className="text-sm text-muted-foreground truncate italic">
-                  {s.scientific_name ?? "—"}
+                  {s.scientific_name ?? "Not available"}
                 </div>
                 <div className="text-xs text-muted-foreground flex items-center gap-2 flex-wrap">
                   <span>

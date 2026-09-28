@@ -11,7 +11,7 @@ export const SENSOR_HINTS = {
     "Soil water content from the capacitive probe, 0-100%. The target range comes from the plant's species care profile.",
   temp: "Ambient air temperature in °C measured next to the plant.",
   light:
-    "Relative brightness, 0-100%. 100% is direct sunlight and 0% is complete darkness — this is not a nominal lux value.",
+    "Relative brightness, 0-100%. 100% is direct sunlight and 0% is complete darkness, this is not a nominal lux value.",
   humidity: "Relative air humidity around the plant, 0-100%.",
 } as const;
 

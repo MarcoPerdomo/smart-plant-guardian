@@ -1,4 +1,4 @@
-// Shared plant-status logic. No server imports — safe on client and server.
+// Shared plant-status logic. No server imports, safe on client and server.
 
 export type PlantStatus = "healthy" | "attention" | "thirsty" | "unknown";
 
@@ -37,7 +37,7 @@ export function predictNextWatering(
   if (soilMoisture != null && moistureMin != null && soilMoisture < moistureMin) {
     return { date: new Date(), label: "Water today" };
   }
-  if (!frequencyDays) return { date: null, label: "—" };
+  if (!frequencyDays) return { date: null, label: "Not available" };
   const base = lastWatered ? new Date(lastWatered) : new Date();
   const next = new Date(base.getTime() + frequencyDays * 24 * 60 * 60 * 1000);
   const days = Math.max(0, Math.round((next.getTime() - Date.now()) / (24 * 60 * 60 * 1000)));

@@ -27,7 +27,7 @@ export function ArchiveDialog({
     setBusy(true);
     try {
       await archiveRecord({ data: { entity_type: entityType, id, reason: reason || null } });
-      toast.success("Archived — restorable from the Archive tab");
+      toast.success("Archived, restorable from the Archive tab");
       onDone();
       onClose();
       setTyped("");

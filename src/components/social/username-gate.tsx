@@ -67,7 +67,7 @@ export function UsernameGate() {
             onChange={(e) => setBio(e.target.value)}
             rows={2}
             maxLength={280}
-            placeholder="Short bio (optional) — 12 plants, one very dramatic calathea"
+            placeholder="Short bio (optional), 12 plants, one very dramatic calathea"
             className="w-full px-3 py-2.5 rounded-lg border border-input bg-background text-sm"
           />
           <button

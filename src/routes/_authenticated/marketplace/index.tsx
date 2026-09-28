@@ -9,9 +9,9 @@ export const Route = createFileRoute("/_authenticated/marketplace/")({
   component: MarketplaceBrowse,
   head: () => ({
     meta: [
-      { title: "Plant Marketplace — Sentia" },
+      { title: "Plant Marketplace, Sentia" },
       { name: "description", content: "Browse plants for sale from fellow growers in the Netherlands, Belgium and Germany." },
-      { property: "og:title", content: "Plant Marketplace — Sentia" },
+      { property: "og:title", content: "Plant Marketplace, Sentia" },
       { property: "og:description", content: "Buy and sell houseplants with full care history transparency." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -113,7 +113,7 @@ function MarketplaceBrowse() {
         <div className="rounded-2xl border border-dashed border-border p-12 text-center">
           <Leaf className="w-10 h-10 mx-auto text-primary/40" />
           <h2 className="mt-3 font-display text-xl font-semibold">Nothing for sale yet</h2>
-          <p className="mt-1 text-sm text-muted-foreground">Be the first — list a plant from your garden.</p>
+          <p className="mt-1 text-sm text-muted-foreground">Be the first, list a plant from your garden.</p>
         </div>
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">

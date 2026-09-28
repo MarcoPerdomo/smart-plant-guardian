@@ -43,7 +43,7 @@ export function FeedbackForm({ children }: { children?: React.ReactNode }) {
         },
       }),
     onSuccess: () => {
-      toast.success("Feedback sent — thank you!");
+      toast.success("Feedback sent, thank you!");
       setMessage("");
       setOpen(false);
     },

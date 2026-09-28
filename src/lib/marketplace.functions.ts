@@ -418,7 +418,7 @@ export const placeOrder = createServerFn({ method: "POST" })
       order_id: order.id,
       status: "placed",
       actor_id: context.userId,
-      note: "Simulated payment authorised — funds held in escrow",
+      note: "Simulated payment authorised, funds held in escrow",
     });
     await supabaseAdmin.from("marketplace_listings").update({ status: "reserved" }).eq("id", listing.id);
 
@@ -622,7 +622,7 @@ export const advanceOrder = createServerFn({ method: "POST" })
         order_id: order.id,
         kind: "refund",
         amount_cents: -sellerNet,
-        description: "Order cancelled — escrow released back to buyer",
+        description: "Order cancelled, escrow released back to buyer",
       });
       await supabaseAdmin.from("marketplace_listings").update({ status: "active" }).eq("id", order.listing_id);
     }

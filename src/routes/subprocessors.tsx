@@ -14,14 +14,14 @@ export const Route = createFileRoute("/subprocessors")({
   component: SubprocessorsPage,
   head: () => ({
     meta: [
-      { title: "Subprocessors — Sentia (Beta)" },
+      { title: "Subprocessors, Sentia (Beta)" },
       { name: "description", content: "Third parties that process data on behalf of Sentia." },
-      { property: "og:title", content: "Subprocessors — Sentia (Beta)" },
+      { property: "og:title", content: "Subprocessors, Sentia (Beta)" },
       { property: "og:description", content: "Third parties that process data on behalf of Sentia." },
       { property: "og:url", content: CANONICAL },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:title", content: "Subprocessors — Sentia (Beta)" },
+      { name: "twitter:title", content: "Subprocessors, Sentia (Beta)" },
       { name: "twitter:description", content: "Third parties that process data on behalf of Sentia." },
       { name: "robots", content: "index, follow" },
     ],

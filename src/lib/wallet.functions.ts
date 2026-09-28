@@ -134,7 +134,7 @@ export const adminProcessPayout = createServerFn({ method: "POST" })
         user_id: payout.user_id,
         kind: "adjustment",
         amount_cents: payout.amount_cents,
-        description: "Payout rejected — funds returned to wallet",
+        description: "Payout rejected, funds returned to wallet",
       });
     }
 
