@@ -192,7 +192,7 @@ export const sendFriendRequest = createServerFn({ method: "POST" })
     if (existing) {
       if (existing.status === "accepted") return { ok: true, status: "accepted" };
       if (existing.status === "pending") return { ok: true, status: "pending" };
-      // previously declined — reopen as a fresh request from me
+      // previously declined , reopen as a fresh request from me
       const { error } = await context.supabase
         .from("friendships")
         .update({ status: "pending" })

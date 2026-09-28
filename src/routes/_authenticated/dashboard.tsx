@@ -13,9 +13,9 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
   component: Dashboard,
   head: () => ({
     meta: [
-      { title: "Dashboard — Sentia" },
+      { title: "Dashboard , Sentia" },
       { name: "description", content: "Overview of all your plants and their current status." },
-      { property: "og:title", content: "Dashboard — Sentia" },
+      { property: "og:title", content: "Dashboard , Sentia" },
       { property: "og:description", content: "Overview of all your plants and their current status." },
       { property: "og:url", content: "https://sentia-plants.com/dashboard" },
       { property: "og:type", content: "website" },
@@ -139,9 +139,9 @@ function Dashboard() {
 
 
               <div className="mt-4 grid grid-cols-3 gap-2 text-center">
-                <Stat icon={Droplets} label="Moisture" hint={SENSOR_HINTS.moisture} value={latest?.soil_moisture != null ? `${Math.round(latest.soil_moisture)}%` : "—"} />
-                <Stat icon={Thermometer} label="Temp" hint={SENSOR_HINTS.temp} value={latest?.temperature_c != null ? `${latest.temperature_c.toFixed(1)}°` : "—"} />
-                <Stat icon={Sun} label="Light" hint={SENSOR_HINTS.light} value={latest?.light_lux != null ? `${Math.round(latest.light_lux)}%` : "—"} />
+                <Stat icon={Droplets} label="Moisture" hint={SENSOR_HINTS.moisture} value={latest?.soil_moisture != null ? `${Math.round(latest.soil_moisture)}%` : "Not available"} />
+                <Stat icon={Thermometer} label="Temp" hint={SENSOR_HINTS.temp} value={latest?.temperature_c != null ? `${latest.temperature_c.toFixed(1)}°` : "Not available"} />
+                <Stat icon={Sun} label="Light" hint={SENSOR_HINTS.light} value={latest?.light_lux != null ? `${Math.round(latest.light_lux)}%` : "Not available"} />
               </div>
 
               <div className="mt-4 flex items-center justify-between text-xs">

@@ -7,14 +7,14 @@ export const Route = createFileRoute("/privacy")({
   component: PrivacyPage,
   head: () => ({
     meta: [
-      { title: "Privacy Policy — Sentia (Beta)" },
+      { title: "Privacy Policy , Sentia (Beta)" },
       { name: "description", content: "How Sentia handles your personal data while building Europe's network of connected plant lovers." },
-      { property: "og:title", content: "Privacy Policy — Sentia (Beta)" },
+      { property: "og:title", content: "Privacy Policy , Sentia (Beta)" },
       { property: "og:description", content: "How Sentia handles your personal data while building Europe's network of connected plant lovers." },
       { property: "og:url", content: CANONICAL },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:title", content: "Privacy Policy — Sentia (Beta)" },
+      { name: "twitter:title", content: "Privacy Policy , Sentia (Beta)" },
       { name: "twitter:description", content: "How Sentia handles your personal data while building Europe's network of connected plant lovers." },
       { name: "robots", content: "index, follow" },
     ],

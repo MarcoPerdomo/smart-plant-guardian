@@ -8,14 +8,14 @@ export const Route = createFileRoute("/cookies")({
   component: CookiesPage,
   head: () => ({
     meta: [
-      { title: "Cookie Policy — Sentia (Beta)" },
+      { title: "Cookie Policy , Sentia (Beta)" },
       { name: "description", content: "What cookies and local storage Sentia uses during the beta." },
-      { property: "og:title", content: "Cookie Policy — Sentia (Beta)" },
+      { property: "og:title", content: "Cookie Policy , Sentia (Beta)" },
       { property: "og:description", content: "What cookies and local storage Sentia uses during the beta." },
       { property: "og:url", content: CANONICAL },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:title", content: "Cookie Policy — Sentia (Beta)" },
+      { name: "twitter:title", content: "Cookie Policy , Sentia (Beta)" },
       { name: "twitter:description", content: "What cookies and local storage Sentia uses during the beta." },
       { name: "robots", content: "index, follow" },
     ],
@@ -40,15 +40,15 @@ function CookiesPage() {
             </p>
             <ul className="mt-2 list-disc pl-5 space-y-1 text-muted-foreground">
               <li>
-                <strong>Supabase auth session</strong> — stored in your browser's localStorage by the Supabase client
+                <strong>Supabase auth session</strong> , stored in your browser's localStorage by the Supabase client
                 so you stay signed in across page loads.
               </li>
               <li>
-                <strong>Cookie consent choice</strong> — stored in localStorage so the consent banner does not
+                <strong>Cookie consent choice</strong> , stored in localStorage so the consent banner does not
                 reappear on every visit.
               </li>
               <li>
-                <strong>Beta banner dismissal</strong> — stored per user so the beta notice stays hidden once you
+                <strong>Beta banner dismissal</strong> , stored per user so the beta notice stays hidden once you
                 close it.
               </li>
             </ul>

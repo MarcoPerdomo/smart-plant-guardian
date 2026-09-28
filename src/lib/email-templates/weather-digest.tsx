@@ -60,13 +60,13 @@ const Email = ({
         <Text style={intro}>
           {displayName ? `Hi ${displayName}, ` : 'Hi there, '}
           here is today’s weather check{place ? ` for ${place}` : ''}
-          {dateLabel ? ` — ${dateLabel}` : ''}.
+          {dateLabel ? ` , ${dateLabel}` : ''}.
         </Text>
 
         <Section style={weatherBox}>
           <Text style={weatherLine}>
             {condition ? `${condition} · ` : ''}
-            {high != null ? `High ${Math.round(high)}°C` : 'High —'}
+            {high != null ? `High ${Math.round(high)}°C` : 'High ,'}
             {low != null ? ` · Low ${Math.round(low)}°C` : ''}
           </Text>
         </Section>
@@ -119,7 +119,7 @@ export const template = {
       {
         nickname: 'Monty',
         title: 'Heat stress risk',
-        message: 'It reaches 31°C today — move Monty away from the window and check the soil this evening.',
+        message: 'It reaches 31°C today , move Monty away from the window and check the soil this evening.',
         severity: 'warning',
       },
       {

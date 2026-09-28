@@ -10,7 +10,7 @@ export const Route = createFileRoute("/_authenticated/admin/premium")({
   component: AdminPremium,
   head: () => ({
     meta: [
-      { title: "Premium members — Sentia admin" },
+      { title: "Premium members , Sentia admin" },
       {
         name: "description",
         content: "Grant, review and revoke Sentia Premium access for members.",
@@ -20,7 +20,7 @@ export const Route = createFileRoute("/_authenticated/admin/premium")({
 });
 
 function fmt(d: string | null | undefined) {
-  return d ? new Date(d).toLocaleDateString() : "—";
+  return d ? new Date(d).toLocaleDateString() : "Not available";
 }
 
 function daysSince(d: string | null | undefined) {
@@ -118,7 +118,7 @@ function AdminPremium() {
             value={expiresAt}
             onChange={(e) => setExpiresAt(e.target.value)}
             className="rounded-md border border-border bg-background px-3 py-2 text-sm"
-            title="Optional end date — leave empty for open-ended Premium"
+            title="Optional end date , leave empty for open-ended Premium"
           />
           <input
             value={note}
@@ -140,7 +140,7 @@ function AdminPremium() {
                 return (
                   <div key={u.id} className="p-3 flex items-center justify-between gap-3">
                     <div className="min-w-0">
-                      <div className="font-medium truncate">{u.display_name ?? "—"}</div>
+                      <div className="font-medium truncate">{u.display_name ?? "Not available"}</div>
                       <div className="text-sm text-muted-foreground truncate">{u.email ?? u.id}</div>
                     </div>
                     {isActive ? (

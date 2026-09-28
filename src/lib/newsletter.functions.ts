@@ -34,7 +34,7 @@ export const subscribeNewsletter = createServerFn({ method: "POST" })
       .maybeSingle();
 
     const email = (data.email ?? profile?.email ?? "").trim().toLowerCase();
-    if (!email) throw new Error("No email address on your account — add one first.");
+    if (!email) throw new Error("No email address on your account , add one first.");
 
     const token = crypto.randomUUID();
     const { error } = await context.supabase

@@ -15,9 +15,9 @@ export const Route = createFileRoute("/auth")({
   component: AuthPage,
   head: () => ({
     meta: [
-      { title: "Sign in — Sentia (Beta)" },
+      { title: "Sign in , Sentia (Beta)" },
       { name: "description", content: "Sign in to Sentia to manage your plants." },
-      { property: "og:title", content: "Sign in — Sentia (Beta)" },
+      { property: "og:title", content: "Sign in , Sentia (Beta)" },
       { property: "og:description", content: "Sign in to Sentia to manage your plants." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -126,7 +126,7 @@ function AuthPage() {
               setCode("");
               setResendIn(60);
               setMode("verify");
-              toast.message("Please verify your email first — we sent you a new code.");
+              toast.message("Please verify your email first , we sent you a new code.");
               return;
             }
             throw error;
@@ -170,7 +170,7 @@ function AuthPage() {
           return;
         }
       }
-      toast.success("Email verified — welcome to Sentia!");
+      toast.success("Email verified , welcome to Sentia!");
       navigate({ href: next || "/dashboard", replace: true });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "That code didn't work. Try again or resend.");
@@ -350,7 +350,7 @@ function AuthPage() {
                     ? "The passwords don't match yet."
                     : password.length > 0 && password.length < 8
                       ? "Use at least 8 characters."
-                      : "Use at least 8 characters — a mix of words and numbers works well."}
+                      : "Use at least 8 characters , a mix of words and numbers works well."}
                 </p>
               </>
             )}

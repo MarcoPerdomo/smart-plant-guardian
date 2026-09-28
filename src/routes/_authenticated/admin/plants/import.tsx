@@ -12,7 +12,7 @@ export const Route = createFileRoute("/_authenticated/admin/plants/import")({
   component: ImportPlants,
   head: () => ({
     meta: [
-      { title: "Import plants — Sentia" },
+      { title: "Import plants , Sentia" },
       { name: "description", content: "Batch import new plant species into the catalog." },
     ],
   }),
@@ -94,7 +94,7 @@ function ImportPlants() {
     setItems(list.map((name) => ({ name, status: "pending" })));
     await runQueue(list, importName, () => cancelRef.current);
     setRunning(false);
-    if (cancelRef.current) toast.info("Import cancelled — already-imported plants were kept.");
+    if (cancelRef.current) toast.info("Import cancelled , already-imported plants were kept.");
     else toast.success("Import finished");
   }
 

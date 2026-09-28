@@ -31,7 +31,7 @@ function ConfirmPage() {
   const copy: Record<typeof state, { title: string; body: string }> = {
     working: { title: "Confirming…", body: "One moment while we check your link." },
     ok: { title: "You're subscribed", body: "You'll get Sentia product news, new features and platform updates." },
-    already: { title: "Already confirmed", body: "This subscription was confirmed earlier — nothing more to do." },
+    already: { title: "Already confirmed", body: "This subscription was confirmed earlier , nothing more to do." },
     invalid: { title: "Link not valid", body: "This confirmation link is unknown or has been replaced. Request a new one from Settings." },
     error: { title: "Something went wrong", body: "We couldn't confirm right now. Try the link again in a minute." },
   };

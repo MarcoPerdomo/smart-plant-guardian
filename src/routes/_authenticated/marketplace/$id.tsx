@@ -11,9 +11,9 @@ export const Route = createFileRoute("/_authenticated/marketplace/$id")({
   component: ListingDetail,
   head: ({ params }) => ({
     meta: [
-      { title: "Plant listing — Sentia Marketplace" },
+      { title: "Plant listing , Sentia Marketplace" },
       { name: "description", content: "Full care history, disclosures and delivery options for this plant." },
-      { property: "og:title", content: "Plant listing — Sentia Marketplace" },
+      { property: "og:title", content: "Plant listing , Sentia Marketplace" },
       { property: "og:description", content: "Full care history, disclosures and delivery options for this plant." },
       { property: "og:url", content: `https://sentia-plants.com/marketplace/${params.id}` },
       { property: "og:type", content: "product" },
@@ -45,7 +45,7 @@ function ListingDetail() {
         },
       }),
     onSuccess: (order) => {
-      toast.success("Order placed — funds held in escrow (test mode)");
+      toast.success("Order placed , funds held in escrow (test mode)");
       qc.invalidateQueries({ queryKey: ["listing", id] });
       navigate({ to: "/marketplace/orders/$id", params: { id: order.id } });
     },
@@ -169,7 +169,7 @@ function ListingDetail() {
       <aside className="space-y-4">
         <div className="rounded-2xl border border-border p-5 sticky top-20">
           <div className="text-xs px-2 py-1 rounded-md bg-warning/15 text-warning-foreground inline-block">
-            Test mode — no real money moves
+            Test mode , no real money moves
           </div>
 
           {seller && (
@@ -179,7 +179,7 @@ function ListingDetail() {
                 @{seller.username ?? "grower"}
               </Link>
               <div className="text-xs text-muted-foreground">
-                {seller.country_code ?? "—"} · member since {format(new Date(seller.member_since), "MMM yyyy")}
+                {seller.country_code ?? "Not available"} · member since {format(new Date(seller.member_since), "MMM yyyy")}
               </div>
             </div>
           )}

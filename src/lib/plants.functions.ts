@@ -45,7 +45,7 @@ water_frequency_days (integer, typical days between waterings), soil_moisture_mi
 temperature_min_c (number), temperature_max_c (number), humidity_min (int 0-100), humidity_max (int 0-100),
 soil (short), fertilizer (short), toxicity (short), common_pests (string array of 2-4),
 common_diseases (string array of 2-4), care_tips (2-3 sentences),
-environment (exactly one of "indoor", "outdoor", "both" — where this plant is normally grown in a temperate Northern-European climate),
+environment (exactly one of "indoor", "outdoor", "both" , where this plant is normally grown in a temperate Northern-European climate),
 environment_notes (1-2 sentences explaining the indoor/outdoor recommendation).
 If the plant name is unknown, still return your best general guess.`;
 
@@ -594,7 +594,7 @@ export const classifySpeciesEnvironment = createServerFn({ method: "POST" })
 
     const label = row.scientific_name ? `${row.common_name} (${row.scientific_name})` : row.common_name;
     const prompt = `You are a botanist. For the plant "${label}", return ONLY JSON (no markdown) with:
-environment (exactly one of "indoor", "outdoor", "both" — where it is normally grown in a temperate Northern-European climate),
+environment (exactly one of "indoor", "outdoor", "both" , where it is normally grown in a temperate Northern-European climate),
 environment_notes (1-2 sentences explaining the recommendation, e.g. minimum outdoor temperature or whether it can summer outside).`;
 
     const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {

@@ -110,8 +110,8 @@ function ChatPage() {
         <h1 className="font-display text-2xl font-semibold">Ask Sentia is a Premium feature</h1>
         <p className="text-muted-foreground">
           Sentia Premium unlocks the AI assistant: ask about your plants by voice or text, log
-          watering, and get insights across your whole collection. Everything else — your plants,
-          photos, watering log, AI Check summaries and the social side — stays free.
+          watering, and get insights across your whole collection. Everything else , your plants,
+          photos, watering log, AI Check summaries and the social side , stays free.
         </p>
         <p className="text-muted-foreground">
           Premium is granted by the Sentia team during the beta. Email us or message an admin to
@@ -139,7 +139,7 @@ function ChatPage() {
             <div className="space-y-4">
               {chat.messages.length === 0 && (
                 <div className="text-center text-muted-foreground text-sm py-8">
-                  Ask me anything about your plants — for example:
+                  Ask me anything about your plants , for example:
                   <ul className="mt-2 space-y-1">
                     <li>“How is my Monstera doing?”</li>
                     <li>“Log watering for my Pothos”</li>

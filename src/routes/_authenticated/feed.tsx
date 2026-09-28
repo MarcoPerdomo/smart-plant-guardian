@@ -13,9 +13,9 @@ export const Route = createFileRoute("/_authenticated/feed")({
   component: FeedPage,
   head: () => ({
     meta: [
-      { title: "Plant feed — Sentia" },
+      { title: "Plant feed , Sentia" },
       { name: "description", content: "See what your plant friends are growing, watering and rescuing." },
-      { property: "og:title", content: "Plant feed — Sentia" },
+      { property: "og:title", content: "Plant feed , Sentia" },
       { property: "og:description", content: "See what your plant friends are growing, watering and rescuing." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -139,7 +139,7 @@ function HelpComposer() {
         value={body}
         onChange={(e) => setBody(e.target.value)}
         rows={3}
-        placeholder="Yellowing leaves at the base — too much water?"
+        placeholder="Yellowing leaves at the base , too much water?"
         className="w-full px-3 py-2.5 rounded-lg border border-input bg-background text-sm"
       />
       <div className="flex gap-2">

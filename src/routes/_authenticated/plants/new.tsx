@@ -9,7 +9,7 @@ import { EnvironmentBadge, normalizeEnvironment } from "@/components/environment
 
 export const Route = createFileRoute("/_authenticated/plants/new")({
   component: NewPlant,
-  head: () => ({ meta: [{ title: "Add plant — Sentia" }, { name: "description", content: "Add a new plant and pair it with an Arduino device." }] }),
+  head: () => ({ meta: [{ title: "Add plant , Sentia" }, { name: "description", content: "Add a new plant and pair it with an Arduino device." }] }),
 });
 
 function NewPlant() {
@@ -169,7 +169,7 @@ function NewPlant() {
                 <div className="rounded-md border border-dashed border-border p-3 text-sm space-y-2">
                   <p className="text-muted-foreground">
                     "{query}" isn't in the Sentia catalogue yet. You can ask the Sentia team to
-                    add it — we'll notify you once it's available.
+                    add it , we'll notify you once it's available.
                   </p>
                   <button
                     onClick={() => requestMut.mutate(query)}
