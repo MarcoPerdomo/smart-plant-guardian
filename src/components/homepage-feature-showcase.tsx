@@ -166,7 +166,7 @@ function AddPlantScene() {
           <MockField label="Location" value="Living room" />
         </div>
       </div>
-      <div className="mt-4 flex items-center gap-2 rounded-md bg-success/10 px-3 py-2 text-xs text-success-foreground">
+      <div className="mt-4 flex items-center gap-2 rounded-md bg-success/10 px-3 py-2 text-xs text-success">
         <Check className="h-4 w-4 text-success" /> Ready to start growing
       </div>
     </div>
