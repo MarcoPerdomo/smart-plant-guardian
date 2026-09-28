@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
-import { Droplets, Sprout, Camera, Trophy, HelpCircle, MessageCircle, Trash2, Scissors, Flower2, PackageOpen } from "lucide-react";
+import { Droplets, Sprout, Camera, Trophy, HelpCircle, MessageCircle, Trash2, Scissors, Flower2, PackageOpen, Leaf } from "lucide-react";
 import { toast } from "sonner";
 import { addComment, deleteComment, deletePost, listComments, toggleReaction } from "@/lib/social.functions";
 import { UserAvatar, displayNameOf } from "@/components/social/user-avatar";

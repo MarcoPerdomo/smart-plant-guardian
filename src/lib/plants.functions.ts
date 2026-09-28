@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import type { Json } from "@/integrations/supabase/types";
 
 // ============ Plant catalog ============
 export const searchSpecies = createServerFn({ method: "POST" })
@@ -252,7 +253,7 @@ export const logPlantEvent = createServerFn({ method: "POST" })
         occurred_at: data.occurred_at ?? new Date().toISOString(),
         amount_ml: data.event_type === "watering" ? (data.amount_ml ?? null) : null,
         notes: data.notes?.trim() || null,
-        metadata: data.metadata,
+        metadata: data.metadata as Json,
         source: "manual",
       })
       .select()

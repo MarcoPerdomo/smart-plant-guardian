@@ -7,6 +7,7 @@ const ownerTables = [
   "user_plants",
   "sensor_readings",
   "watering_events",
+  "plant_events",
   "plant_photos",
   "ai_summaries",
   "posts",
