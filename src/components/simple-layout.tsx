@@ -29,6 +29,7 @@ export function SimpleFooter() {
         <span>© 2026 Sentia (Beta)</span>
         <div className="flex flex-wrap gap-4">
           <Link to="/about" className="hover:text-foreground">About</Link>
+          <Link to="/founder" className="hover:text-foreground">Founder story</Link>
           <Link to="/privacy" className="hover:text-foreground">Privacy</Link>
           <Link to="/terms" className="hover:text-foreground">Terms</Link>
           <Link to="/cookies" className="hover:text-foreground">Cookies</Link>
