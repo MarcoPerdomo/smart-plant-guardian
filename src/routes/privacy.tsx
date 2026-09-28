@@ -28,7 +28,7 @@ function PrivacyPage() {
       <SimpleHeader />
       <main className="mx-auto max-w-3xl px-4 py-12">
         <h1 className="font-display text-4xl font-semibold">Privacy Policy</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Last updated: 20 August 2026 · Sentia is in beta.</p>
+        <p className="mt-2 text-sm text-muted-foreground">Last updated: 28 September 2026 · Sentia (formerly Verdant) is in beta.</p>
 
         <div className="mt-8 space-y-8 text-sm leading-relaxed text-foreground">
           <section>
