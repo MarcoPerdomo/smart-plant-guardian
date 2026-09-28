@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import {
   ArrowLeft,
   ArrowRight,
@@ -16,6 +17,7 @@ import {
   Users,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { getHomepageShowcaseImages } from "@/lib/homepage-showcase.functions";
 
 type ShowcaseSlide = {
   title: string;
@@ -23,34 +25,43 @@ type ShowcaseSlide = {
   content: React.ReactNode;
 };
 
-const slides: ShowcaseSlide[] = [
-  {
-    title: "Add every plant",
-    description: "Start a living profile with its species, location and care needs.",
-    content: <AddPlantScene />,
-  },
-  {
-    title: "Remember every moment",
-    description: "Build a photo journal and keep watering, pruning, repotting and flowering together.",
-    content: <JournalScene />,
-  },
-  {
-    title: "Get thoughtful AI care",
-    description: "Turn readings, weather and plant history into clear next steps.",
-    content: <AdvisorScene />,
-  },
-  {
-    title: "Grow with your community",
-    description: "Share progress, ask for help and learn from plant lovers around you.",
-    content: <CommunityScene />,
-  },
-];
+type ShowcaseImage = { src: string; alt: string } | undefined;
+
+const MONSTERA_SLUG = "monstera-deliciosa-swiss-cheese-plant";
+const CALATHEA_SLUG = "calathea-orbifolia-round-leaf-calathea";
 
 export function HomepageFeatureShowcase() {
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
   const regionRef = useRef<HTMLDivElement>(null);
+  const { data: showcaseImages = {} } = useQuery({
+    queryKey: ["homepage-showcase-images"],
+    queryFn: () => getHomepageShowcaseImages(),
+    staleTime: 60 * 60 * 1000,
+  });
+  const slides: ShowcaseSlide[] = [
+    {
+      title: "Add every plant",
+      description: "Start a living profile with its species, location and care needs.",
+      content: <AddPlantScene image={showcaseImages[MONSTERA_SLUG]} />,
+    },
+    {
+      title: "Remember every moment",
+      description: "Build a photo journal and keep watering, pruning, repotting and flowering together.",
+      content: <JournalScene image={showcaseImages[CALATHEA_SLUG]} />,
+    },
+    {
+      title: "Get thoughtful AI care",
+      description: "Turn readings, weather and plant history into clear next steps.",
+      content: <AdvisorScene />,
+    },
+    {
+      title: "Grow with your community",
+      description: "Share progress, ask for help and learn from plant lovers around you.",
+      content: <CommunityScene />,
+    },
+  ];
 
   useEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -146,7 +157,7 @@ export function HomepageFeatureShowcase() {
   );
 }
 
-function AddPlantScene() {
+function AddPlantScene({ image }: { image: ShowcaseImage }) {
   return (
     <div className="h-full rounded-lg border border-border bg-background p-4 shadow-sm">
       <div className="flex items-center justify-between">
@@ -157,8 +168,15 @@ function AddPlantScene() {
         <span className="flex h-9 w-9 items-center justify-center rounded-md bg-primary text-primary-foreground"><Plus className="h-4 w-4" /></span>
       </div>
       <div className="mt-5 grid gap-3 sm:grid-cols-[110px_1fr]">
-        <div className="flex aspect-square items-center justify-center rounded-md bg-primary/10">
-          <Leaf className="h-14 w-14 text-primary" strokeWidth={1.4} />
+        <div className="relative flex aspect-square items-center justify-center overflow-hidden rounded-md bg-primary/10">
+          {image ? (
+            <img src={image.src} alt={image.alt} className="h-full w-full object-cover" />
+          ) : (
+            <Leaf className="h-14 w-14 text-primary" strokeWidth={1.4} />
+          )}
+          <span className="absolute bottom-2 left-2 rounded bg-background/90 px-2 py-1 text-[10px] font-medium text-foreground shadow-sm">
+            Catalogue match
+          </span>
         </div>
         <div className="space-y-3">
           <MockField label="Nickname" value="Milo" />
@@ -173,7 +191,7 @@ function AddPlantScene() {
   );
 }
 
-function JournalScene() {
+function JournalScene({ image }: { image: ShowcaseImage }) {
   const events = [
     { icon: Flower2, label: "Flowered", time: "Today", tone: "text-accent-foreground bg-accent/20" },
     { icon: Scissors, label: "Pruned", time: "3 days ago", tone: "text-primary bg-primary/10" },
@@ -181,13 +199,19 @@ function JournalScene() {
   ];
   return (
     <div className="grid h-full gap-3 sm:grid-cols-[0.8fr_1.2fr]">
-      <div className="relative overflow-hidden rounded-lg border border-border bg-primary/10 p-4">
-        <Camera className="h-5 w-5 text-primary" />
+      <div className="relative overflow-hidden rounded-lg border border-border bg-primary/10">
+        {image ? (
+          <img src={image.src} alt={image.alt} className="h-full w-full object-cover" />
+        ) : (
+          <Leaf className="absolute -bottom-5 right-1 h-36 w-36 rotate-[-18deg] text-primary/50" strokeWidth={1.1} />
+        )}
+        <span className="absolute left-3 top-3 flex h-8 w-8 items-center justify-center rounded-md bg-background/90 text-primary shadow-sm">
+          <Camera className="h-4 w-4" />
+        </span>
         <div className="absolute inset-x-4 bottom-4 rounded-md bg-background/90 p-3 shadow-sm">
           <p className="text-xs text-muted-foreground">Photo journal</p>
           <p className="text-sm font-semibold">A new leaf unfurled</p>
         </div>
-        <Leaf className="absolute -bottom-5 right-1 h-36 w-36 rotate-[-18deg] text-primary/50" strokeWidth={1.1} />
       </div>
       <div className="rounded-lg border border-border bg-background p-4">
         <div className="flex items-center justify-between">
