@@ -28,6 +28,8 @@ import {
   FileText,
   Cookie,
   Bot,
+  Info,
+  Rocket,
 } from "lucide-react";
 
 import { WeatherChip } from "@/components/weather-chip";
@@ -83,7 +85,7 @@ function AuthedLayout() {
     await qc.cancelQueries();
     qc.clear();
     await supabase.auth.signOut();
-    navigate({ to: "/auth", replace: true });
+    navigate({ to: "/", replace: true });
   }
 
   const dashboardActive = !!useMatch({ from: "/_authenticated/dashboard", shouldThrow: false });
@@ -319,6 +321,17 @@ function AuthedLayout() {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+
+              <Button variant="ghost" size="sm" asChild className="gap-1.5">
+                <Link to="/about">
+                  <Info className="w-4 h-4" /> About us
+                </Link>
+              </Button>
+              <Button variant="ghost" size="sm" asChild className="gap-1.5">
+                <Link to="/get-started">
+                  <Rocket className="w-4 h-4" /> Get started
+                </Link>
+              </Button>
             </nav>
 
             {/* Mobile hamburger menu */}
@@ -486,6 +499,14 @@ function AuthedLayout() {
                            className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-muted text-sm"
                          >
                            <Megaphone className="w-4 h-4" /> What's new
+                         </Link>
+                       </SheetClose>
+                       <SheetClose asChild>
+                         <Link
+                           to="/get-started"
+                           className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-muted text-sm"
+                         >
+                           <Rocket className="w-4 h-4" /> Get started
                          </Link>
                        </SheetClose>
                       {isAdmin && (
