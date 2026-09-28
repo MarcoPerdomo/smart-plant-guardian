@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
-import { Droplets, Sprout, Camera, Trophy, HelpCircle, MessageCircle, Trash2 } from "lucide-react";
+import { Droplets, Sprout, Camera, Trophy, HelpCircle, MessageCircle, Trash2, Scissors, Flower2, PackageOpen, Leaf } from "lucide-react";
 import { toast } from "sonner";
 import { addComment, deleteComment, deletePost, listComments, toggleReaction } from "@/lib/social.functions";
 import { UserAvatar, displayNameOf } from "@/components/social/user-avatar";
@@ -29,6 +29,11 @@ const KIND_META: Record<string, { icon: React.ElementType; verb: string }> = {
   new_plant: { icon: Sprout, verb: "welcomed a new plant:" },
   milestone: { icon: Trophy, verb: "hit a milestone with" },
   help: { icon: HelpCircle, verb: "needs help with" },
+  fertilizing: { icon: Sprout, verb: "fertilized" },
+  pruning: { icon: Scissors, verb: "pruned" },
+  repotting: { icon: PackageOpen, verb: "repotted" },
+  flowering: { icon: Flower2, verb: "celebrated flowers on" },
+  deceased: { icon: Leaf, verb: "remembered" },
 };
 
 export function PostCard({ post, photoUrl }: { post: FeedPost; photoUrl?: string }) {

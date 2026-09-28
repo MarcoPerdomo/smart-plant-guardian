@@ -29,7 +29,7 @@ export function createAssistantTools(deps: ToolDeps) {
     }),
 
     get_plant_insights: tool({
-      description: "Get detailed insights for a specific plant by nickname or ID, including recent sensor readings, AI summaries, and watering history.",
+      description: "Get detailed insights for a specific plant by nickname or ID, including recent sensor readings, AI summaries, and care activity history.",
       inputSchema: z.object({
         identifier: z.string().describe("The plant nickname or UUID."),
       }),

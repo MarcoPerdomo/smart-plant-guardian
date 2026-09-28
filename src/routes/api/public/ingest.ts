@@ -108,28 +108,30 @@ async function maybeAutoLogWatering(
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
   const { data: lastWatering } = await supabaseAdmin
-    .from("watering_events")
-    .select("watered_at")
+    .from("plant_events")
+    .select("occurred_at")
     .eq("plant_id", plant.id)
-    .order("watered_at", { ascending: false })
+    .eq("event_type", "watering")
+    .order("occurred_at", { ascending: false })
     .limit(1)
     .maybeSingle();
-  if (lastWatering && now - new Date(lastWatering.watered_at).getTime() < AUTO_LOG_COOLDOWN_MS) return false;
+  if (lastWatering && now - new Date(lastWatering.occurred_at).getTime() < AUTO_LOG_COOLDOWN_MS) return false;
 
   const wateredAt = new Date(now).toISOString();
   const from = Math.round(prev.soil_moisture);
   const to = Math.round(moisture);
 
-  const { error: wErr } = await supabaseAdmin.from("watering_events").insert({
+  const { error: wErr } = await supabaseAdmin.from("plant_events").insert({
     plant_id: plant.id,
-    user_email: plant.user_email,
-    watered_at: wateredAt,
+    user_id: plant.user_id,
+    event_type: "watering",
+    occurred_at: wateredAt,
     amount_ml: null,
     notes: `Auto-logged from sensor (moisture +${Math.round(delta)}%)`,
+    metadata: { moisture_before: from, moisture_after: to, moisture_delta: Math.round(delta) },
+    source: "sensor",
   });
   if (wErr) throw new Error(wErr.message);
-
-  await supabaseAdmin.from("user_plants").update({ last_watered_at: wateredAt }).eq("id", plant.id);
 
   await supabaseAdmin.from("notifications").insert({
     user_id: plant.user_id,

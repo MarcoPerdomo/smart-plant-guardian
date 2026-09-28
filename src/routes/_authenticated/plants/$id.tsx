@@ -1,10 +1,10 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getPlant, generateSummary, logWatering, addManualReading, deletePlant, updatePlantEnvironment } from "@/lib/plants.functions";
+import { getPlant, generateSummary, logPlantEvent, archivePlant, addManualReading, deletePlant, updatePlantEnvironment } from "@/lib/plants.functions";
 import { computeStatus, predictNextWatering } from "@/lib/plant-status";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { ArrowLeft, Droplets, Sparkles, Trash2, Sun, Thermometer, Camera, CloudSun, RefreshCw, Cpu, Copy, Check } from "lucide-react";
+import { ArrowLeft, Droplets, Sparkles, Trash2, Sun, Thermometer, Camera, CloudSun, RefreshCw, Cpu, Copy, Check, Plus, Scissors, Flower2, PackageOpen, Sprout, Leaf } from "lucide-react";
 import { SensorHint, SENSOR_HINTS } from "@/components/sensor-hint";
 import { EnvironmentBadge } from "@/components/environment-badge";
 import { getWeatherForMe } from "@/lib/weather.functions";
@@ -12,6 +12,18 @@ import { formatDistanceToNow, format } from "date-fns";
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
 import { useEffect, useState } from "react";
 import { LatestPhotoCard } from "@/components/plant-photos";
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 
 export const Route = createFileRoute("/_authenticated/plants/$id")({
@@ -63,6 +75,8 @@ function PlantDetail() {
   });
   const plantAlerts = (weather?.alerts ?? []).filter((a) => a.plant_id === id);
   const [showManual, setShowManual] = useState(false);
+  const [showActivity, setShowActivity] = useState(false);
+  const [confirmArchive, setConfirmArchive] = useState(false);
 
   const invalidate = () => qc.invalidateQueries({ queryKey: ["plant", id] });
 
@@ -71,17 +85,18 @@ function PlantDetail() {
     onSuccess: () => { toast.success("New AI summary"); invalidate(); },
     onError: (e: Error) => toast.error(e.message),
   });
-  const waterMut = useMutation({
-    mutationFn: () => logWatering({ data: { plant_id: id, amount_ml: null } }),
-    onSuccess: () => { toast.success("Watered!"); invalidate(); },
-  });
   const deleteMut = useMutation({
     mutationFn: () => deletePlant({ data: { id } }),
     onSuccess: () => { toast.success("Deleted"); navigate({ to: "/dashboard" }); },
   });
+  const archiveMut = useMutation({
+    mutationFn: () => archivePlant({ data: { id } }),
+    onSuccess: () => { toast.success("Plant archived"); navigate({ to: "/dashboard" }); },
+    onError: (e: Error) => toast.error(e.message),
+  });
 
   if (isLoading || !data) return <div className="text-muted-foreground">Loading…</div>;
-  const { plant, readings, waterings, summaries } = data;
+  const { plant, readings, events, summaries } = data;
   const species = plant.plant_species;
   const latest = readings[0];
   const status = computeStatus({
@@ -138,22 +153,34 @@ function PlantDetail() {
         </div>
 
         <div className="flex gap-2">
-          <button
+          <Button
+            variant="outline"
             onClick={() => refetch()}
             disabled={isFetching}
             title="Refresh sensor data"
-            className="px-3 py-2 rounded-lg border border-border text-sm flex items-center gap-1.5 hover:bg-muted disabled:opacity-50"
           >
             <RefreshCw className={`w-4 h-4 ${isFetching ? "animate-spin" : ""}`} /> Refresh
-          </button>
-          <button onClick={() => waterMut.mutate()} className="px-3 py-2 rounded-lg border border-border text-sm flex items-center gap-1.5 hover:bg-muted">
-            <Droplets className="w-4 h-4" /> Log watering
-          </button>
-          <button onClick={() => summaryMut.mutate()} disabled={summaryMut.isPending} className="px-3 py-2 rounded-lg bg-primary text-primary-foreground text-sm flex items-center gap-1.5 disabled:opacity-50">
+          </Button>
+          <Button variant="outline" onClick={() => setShowActivity((open) => !open)}>
+            <Plus /> Log care
+          </Button>
+          <Button onClick={() => summaryMut.mutate()} disabled={summaryMut.isPending}>
             <Sparkles className="w-4 h-4" /> {summaryMut.isPending ? "Thinking…" : "AI check"}
-          </button>
+          </Button>
         </div>
       </header>
+
+      {showActivity && (
+        <ActivityForm
+          plantId={id}
+          onCancel={() => setShowActivity(false)}
+          onDone={(eventType) => {
+            setShowActivity(false);
+            invalidate();
+            if (eventType === "deceased") setConfirmArchive(true);
+          }}
+        />
+      )}
 
       <div className="mt-6 grid gap-4 md:grid-cols-4">
         <Metric icon={Droplets} label="Moisture" hint={SENSOR_HINTS.moisture} value={latest?.soil_moisture != null ? `${Math.round(latest.soil_moisture)}%` : "—"} sub={species?.soil_moisture_min != null ? `Target ${species.soil_moisture_min}-${species.soil_moisture_max}%` : ""} />
@@ -262,19 +289,33 @@ function PlantDetail() {
         {showManual && <ManualReadingForm plantId={id} onDone={() => { setShowManual(false); invalidate(); }} />}
       </section>
 
-      {waterings.length > 0 && (
+      {events.length > 0 && (
         <section className="mt-6 rounded-2xl border border-border bg-card p-5">
-          <h2 className="font-display text-lg font-semibold mb-3">Watering log</h2>
-          <ul className="space-y-1 text-sm">
-            {waterings.map((w) => (
-              <li key={w.id} className="flex justify-between border-b border-border/60 py-1.5">
-                <span>{format(new Date(w.watered_at), "MMM d, yyyy · HH:mm")}</span>
-                <span className="text-muted-foreground">{w.amount_ml ? `${w.amount_ml} ml` : "watered"}</span>
-              </li>
+          <h2 className="font-display text-lg font-semibold mb-3">Care journal</h2>
+          <ul className="space-y-2 text-sm">
+            {events.map((event) => (
+              <PlantEventRow key={event.id} event={event} />
             ))}
           </ul>
         </section>
       )}
+
+      <AlertDialog open={confirmArchive} onOpenChange={setConfirmArchive}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Archive {plant.nickname}?</AlertDialogTitle>
+            <AlertDialogDescription>
+              The deceased event is saved. You can now archive this plant from your active garden, or keep it visible.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Keep in garden</AlertDialogCancel>
+            <AlertDialogAction onClick={() => archiveMut.mutate()} disabled={archiveMut.isPending}>
+              Archive plant
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       <div className="mt-10">
         <button onClick={() => confirm("Delete this plant and all its data?") && deleteMut.mutate()} className="text-xs text-destructive flex items-center gap-1 hover:underline">
@@ -282,6 +323,99 @@ function PlantDetail() {
         </button>
       </div>
     </div>
+  );
+}
+
+type EventType = "watering" | "fertilizing" | "pruning" | "repotting" | "flowering" | "deceased";
+
+const EVENT_OPTIONS: { value: EventType; label: string; icon: React.ElementType }[] = [
+  { value: "watering", label: "Watering", icon: Droplets },
+  { value: "fertilizing", label: "Fertilizing", icon: Sprout },
+  { value: "pruning", label: "Pruning", icon: Scissors },
+  { value: "repotting", label: "Repotting", icon: PackageOpen },
+  { value: "flowering", label: "Flowering", icon: Flower2 },
+  { value: "deceased", label: "Deceased", icon: Leaf },
+];
+
+function ActivityForm({ plantId, onCancel, onDone }: { plantId: string; onCancel: () => void; onDone: (eventType: EventType) => void }) {
+  const [eventType, setEventType] = useState<EventType>("watering");
+  const [amount, setAmount] = useState("");
+  const [notes, setNotes] = useState("");
+  const [product, setProduct] = useState("");
+  const [details, setDetails] = useState("");
+  const mutation = useMutation({
+    mutationFn: () => logPlantEvent({ data: {
+      plant_id: plantId,
+      event_type: eventType,
+      amount_ml: eventType === "watering" && amount ? Number(amount) : null,
+      notes: notes || null,
+      metadata: eventType === "fertilizing"
+        ? { product: product || null, amount: details || null }
+        : eventType === "repotting"
+          ? { pot_or_soil: details || null }
+          : {},
+    } }),
+    onSuccess: () => { toast.success("Care activity saved"); onDone(eventType); },
+    onError: (error: Error) => toast.error(error.message),
+  });
+
+  return (
+    <section className="mt-4 rounded-lg border border-border bg-card p-5 animate-fade-in">
+      <div className="flex items-center justify-between gap-3">
+        <div><h2 className="font-display text-lg font-semibold">Log care activity</h2><p className="text-sm text-muted-foreground">Add this moment to the plant’s journal.</p></div>
+        <Button type="button" variant="ghost" size="sm" onClick={onCancel}>Cancel</Button>
+      </div>
+      <div className="mt-4 grid gap-3 sm:grid-cols-2">
+        <label className="text-sm">
+          <span className="mb-1 block text-xs font-medium text-muted-foreground">Activity</span>
+          <Select value={eventType} onValueChange={(value) => setEventType(value as EventType)}>
+            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectContent>{EVENT_OPTIONS.map((option) => <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>)}</SelectContent>
+          </Select>
+        </label>
+        {eventType === "watering" && <TextInput label="Amount (ml), optional" value={amount} onChange={setAmount} type="number" />}
+        {eventType === "fertilizing" && <TextInput label="Fertilizer product, optional" value={product} onChange={setProduct} />}
+        {eventType === "fertilizing" && <TextInput label="Amount, optional" value={details} onChange={setDetails} />}
+        {eventType === "repotting" && <TextInput label="Pot or soil details, optional" value={details} onChange={setDetails} />}
+        <label className="text-sm sm:col-span-2">
+          <span className="mb-1 block text-xs font-medium text-muted-foreground">Notes, optional</span>
+          <textarea value={notes} onChange={(event) => setNotes(event.target.value)} rows={3} maxLength={1000} className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm" />
+        </label>
+      </div>
+      {eventType === "deceased" && <p className="mt-3 text-xs text-muted-foreground">After saving, Sentia will ask whether you also want to archive this plant.</p>}
+      <Button className="mt-4" onClick={() => mutation.mutate()} disabled={mutation.isPending}>{mutation.isPending ? "Saving…" : "Save activity"}</Button>
+    </section>
+  );
+}
+
+function TextInput({ label, value, onChange, type = "text" }: { label: string; value: string; onChange: (value: string) => void; type?: string }) {
+  return <label className="text-sm"><span className="mb-1 block text-xs font-medium text-muted-foreground">{label}</span><input type={type} min={type === "number" ? 0 : undefined} value={value} onChange={(event) => onChange(event.target.value)} className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm" /></label>;
+}
+
+function PlantEventRow({ event }: { event: { event_type: string; occurred_at: string; amount_ml: number | null; notes: string | null; source: string; metadata: unknown } }) {
+  const option = EVENT_OPTIONS.find((item) => item.value === event.event_type);
+  const Icon = option?.icon ?? Leaf;
+  const metadata = (event.metadata ?? {}) as { product?: string | null; amount?: string | null; pot_or_soil?: string | null };
+  const detail = event.event_type === "watering" && event.amount_ml
+    ? `${event.amount_ml} ml`
+    : event.event_type === "fertilizing"
+      ? [metadata.product, metadata.amount].filter(Boolean).join(" · ")
+      : event.event_type === "repotting"
+        ? metadata.pot_or_soil
+        : null;
+
+  return (
+    <li className="flex items-start gap-3 border-b border-border/60 py-2.5 last:border-0">
+      <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary"><Icon className="h-4 w-4" /></span>
+      <div className="min-w-0 flex-1">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <span className="font-medium">{option?.label ?? event.event_type}</span>
+          <span className="text-xs text-muted-foreground">{format(new Date(event.occurred_at), "MMM d, yyyy · HH:mm")}</span>
+        </div>
+        {(detail || event.notes) && <p className="mt-0.5 text-xs text-muted-foreground">{[detail, event.notes].filter(Boolean).join(" · ")}</p>}
+        {event.source === "sensor" && <span className="mt-1 inline-block text-[10px] uppercase text-muted-foreground">Automatic</span>}
+      </div>
+    </li>
   );
 }
 
