@@ -92,7 +92,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <head><HeadContent /></head>
+      <head>
+        <HeadContent />
+        {/* Search Console verification for sentia-plants.com (verdant-nl.app tag lives in head()) */}
+        <meta name="google-site-verification" content="Qi9Yc7q4dW1YwjX1EL_jN8pW1tDyiUuK9w4c9i_LHT4" />
+      </head>
       <body>
         {children}
         <Scripts />
