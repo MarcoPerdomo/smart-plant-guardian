@@ -160,13 +160,13 @@ export const getPlant = createServerFn({ method: "POST" })
     const { data: readings } = await context.supabase
       .from("sensor_readings").select("*").eq("plant_id", data.id)
       .order("recorded_at", { ascending: false }).limit(200);
-    const { data: waterings } = await context.supabase
-      .from("watering_events").select("*").eq("plant_id", data.id)
-      .order("watered_at", { ascending: false }).limit(20);
+    const { data: events } = await context.supabase
+      .from("plant_events").select("*").eq("plant_id", data.id)
+      .order("occurred_at", { ascending: false }).limit(100);
     const { data: summaries } = await context.supabase
       .from("ai_summaries").select("*").eq("plant_id", data.id)
       .order("created_at", { ascending: false }).limit(5);
-    return { plant, readings: readings ?? [], waterings: waterings ?? [], summaries: summaries ?? [] };
+    return { plant, readings: readings ?? [], events: events ?? [], summaries: summaries ?? [] };
   });
 
 export const createPlant = createServerFn({ method: "POST" })
@@ -211,10 +211,66 @@ export const logWatering = createServerFn({ method: "POST" })
     const { data: owned } = await context.supabase
       .from("user_plants").select("id").eq("id", data.plant_id).eq("user_id", context.userId).maybeSingle();
     if (!owned) throw new Error("Plant not found");
-    const { error } = await context.supabase.from("watering_events").insert(data);
+    const { error } = await context.supabase.from("plant_events").insert({
+      plant_id: data.plant_id,
+      user_id: context.userId,
+      event_type: "watering",
+      amount_ml: data.amount_ml,
+      source: "manual",
+    });
     if (error) throw new Error(error.message);
-    await context.supabase.from("user_plants").update({ last_watered_at: new Date().toISOString() })
-      .eq("id", data.plant_id).eq("user_id", context.userId);
+    return { ok: true };
+  });
+
+const plantEventSchema = z.object({
+  plant_id: z.string().uuid(),
+  event_type: z.enum(["watering", "fertilizing", "pruning", "repotting", "flowering", "deceased"]),
+  occurred_at: z.string().datetime().optional(),
+  amount_ml: z.number().int().min(0).nullable().optional(),
+  notes: z.string().max(1000).nullable().optional(),
+  metadata: z.record(z.unknown()).default({}),
+});
+
+export const logPlantEvent = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => plantEventSchema.parse(input))
+  .handler(async ({ data, context }) => {
+    const { data: owned } = await context.supabase
+      .from("user_plants")
+      .select("id")
+      .eq("id", data.plant_id)
+      .eq("user_id", context.userId)
+      .maybeSingle();
+    if (!owned) throw new Error("Plant not found");
+
+    const { data: event, error } = await context.supabase
+      .from("plant_events")
+      .insert({
+        plant_id: data.plant_id,
+        user_id: context.userId,
+        event_type: data.event_type,
+        occurred_at: data.occurred_at ?? new Date().toISOString(),
+        amount_ml: data.event_type === "watering" ? (data.amount_ml ?? null) : null,
+        notes: data.notes?.trim() || null,
+        metadata: data.metadata,
+        source: "manual",
+      })
+      .select()
+      .single();
+    if (error) throw new Error(error.message);
+    return event;
+  });
+
+export const archivePlant = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }) => {
+    const { error } = await context.supabase
+      .from("user_plants")
+      .update({ archived_at: new Date().toISOString(), archived_by: context.userId })
+      .eq("id", data.id)
+      .eq("user_id", context.userId);
+    if (error) throw new Error(error.message);
     return { ok: true };
   });
 

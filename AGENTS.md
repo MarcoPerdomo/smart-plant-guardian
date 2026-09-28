@@ -10,3 +10,4 @@
 <!-- LOVABLE:END -->
 
 - Public founder content lives at `/founder`, linked from `/about` and public footers, so Marco's authored story remains distinct from product copy.
+- `plant_events` is the source of truth for plant care history; `user_plants.last_watered_at` is a trigger-maintained cache for status and predictions.

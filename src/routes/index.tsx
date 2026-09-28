@@ -1,9 +1,10 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Leaf, Droplets, Sun, Bug, Cpu, Sparkles, Users, Store } from "lucide-react";
+import { Leaf, Droplets, Sun, Cpu, Sparkles, Users, Store } from "lucide-react";
 import { VisitorWeatherChip } from "@/components/weather-chip";
 import { BetaBadge, BetaBanner } from "@/components/beta-banner";
+import { HomepageFeatureShowcase } from "@/components/homepage-feature-showcase";
 
 const CANONICAL = "https://sentia-plants.com/";
 
@@ -88,9 +89,7 @@ function Landing() {
             <VisitorWeatherChip />
           </div>
         </div>
-        <div className="rounded-2xl bg-gradient-to-br from-primary/10 via-accent/10 to-background border border-border p-10 aspect-square flex items-center justify-center">
-          <Leaf className="w-40 h-40 text-primary/40" strokeWidth={1} />
-        </div>
+        <HomepageFeatureShowcase />
       </section>
 
       <section id="how" className="mx-auto max-w-6xl px-4 py-16 grid md:grid-cols-3 gap-6">

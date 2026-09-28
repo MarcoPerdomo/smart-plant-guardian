@@ -98,7 +98,7 @@ export async function getPlantInsights(
   const plant = await findPlantByNicknameOrId(supabase, email, identifier);
   if (!plant) throw new Error(`Plant "${identifier}" not found`);
 
-  const [{ data: readings }, { data: summaries }, { data: waterings }] = await Promise.all([
+  const [{ data: readings }, { data: summaries }, { data: events }] = await Promise.all([
     supabase
       .from("sensor_readings")
       .select("*")
@@ -112,10 +112,10 @@ export async function getPlantInsights(
       .order("created_at", { ascending: false })
       .limit(3),
     supabase
-      .from("watering_events")
+      .from("plant_events")
       .select("*")
       .eq("plant_id", plant.id)
-      .order("watered_at", { ascending: false })
+      .order("occurred_at", { ascending: false })
       .limit(5),
   ]);
 
@@ -129,7 +129,7 @@ export async function getPlantInsights(
     },
     recent_readings: readings ?? [],
     recent_summaries: summaries ?? [],
-    recent_waterings: waterings ?? [],
+    recent_events: events ?? [],
   };
 }
 
@@ -146,20 +146,16 @@ export async function logWatering(
   const plant = await findPlantByNicknameOrId(supabase, email, identifier);
   if (!plant) throw new Error(`Plant "${identifier}" not found`);
 
-  const { error } = await supabase.from("watering_events").insert({
+  const userId = await resolveUserId(email);
+  const { error } = await supabase.from("plant_events").insert({
     plant_id: plant.id,
-    user_email: email,
-    watered_at: new Date().toISOString(),
+    user_id: userId,
+    event_type: "watering",
+    occurred_at: new Date().toISOString(),
     amount_ml: amountMl,
+    source: "manual",
   });
   if (error) throw new Error(error.message);
-
-  const { error: updateError } = await supabase
-    .from("user_plants")
-    .update({ last_watered_at: new Date().toISOString() })
-    .eq("id", plant.id)
-    .eq("user_email", email);
-  if (updateError) throw new Error(updateError.message);
 
   return { ok: true, plant: { id: plant.id, nickname: plant.nickname } };
 }
