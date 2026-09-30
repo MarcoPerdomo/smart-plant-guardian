@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { evaluateWeatherRules, weatherCodeLabel, type SpeciesCare } from "@/lib/weather-rules";
+import { resolveAppUrl } from "@/lib/app-url";
 
 /**
  * Daily weather digest sender.
@@ -34,7 +35,7 @@ export const Route = createFileRoute("/api/public/weather-digest")({
           .not("longitude", "is", null);
         if (error) return new Response(error.message, { status: 500 });
 
-        const appUrl = process.env["APP_URL"] ?? "https://sentia-plants.com";
+        const appUrl = resolveAppUrl();
         let sent = 0;
         let skipped = 0;
         const failures: string[] = [];

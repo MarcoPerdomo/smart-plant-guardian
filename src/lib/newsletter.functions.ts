@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { resolveAppUrl } from "@/lib/app-url";
 
 export type NewsletterSubscription = {
   status: "pending" | "confirmed" | "unsubscribed";
@@ -52,7 +53,7 @@ export const subscribeNewsletter = createServerFn({ method: "POST" })
       );
     if (error) throw new Error(error.message);
 
-    const appUrl = (process.env["APP_URL"] ?? "https://sentia-plants.com").replace(/\/$/, "");
+    const appUrl = resolveAppUrl();
     const confirmUrl = `${appUrl}/newsletter/confirm?token=${token}`;
 
     try {
