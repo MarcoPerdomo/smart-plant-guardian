@@ -110,12 +110,6 @@ function Landing() {
                   Bring your plants in, care for them day by day, use the tools when you need them, and
                   grow alongside people who love plants as much as you do.
                 </p>
-                <div className="mt-12 hidden lg:block">
-                  <div className="h-px w-12 bg-border" />
-                  <p className="mt-4 font-mono text-xs uppercase tracking-widest text-muted-foreground/70">
-                    Five steps
-                  </p>
-                </div>
               </div>
             </div>
 
