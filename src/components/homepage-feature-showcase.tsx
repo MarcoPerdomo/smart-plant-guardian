@@ -80,10 +80,12 @@ export function HomepageFeatureShowcase() {
   }, []);
 
   useEffect(() => {
-    if (paused || reducedMotion) return;
-    const timer = window.setInterval(() => setActive((current) => (current + 1) % slides.length), 5200);
+    if (paused) return;
+    // Reduced-motion devices still rotate, just more slowly (fade only, no movement).
+    const delay = reducedMotion ? 8000 : 5200;
+    const timer = window.setInterval(() => setActive((current) => (current + 1) % slides.length), delay);
     return () => window.clearInterval(timer);
-  }, [paused, reducedMotion]);
+  }, [paused, reducedMotion, slides.length]);
 
   const move = (direction: number) => {
     setActive((current) => (current + direction + slides.length) % slides.length);
