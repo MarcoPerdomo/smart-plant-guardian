@@ -57,6 +57,7 @@ function PlantDetail() {
 
   // Live push: a new sensor reading for this plant refreshes the page instantly.
   useEffect(() => {
+    if (!data?.plant.sensor_enabled) return;
     const channel = supabase
       .channel(`sensor_readings:${id}`)
       .on(
@@ -66,7 +67,7 @@ function PlantDetail() {
       )
       .subscribe();
     return () => { supabase.removeChannel(channel); };
-  }, [id, qc]);
+  }, [data?.plant.sensor_enabled, id, qc]);
 
   const { data: weather } = useQuery({
     queryKey: ["weather", "me"],
@@ -138,7 +139,6 @@ function PlantDetail() {
         <div>
           <div className="flex items-center gap-2 flex-wrap">
             <h1 className="font-display text-4xl font-semibold">{plant.nickname}</h1>
-            {plant.device_id && <DeviceIdChip deviceId={plant.device_id} />}
           </div>
           <p className="text-muted-foreground text-sm">
             {species?.common_name ?? "Unknown species"}
