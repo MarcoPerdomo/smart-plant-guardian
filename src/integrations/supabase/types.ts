@@ -1334,6 +1334,7 @@ export type Database = {
           location: string | null
           nickname: string
           notes: string | null
+          sensor_enabled: boolean
           size: Database["public"]["Enums"]["plant_size"] | null
           species_id: string | null
           updated_at: string
@@ -1353,6 +1354,7 @@ export type Database = {
           location?: string | null
           nickname: string
           notes?: string | null
+          sensor_enabled?: boolean
           size?: Database["public"]["Enums"]["plant_size"] | null
           species_id?: string | null
           updated_at?: string
@@ -1372,6 +1374,7 @@ export type Database = {
           location?: string | null
           nickname?: string
           notes?: string | null
+          sensor_enabled?: boolean
           size?: Database["public"]["Enums"]["plant_size"] | null
           species_id?: string | null
           updated_at?: string

@@ -13,6 +13,11 @@ export const Route = createFileRoute("/_authenticated/plants/$id_/photos")({
     meta: [
       { title: "Plant photo journal, Sentia" },
       { name: "description", content: "Every photo of your plant over time, newest first." },
+      { property: "og:title", content: "Plant photo journal, Sentia" },
+      { property: "og:description", content: "Every photo of your plant over time, newest first." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+      { name: "robots", content: "noindex" },
     ],
   }),
 });

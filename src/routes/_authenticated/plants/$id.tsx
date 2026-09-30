@@ -1,10 +1,10 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getPlant, generateSummary, logPlantEvent, archivePlant, addManualReading, deletePlant, updatePlantEnvironment } from "@/lib/plants.functions";
+import { getPlant, generateSummary, logPlantEvent, archivePlant, addManualReading, deletePlant, updatePlantEnvironment, updatePlantSensorEnabled } from "@/lib/plants.functions";
 import { computeStatus, predictNextWatering } from "@/lib/plant-status";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { ArrowLeft, Droplets, Sparkles, Trash2, Sun, Thermometer, Camera, CloudSun, RefreshCw, Cpu, Copy, Check, Plus, Scissors, Flower2, PackageOpen, Sprout, Leaf } from "lucide-react";
+import { ArrowLeft, Droplets, Sparkles, Trash2, Sun, Thermometer, Camera, CloudSun, RefreshCw, Cpu, Copy, Check, Plus, Scissors, Flower2, PackageOpen, Sprout, Leaf, Radio, BookOpen, History, ChevronDown, ChevronUp } from "lucide-react";
 import { SensorHint, SENSOR_HINTS } from "@/components/sensor-hint";
 import { EnvironmentBadge } from "@/components/environment-badge";
 import { getWeatherForMe } from "@/lib/weather.functions";
@@ -36,6 +36,7 @@ export const Route = createFileRoute("/_authenticated/plants/$id")({
       { property: "og:description", content: "Detailed sensor history and AI care guidance for your plant." },
       { property: "og:url", content: `https://sentia-plants.com/plants/${params.id}` },
       { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex" },
     ],
     links: [{ rel: "canonical", href: `https://sentia-plants.com/plants/${params.id}` }],
@@ -56,6 +57,7 @@ function PlantDetail() {
 
   // Live push: a new sensor reading for this plant refreshes the page instantly.
   useEffect(() => {
+    if (!data?.plant.sensor_enabled) return;
     const channel = supabase
       .channel(`sensor_readings:${id}`)
       .on(
@@ -65,7 +67,7 @@ function PlantDetail() {
       )
       .subscribe();
     return () => { supabase.removeChannel(channel); };
-  }, [id, qc]);
+  }, [data?.plant.sensor_enabled, id, qc]);
 
   const { data: weather } = useQuery({
     queryKey: ["weather", "me"],
@@ -76,6 +78,8 @@ function PlantDetail() {
   const plantAlerts = (weather?.alerts ?? []).filter((a) => a.plant_id === id);
   const [showManual, setShowManual] = useState(false);
   const [showActivity, setShowActivity] = useState(false);
+  const [showAllSummaries, setShowAllSummaries] = useState(false);
+  const [showAllEvents, setShowAllEvents] = useState(false);
   const [confirmArchive, setConfirmArchive] = useState(false);
 
   const invalidate = () => qc.invalidateQueries({ queryKey: ["plant", id] });
@@ -92,6 +96,11 @@ function PlantDetail() {
   const archiveMut = useMutation({
     mutationFn: () => archivePlant({ data: { id } }),
     onSuccess: () => { toast.success("Plant archived"); navigate({ to: "/dashboard" }); },
+    onError: (e: Error) => toast.error(e.message),
+  });
+  const sensorMut = useMutation({
+    mutationFn: (sensor_enabled: boolean) => updatePlantSensorEnabled({ data: { plant_id: id, sensor_enabled } }),
+    onSuccess: (_row, enabled) => { toast.success(enabled ? "Sensor journal enabled" : "Sensor journal hidden"); invalidate(); },
     onError: (e: Error) => toast.error(e.message),
   });
 
@@ -112,9 +121,13 @@ function PlantDetail() {
   const chartData = [...readings].reverse().map((r) => ({
     time: format(new Date(r.recorded_at), "MMM d HH:mm"),
     moisture: r.soil_moisture,
-    humidity: r.humidity,
     temp: r.temperature_c,
+    light: r.light_lux,
   }));
+
+  const maintenanceEvents = events.filter((event) => event.source !== "sensor").slice(0, 3);
+  const visibleSummaries = showAllSummaries ? summaries : summaries.slice(0, 3);
+  const visibleEvents = showAllEvents ? events : events.slice(0, 5);
 
   return (
     <div>
@@ -126,7 +139,6 @@ function PlantDetail() {
         <div>
           <div className="flex items-center gap-2 flex-wrap">
             <h1 className="font-display text-4xl font-semibold">{plant.nickname}</h1>
-            {plant.device_id && <DeviceIdChip deviceId={plant.device_id} />}
           </div>
           <p className="text-muted-foreground text-sm">
             {species?.common_name ?? "Unknown species"}
@@ -140,55 +152,16 @@ function PlantDetail() {
             speciesNotes={species?.environment_notes ?? null}
             onChanged={invalidate}
           />
-          <p className="mt-1 text-xs text-muted-foreground flex items-center gap-1.5">
-            <span className="relative flex h-1.5 w-1.5">
-              <span className="absolute inline-flex h-full w-full rounded-full bg-success opacity-75 animate-ping" />
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-success" />
-            </span>
-            {latest?.recorded_at
-              ? `Last reading ${formatDistanceToNow(new Date(latest.recorded_at), { addSuffix: true })}`
-              : "No sensor readings yet"}
-            <span className="opacity-60">· updated {formatDistanceToNow(new Date(dataUpdatedAt), { addSuffix: true })}</span>
-          </p>
         </div>
 
         <div className="flex gap-2">
-          <Button
-            variant="outline"
-            onClick={() => refetch()}
-            disabled={isFetching}
-            title="Refresh sensor data"
-          >
-            <RefreshCw className={`w-4 h-4 ${isFetching ? "animate-spin" : ""}`} /> Refresh
-          </Button>
-          <Button variant="outline" onClick={() => setShowActivity((open) => !open)}>
-            <Plus /> Log care
-          </Button>
           <Button onClick={() => summaryMut.mutate()} disabled={summaryMut.isPending}>
             <Sparkles className="w-4 h-4" /> {summaryMut.isPending ? "Thinking…" : "AI check"}
           </Button>
         </div>
       </header>
 
-      {showActivity && (
-        <ActivityForm
-          plantId={id}
-          onCancel={() => setShowActivity(false)}
-          onDone={(eventType) => {
-            setShowActivity(false);
-            invalidate();
-            if (eventType === "deceased") setConfirmArchive(true);
-          }}
-        />
-      )}
-
-      <div className="mt-6 grid gap-4 md:grid-cols-4">
-        <Metric icon={Droplets} label="Moisture" hint={SENSOR_HINTS.moisture} value={latest?.soil_moisture != null ? `${Math.round(latest.soil_moisture)}%` : "Not available"} sub={species?.soil_moisture_min != null ? `Target ${species.soil_moisture_min}-${species.soil_moisture_max}%` : ""} />
-        <Metric icon={Thermometer} label="Temp" hint={SENSOR_HINTS.temp} value={latest?.temperature_c != null ? `${latest.temperature_c.toFixed(1)}°C` : "Not available"} sub={species?.temperature_min_c != null ? `${species.temperature_min_c}-${species.temperature_max_c}°C` : ""} />
-        <Metric icon={Sun} label="Light" hint={SENSOR_HINTS.light} value={latest?.light_lux != null ? `${Math.round(latest.light_lux)}%` : "Not available"} sub={species?.light ?? ""} />
-      </div>
-
-      <div className="mt-4 rounded-2xl border border-border bg-card p-5 flex items-center justify-between">
+      <section className="mt-6 rounded-lg border border-border bg-card p-5 flex items-center justify-between">
         <div>
           <div className="text-xs text-muted-foreground uppercase tracking-wide">Status</div>
           <div className="font-display text-2xl font-semibold">{status.label}</div>
@@ -197,10 +170,10 @@ function PlantDetail() {
           <div className="text-xs text-muted-foreground uppercase tracking-wide">Next watering</div>
           <div className="font-display text-2xl font-semibold">{nextWater.label}</div>
         </div>
-      </div>
+      </section>
 
       {plantAlerts.length > 0 && (
-        <section className="mt-4 rounded-2xl border border-border bg-card p-5">
+        <section className="mt-4 rounded-lg border border-border bg-card p-5">
           <h2 className="font-display text-lg font-semibold flex items-center gap-2">
             <CloudSun className="w-5 h-5 text-primary" /> Weather watch today
           </h2>
@@ -218,55 +191,8 @@ function PlantDetail() {
         </section>
       )}
 
-      <LatestPhotoCard plantId={plant.id} plantName={plant.nickname} />
-
-      <Snapshot path={latest?.snapshot_url ?? null} alt={`Snapshot of ${plant.nickname}`} />
-
-
-      {readings.length > 0 && (
-        <section className="mt-6 rounded-2xl border border-border bg-card p-5">
-          <h2 className="font-display text-lg font-semibold mb-3">Sensor history</h2>
-          <div className="h-64">
-            <ResponsiveContainer>
-              <LineChart data={chartData}>
-                <XAxis dataKey="time" tick={{ fontSize: 10 }} />
-                <YAxis tick={{ fontSize: 10 }} />
-                <Tooltip contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 8, fontSize: 12 }} />
-                <Line type="monotone" dataKey="moisture" stroke="var(--primary)" strokeWidth={2} dot={false} name="Moisture %" />
-                <Line type="monotone" dataKey="humidity" stroke="var(--accent)" strokeWidth={2} dot={false} name="Humidity %" />
-                <Line type="monotone" dataKey="temp" stroke="var(--warning)" strokeWidth={2} dot={false} name="Temp °C" />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </section>
-      )}
-
-      <section className="mt-6 rounded-2xl border border-border bg-card p-5">
-        <div className="flex justify-between items-center mb-3">
-          <h2 className="font-display text-lg font-semibold">AI summaries</h2>
-          <button onClick={() => summaryMut.mutate()} disabled={summaryMut.isPending} className="text-xs text-primary">Regenerate</button>
-        </div>
-        {summaries.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No summaries yet. Tap AI check to generate one.</p>
-        ) : (
-          <div className="space-y-3">
-            {summaries.map((s) => (
-              <div key={s.id} className="border-l-2 border-primary/30 pl-3">
-                <div className="text-xs text-muted-foreground">{formatDistanceToNow(new Date(s.created_at), { addSuffix: true })} · {s.status}</div>
-                <p className="text-sm mt-1">{s.summary}</p>
-                {Array.isArray(s.recommendations) && s.recommendations.length > 0 && (
-                  <ul className="mt-2 text-xs text-muted-foreground list-disc list-inside space-y-0.5">
-                    {(s.recommendations as string[]).map((r, i) => <li key={i}>{r}</li>)}
-                  </ul>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
-
       {species && (
-        <section className="mt-6 rounded-2xl border border-border bg-card p-5">
+        <section className="mt-6 rounded-lg border border-border bg-card p-5">
           <h2 className="font-display text-lg font-semibold mb-3">Care profile</h2>
           <div className="grid md:grid-cols-2 gap-3 text-sm">
             {species.description && <p className="md:col-span-2 text-muted-foreground">{species.description}</p>}
@@ -281,22 +207,70 @@ function PlantDetail() {
         </section>
       )}
 
-      <section className="mt-6 rounded-2xl border border-border bg-card p-5">
-        <div className="flex justify-between items-center">
-          <h2 className="font-display text-lg font-semibold">Manual reading</h2>
-          <button onClick={() => setShowManual(!showManual)} className="text-xs text-primary">{showManual ? "Hide" : "Add"}</button>
+      <section className="mt-6 rounded-lg border border-border bg-card p-5">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div><h2 className="font-display text-lg font-semibold flex items-center gap-2"><BookOpen className="h-5 w-5 text-primary" /> Maintenance journal</h2><p className="text-sm text-muted-foreground">Record the care that keeps {plant.nickname} thriving.</p></div>
+          <Button onClick={() => setShowActivity((open) => !open)}><Plus className="h-4 w-4" /> Log care</Button>
         </div>
-        {showManual && <ManualReadingForm plantId={id} onDone={() => { setShowManual(false); invalidate(); }} />}
+        {showActivity && <ActivityForm plantId={id} onCancel={() => setShowActivity(false)} onDone={(eventType) => { setShowActivity(false); invalidate(); if (eventType === "deceased") setConfirmArchive(true); }} />}
+        {maintenanceEvents.length > 0 && <ul className="mt-4 space-y-1">{maintenanceEvents.map((event) => <PlantEventRow key={event.id} event={event} />)}</ul>}
+      </section>
+
+      <LatestPhotoCard plantId={plant.id} plantName={plant.nickname} />
+
+      <section className="mt-6 rounded-lg border border-border bg-card p-5">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div><h2 className="font-display text-lg font-semibold flex items-center gap-2"><Radio className="h-5 w-5 text-primary" /> Sensor journal</h2><p className="text-sm text-muted-foreground">Optional live conditions and history from connected sensors.</p></div>
+          <Button variant={plant.sensor_enabled ? "outline" : "default"} onClick={() => sensorMut.mutate(!plant.sensor_enabled)} disabled={sensorMut.isPending}>{plant.sensor_enabled ? "Hide sensors" : "Enable sensors"}</Button>
+        </div>
+        {!plant.sensor_enabled ? <div className="mt-5 rounded-md border border-dashed border-border p-6 text-center"><Cpu className="mx-auto h-8 w-8 text-muted-foreground" /><p className="mt-2 text-sm font-medium">Sensors are not enabled for this plant</p><p className="mt-1 text-xs text-muted-foreground">You can turn them on whenever you are ready to connect a device or add readings.</p></div> : <>
+          <div className="mt-5 flex flex-wrap items-center justify-between gap-2 border-t border-border pt-4 text-xs text-muted-foreground"><span className="flex flex-wrap items-center gap-2">{latest?.recorded_at ? `Last reading ${formatDistanceToNow(new Date(latest.recorded_at), { addSuffix: true })}` : "No sensor readings yet"}<span className="opacity-60">Updated {formatDistanceToNow(new Date(dataUpdatedAt), { addSuffix: true })}</span>{plant.device_id && <DeviceIdChip deviceId={plant.device_id} />}</span><Button variant="ghost" size="sm" onClick={() => refetch()} disabled={isFetching} title="Refresh sensor data"><RefreshCw className={`h-4 w-4 ${isFetching ? "animate-spin" : ""}`} /> Refresh</Button></div>
+          <div className="mt-3 grid gap-3 md:grid-cols-3">
+            <Metric icon={Droplets} label="Moisture" hint={SENSOR_HINTS.moisture} value={latest?.soil_moisture != null ? `${Math.round(latest.soil_moisture)}%` : "Not available"} sub={species?.soil_moisture_min != null ? `Target ${species.soil_moisture_min}-${species.soil_moisture_max}%` : ""} />
+            <Metric icon={Thermometer} label="Temp" hint={SENSOR_HINTS.temp} value={latest?.temperature_c != null ? `${latest.temperature_c.toFixed(1)}°C` : "Not available"} sub={species?.temperature_min_c != null ? `${species.temperature_min_c}-${species.temperature_max_c}°C` : ""} />
+            <Metric icon={Sun} label="Light" hint={SENSOR_HINTS.light} value={latest?.light_lux != null ? `${Math.round(latest.light_lux)}%` : "Not available"} sub={species?.light ?? ""} />
+          </div>
+          {readings.length > 0 && <div className="mt-5 h-64"><ResponsiveContainer><LineChart data={chartData}><XAxis dataKey="time" tick={{ fontSize: 10 }} /><YAxis tick={{ fontSize: 10 }} /><Tooltip contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 8, fontSize: 12 }} /><Line type="monotone" dataKey="moisture" stroke="var(--primary)" strokeWidth={2} dot={false} name="Moisture %" /><Line type="monotone" dataKey="temp" stroke="var(--warning)" strokeWidth={2} dot={false} name="Temp °C" /><Line type="monotone" dataKey="light" stroke="var(--accent)" strokeWidth={2} dot={false} name="Light %" /></LineChart></ResponsiveContainer></div>}
+          <Snapshot path={latest?.snapshot_url ?? null} alt={`Snapshot of ${plant.nickname}`} embedded />
+          <div className="mt-5 border-t border-border pt-4"><div className="flex items-center justify-between"><h3 className="text-sm font-medium">Manual reading</h3><Button variant="ghost" size="sm" onClick={() => setShowManual(!showManual)}>{showManual ? "Hide" : "Add reading"}</Button></div>{showManual && <ManualReadingForm plantId={id} onDone={() => { setShowManual(false); invalidate(); }} />}</div>
+        </>}
+      </section>
+
+      <section className="mt-6 rounded-lg border border-border bg-card p-5">
+        <div className="flex justify-between items-center mb-3">
+          <h2 className="font-display text-lg font-semibold">AI summaries</h2>
+          <Button variant="ghost" size="sm" onClick={() => summaryMut.mutate()} disabled={summaryMut.isPending}>Regenerate</Button>
+        </div>
+        {summaries.length === 0 ? (
+          <p className="text-sm text-muted-foreground">No summaries yet. Tap AI check to generate one.</p>
+        ) : (
+          <div className="space-y-3">
+            {visibleSummaries.map((s) => (
+              <div key={s.id} className="border-l-2 border-primary/30 pl-3">
+                <div className="text-xs text-muted-foreground">{formatDistanceToNow(new Date(s.created_at), { addSuffix: true })} · {s.status}</div>
+                <p className="text-sm mt-1">{s.summary}</p>
+                {Array.isArray(s.recommendations) && s.recommendations.length > 0 && (
+                  <ul className="mt-2 text-xs text-muted-foreground list-disc list-inside space-y-0.5">
+                    {(s.recommendations as string[]).map((r, i) => <li key={i}>{r}</li>)}
+                  </ul>
+                )}
+              </div>
+            ))}
+            {summaries.length > 3 && <Button variant="ghost" size="sm" onClick={() => setShowAllSummaries((show) => !show)}>{showAllSummaries ? <ChevronUp /> : <ChevronDown />}{showAllSummaries ? "Show less" : "Show all here"}</Button>}
+            <Button variant="link" size="sm" asChild><Link to="/plants/$id/summaries" params={{ id }}><History /> Full summary history</Link></Button>
+          </div>
+        )}
       </section>
 
       {events.length > 0 && (
-        <section className="mt-6 rounded-2xl border border-border bg-card p-5">
-          <h2 className="font-display text-lg font-semibold mb-3">Care journal</h2>
+        <section className="mt-6 rounded-lg border border-border bg-card p-5">
+          <div className="mb-3 flex items-center justify-between"><h2 className="font-display text-lg font-semibold">Care journal</h2><Button variant="link" size="sm" asChild><Link to="/plants/$id/care" params={{ id }}><History /> Full care history</Link></Button></div>
           <ul className="space-y-2 text-sm">
-            {events.map((event) => (
+            {visibleEvents.map((event) => (
               <PlantEventRow key={event.id} event={event} />
             ))}
           </ul>
+          {events.length > 5 && <Button variant="ghost" size="sm" className="mt-2" onClick={() => setShowAllEvents((show) => !show)}>{showAllEvents ? <ChevronUp /> : <ChevronDown />}{showAllEvents ? "Show less" : "Show all here"}</Button>}
         </section>
       )}
 
@@ -541,7 +515,7 @@ function ManualReadingForm({ plantId, onDone }: { plantId: string; onDone: () =>
   );
 }
 
-function Snapshot({ path, alt }: { path: string | null; alt: string }) {
+function Snapshot({ path, alt, embedded = false }: { path: string | null; alt: string; embedded?: boolean }) {
   const [url, setUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -565,8 +539,8 @@ function Snapshot({ path, alt }: { path: string | null; alt: string }) {
   }, [path]);
 
   if (!path) return null;
-  return (
-    <section className="mt-6 rounded-2xl border border-border bg-card p-5">
+  const content = (
+    <>
       <h2 className="font-display text-lg font-semibold mb-3 flex items-center gap-2">
         <Camera className="w-5 h-5 text-primary" /> Latest snapshot
       </h2>
@@ -580,6 +554,8 @@ function Snapshot({ path, alt }: { path: string | null; alt: string }) {
       ) : (
         <p className="text-sm text-muted-foreground">Loading snapshot…</p>
       )}
-    </section>
+    </>
   );
+  if (embedded) return <div className="mt-5 border-t border-border pt-5">{content}</div>;
+  return <section className="mt-6 rounded-lg border border-border bg-card p-5">{content}</section>;
 }

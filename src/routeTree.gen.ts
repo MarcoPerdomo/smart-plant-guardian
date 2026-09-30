@@ -60,7 +60,9 @@ import { Route as AuthenticatedAdminPlantsIndexRouteImport } from './routes/_aut
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
+import { Route as AuthenticatedPlantsIdSummariesRouteImport } from './routes/_authenticated/plants/$id_.summaries'
 import { Route as AuthenticatedPlantsIdPhotosRouteImport } from './routes/_authenticated/plants/$id_.photos'
+import { Route as AuthenticatedPlantsIdCareRouteImport } from './routes/_authenticated/plants/$id_.care'
 import { Route as AuthenticatedMarketplaceOrdersIdRouteImport } from './routes/_authenticated/marketplace/orders/$id'
 import { Route as AuthenticatedAdminPlantsImportRouteImport } from './routes/_authenticated/admin/plants/import'
 
@@ -336,10 +338,22 @@ const LovableEmailAuthPreviewRoute = LovableEmailAuthPreviewRouteImport.update({
   path: '/lovable/email/auth/preview',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedPlantsIdSummariesRoute =
+  AuthenticatedPlantsIdSummariesRouteImport.update({
+    id: '/plants/$id_/summaries',
+    path: '/plants/$id/summaries',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedPlantsIdPhotosRoute =
   AuthenticatedPlantsIdPhotosRouteImport.update({
     id: '/plants/$id_/photos',
     path: '/plants/$id/photos',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedPlantsIdCareRoute =
+  AuthenticatedPlantsIdCareRouteImport.update({
+    id: '/plants/$id_/care',
+    path: '/plants/$id/care',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedMarketplaceOrdersIdRoute =
@@ -403,7 +417,9 @@ export interface FileRoutesByFullPath {
   '/messages/': typeof AuthenticatedMessagesIndexRoute
   '/admin/plants/import': typeof AuthenticatedAdminPlantsImportRoute
   '/marketplace/orders/$id': typeof AuthenticatedMarketplaceOrdersIdRoute
+  '/plants/$id/care': typeof AuthenticatedPlantsIdCareRoute
   '/plants/$id/photos': typeof AuthenticatedPlantsIdPhotosRoute
+  '/plants/$id/summaries': typeof AuthenticatedPlantsIdSummariesRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -456,7 +472,9 @@ export interface FileRoutesByTo {
   '/messages': typeof AuthenticatedMessagesIndexRoute
   '/admin/plants/import': typeof AuthenticatedAdminPlantsImportRoute
   '/marketplace/orders/$id': typeof AuthenticatedMarketplaceOrdersIdRoute
+  '/plants/$id/care': typeof AuthenticatedPlantsIdCareRoute
   '/plants/$id/photos': typeof AuthenticatedPlantsIdPhotosRoute
+  '/plants/$id/summaries': typeof AuthenticatedPlantsIdSummariesRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -513,7 +531,9 @@ export interface FileRoutesById {
   '/_authenticated/messages/': typeof AuthenticatedMessagesIndexRoute
   '/_authenticated/admin/plants/import': typeof AuthenticatedAdminPlantsImportRoute
   '/_authenticated/marketplace/orders/$id': typeof AuthenticatedMarketplaceOrdersIdRoute
+  '/_authenticated/plants/$id_/care': typeof AuthenticatedPlantsIdCareRoute
   '/_authenticated/plants/$id_/photos': typeof AuthenticatedPlantsIdPhotosRoute
+  '/_authenticated/plants/$id_/summaries': typeof AuthenticatedPlantsIdSummariesRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -570,7 +590,9 @@ export interface FileRouteTypes {
     | '/messages/'
     | '/admin/plants/import'
     | '/marketplace/orders/$id'
+    | '/plants/$id/care'
     | '/plants/$id/photos'
+    | '/plants/$id/summaries'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/transactional/preview'
@@ -623,7 +645,9 @@ export interface FileRouteTypes {
     | '/messages'
     | '/admin/plants/import'
     | '/marketplace/orders/$id'
+    | '/plants/$id/care'
     | '/plants/$id/photos'
+    | '/plants/$id/summaries'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/transactional/preview'
@@ -679,7 +703,9 @@ export interface FileRouteTypes {
     | '/_authenticated/messages/'
     | '/_authenticated/admin/plants/import'
     | '/_authenticated/marketplace/orders/$id'
+    | '/_authenticated/plants/$id_/care'
     | '/_authenticated/plants/$id_/photos'
+    | '/_authenticated/plants/$id_/summaries'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/transactional/preview'
@@ -1072,11 +1098,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LovableEmailAuthPreviewRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/plants/$id_/summaries': {
+      id: '/_authenticated/plants/$id_/summaries'
+      path: '/plants/$id/summaries'
+      fullPath: '/plants/$id/summaries'
+      preLoaderRoute: typeof AuthenticatedPlantsIdSummariesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/plants/$id_/photos': {
       id: '/_authenticated/plants/$id_/photos'
       path: '/plants/$id/photos'
       fullPath: '/plants/$id/photos'
       preLoaderRoute: typeof AuthenticatedPlantsIdPhotosRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/plants/$id_/care': {
+      id: '/_authenticated/plants/$id_/care'
+      path: '/plants/$id/care'
+      fullPath: '/plants/$id/care'
+      preLoaderRoute: typeof AuthenticatedPlantsIdCareRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/marketplace/orders/$id': {
@@ -1170,7 +1210,9 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedPlantsNewRoute: typeof AuthenticatedPlantsNewRoute
   AuthenticatedUUsernameRoute: typeof AuthenticatedUUsernameRoute
   AuthenticatedMessagesIndexRoute: typeof AuthenticatedMessagesIndexRoute
+  AuthenticatedPlantsIdCareRoute: typeof AuthenticatedPlantsIdCareRoute
   AuthenticatedPlantsIdPhotosRoute: typeof AuthenticatedPlantsIdPhotosRoute
+  AuthenticatedPlantsIdSummariesRoute: typeof AuthenticatedPlantsIdSummariesRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -1189,7 +1231,9 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedPlantsNewRoute: AuthenticatedPlantsNewRoute,
   AuthenticatedUUsernameRoute: AuthenticatedUUsernameRoute,
   AuthenticatedMessagesIndexRoute: AuthenticatedMessagesIndexRoute,
+  AuthenticatedPlantsIdCareRoute: AuthenticatedPlantsIdCareRoute,
   AuthenticatedPlantsIdPhotosRoute: AuthenticatedPlantsIdPhotosRoute,
+  AuthenticatedPlantsIdSummariesRoute: AuthenticatedPlantsIdSummariesRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

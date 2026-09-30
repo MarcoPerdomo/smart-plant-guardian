@@ -9,7 +9,15 @@ import { EnvironmentBadge, normalizeEnvironment } from "@/components/environment
 
 export const Route = createFileRoute("/_authenticated/plants/new")({
   component: NewPlant,
-  head: () => ({ meta: [{ title: "Add plant, Sentia" }, { name: "description", content: "Add a new plant and pair it with an Arduino device." }] }),
+    head: () => ({ meta: [
+      { title: "Add plant, Sentia" },
+      { name: "description", content: "Add a plant to your Sentia garden and start its care journal." },
+      { property: "og:title", content: "Add plant, Sentia" },
+      { property: "og:description", content: "Add a plant to your Sentia garden and start its care journal." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+      { name: "robots", content: "noindex" },
+    ] }),
 });
 
 function NewPlant() {
@@ -25,7 +33,6 @@ function NewPlant() {
   } | null>(null);
   const [nickname, setNickname] = useState("");
   const [location, setLocation] = useState("");
-  const [deviceId, setDeviceId] = useState("");
   const [notes, setNotes] = useState("");
   const [environment, setEnvironment] = useState<"indoor" | "outdoor">("indoor");
   const [envFilter, setEnvFilter] = useState<"all" | "indoor" | "outdoor">("all");
@@ -84,7 +91,7 @@ function NewPlant() {
   const createMut = useMutation({
     mutationFn: () => createPlant({ data: {
       nickname, species_id: selectedSpecies?.id ?? null,
-      location: location || null, device_id: deviceId || null, notes: notes || null,
+      location: location || null, device_id: null, notes: notes || null,
       environment,
     } }),
     onSuccess: (row) => { toast.success("Plant added"); navigate({ to: "/plants/$id", params: { id: row.id } }); },
@@ -240,12 +247,6 @@ function NewPlant() {
           </div>
 
           <textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Notes" rows={2} className="w-full px-3 py-2.5 rounded-lg border border-input bg-background text-sm" />
-        </section>
-
-        <section className="rounded-xl border border-border bg-card p-5">
-          <h2 className="font-medium">3. Pair an Arduino (optional)</h2>
-          <p className="text-xs text-muted-foreground mt-1">The device_id your Arduino sends in each POST. Leave empty if you'll add sensors later.</p>
-          <input value={deviceId} onChange={(e) => setDeviceId(e.target.value)} placeholder="e.g. arduino-kitchen-01" className="mt-2 w-full px-3 py-2.5 rounded-lg border border-input bg-background text-sm font-mono" />
         </section>
 
         <button
