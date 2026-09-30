@@ -154,11 +154,11 @@ export function HomepageFeatureShowcase() {
         </div>
       </div>
 
-      <div className="flex items-center justify-between border-t border-border px-3 py-2.5">
-        <Button type="button" variant="ghost" size="icon" onClick={() => move(-1)} aria-label="Previous feature">
-          <ArrowLeft />
-        </Button>
-        <div className="flex gap-2" role="tablist" aria-label="Feature slides">
+      <div className="flex items-center justify-between border-t border-border px-3 py-3">
+        <span className="text-xs font-medium tabular-nums text-muted-foreground" aria-live="polite">
+          {active + 1} / {slides.length}
+        </span>
+        <div className="flex gap-2.5" role="tablist" aria-label="Feature slides">
           {slides.map((item, index) => (
             <Button
               key={item.title}
@@ -169,15 +169,20 @@ export function HomepageFeatureShowcase() {
               aria-selected={active === index}
               aria-label={`Show ${item.title}`}
               onClick={() => setActive(index)}
-              className="group h-7 w-7 p-0"
+              className="group h-8 w-8 rounded-full p-0"
             >
-              <span className={`h-2 rounded-full transition-[width,background-color] ${active === index ? "w-7 bg-primary" : "w-2 bg-border group-hover:bg-muted-foreground"}`} />
+              <span className={`h-2.5 w-2.5 rounded-full transition-[background-color] ${active === index ? "bg-primary" : "bg-border group-hover:bg-muted-foreground"}`} />
             </Button>
           ))}
         </div>
-        <Button type="button" variant="ghost" size="icon" onClick={() => move(1)} aria-label="Next feature">
-          <ArrowRight />
-        </Button>
+        <div className="flex items-center gap-0.5">
+          <Button type="button" variant="ghost" size="icon" onClick={() => move(-1)} aria-label="Previous feature" className="h-8 w-8">
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+          <Button type="button" variant="ghost" size="icon" onClick={() => move(1)} aria-label="Next feature" className="h-8 w-8">
+            <ArrowRight className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
     </div>
   );
