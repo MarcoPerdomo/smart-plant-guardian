@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
 import { Megaphone } from "lucide-react";
 import { listPublishedAnnouncements } from "@/lib/newsletter.functions";
+import { NewsletterCta } from "@/components/newsletter-cta";
 
 export const Route = createFileRoute("/_authenticated/whats-new")({
   component: WhatsNew,
@@ -32,6 +33,8 @@ function WhatsNew() {
         </h1>
         <p className="text-sm text-muted-foreground mt-1">New features, upgrades and platform news.</p>
       </div>
+
+      <NewsletterCta />
 
       {isLoading ? (
         <p className="text-sm text-muted-foreground">Loading…</p>
