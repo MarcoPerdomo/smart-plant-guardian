@@ -1,0 +1,2 @@
+ALTER TABLE public.posts DROP CONSTRAINT posts_kind_check;
+ALTER TABLE public.posts ADD CONSTRAINT posts_kind_check CHECK (kind IN ('watering','photo','new_plant','milestone','help','fertilizing','pruning','repotting','flowering','deceased'));
