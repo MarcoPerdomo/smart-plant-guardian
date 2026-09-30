@@ -15,3 +15,5 @@
 - [x] Add compact and complete AI summary and care-history views.
 - [x] Refine the plant workspace with quicker watering, event deletion, and reordered summaries.
 - [x] Add latest-photo thumbnails to dashboard plant cards.
+- [x] Give the newsletter section more breathing room below the journey section.
+- [x] Revamp the homepage "How it works" section into an editorial journey layout.

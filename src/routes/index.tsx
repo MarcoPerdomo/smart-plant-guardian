@@ -133,7 +133,7 @@ function Landing() {
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,color-mix(in_oklab,var(--accent)_22%,transparent),transparent_55%)]" />
               <div className="relative z-10 flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
                 <div className="max-w-xl">
-                  <span className="inline-block rounded-sm border border-accent/40 bg-accent/15 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.25em] text-accent">
+                  <span className="inline-block rounded-sm bg-accent px-2.5 py-1 font-mono text-[10px] font-medium uppercase tracking-[0.25em] text-accent-foreground">
                     {MARKETPLACE.tag}
                   </span>
                   <h3 className="mt-5 font-display text-3xl font-semibold leading-tight text-surface-inverse-foreground md:text-4xl">
