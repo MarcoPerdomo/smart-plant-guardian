@@ -62,11 +62,11 @@ function FounderPage() {
 
           <p>Besides the urge to learn about technology and thrive in the modern world, I used to imagine a world where nature blended in together with human society. I firmly believe that humans are not meant to live an individualistic life filled with overflowing privileges, and that we should, in a way, adapt and blend in with nature. For long enough (centuries at least) we have destroyed multiple ecosystems all around the world and we have been paying the toll. The climate is changing, food security worldwide is compromised due to declining soil health, social gaps are furtherly increasing. The land is being used to build more and more urban centers, industrialize, and more recently, being used to build more datacenters to support AI infrastructure. It saddens me.</p>
 
-          <p>This is where Sentia comes in. It is one of my first projects in an umbrella of ventures to contribute towards regenerating Earth. Sentia is an effort to educate and change how modern society can contribute to a healthy indoor 'jungle', contributing toward sustaining a greener environment. Through the application of modern technology and human connection, I believe we can start making a change in managing an indoor space where a wide variety of plants can thrive.</p>
+          <p>This is where <Brand /> comes in. It is one of my first projects in an umbrella of ventures to contribute towards regenerating Earth. <Brand /> is an effort to educate and change how modern society can contribute to a healthy indoor 'jungle', contributing toward sustaining a greener environment. Through the application of modern technology and human connection, I believe we can start making a change in managing an indoor space where a wide variety of plants can thrive.</p>
 
-          <p>Sentia aims to go beyond scheduling when to water your plants. Plants are complex systems that should be understood holistically, and watering is just one of the multiple variables that contribute towards their health. The aim of Sentia is to enable you to be a steward of nature. Sentia is a platform that provides you with the right tools and enables education to understand truly what your plants need. Additionally, Sentia brings you together with plant lovers out there to create an engaging community where we can help each other.</p>
+          <p><Brand /> aims to go beyond scheduling when to water your plants. Plants are complex systems that should be understood holistically, and watering is just one of the multiple variables that contribute towards their health. The aim of <Brand /> is to enable you to be a steward of nature. <Brand /> is a platform that provides you with the right tools and enables education to understand truly what your plants need. Additionally, <Brand /> brings you together with plant lovers out there to create an engaging community where we can help each other.</p>
 
-          <p>Sentia is not enough, I know. One person can only have so much impact. But this is a first step towards my ultimate goal to regenerate ecosystems on Earth, and create a community upheld with human values that is economically sustainable to future generations. I hope this can inspire others with a similar mindset to contribute towards a greener future. For further information on other bigger side projects, (for now) you can follow me on: <a
+          <p><Brand /> is not enough, I know. One person can only have so much impact. But this is a first step towards my ultimate goal to regenerate ecosystems on Earth, and create a community upheld with human values that is economically sustainable to future generations. I hope this can inspire others with a similar mindset to contribute towards a greener future. For further information on other bigger side projects, (for now) you can follow me on: <a
             href="https://www.linkedin.com/in/marcoperdomo/"
             target="_blank"
             rel="noopener noreferrer"
@@ -83,4 +83,8 @@ function FounderPage() {
       <SimpleFooter />
     </div>
   );
+}
+
+function Brand() {
+  return <strong className="font-semibold text-primary">Sentia</strong>;
 }
