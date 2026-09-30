@@ -120,14 +120,13 @@ function Landing() {
             </div>
           </div>
 
-          <Reveal delay={150}>
+          <Reveal delay={150} className="mt-12 block md:mt-16">
             <ComingSoonShowcase />
           </Reveal>
         </div>
       </section>
 
-
-      <section className="mx-auto max-w-6xl px-4 pt-24 pb-16 md:pt-32">
+      <section className="mx-auto max-w-6xl px-4 pt-16 pb-16 md:pt-20">
         <NewsletterCta />
       </section>
 
