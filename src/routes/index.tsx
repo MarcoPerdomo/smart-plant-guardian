@@ -2,7 +2,8 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import type { LucideIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { Leaf, Sparkles, Users, Store, Camera } from "lucide-react";
+import { Leaf, Sparkles, Users, Camera } from "lucide-react";
+import { ComingSoonShowcase } from "@/components/coming-soon-showcase";
 import { VisitorWeatherChip } from "@/components/weather-chip";
 import { BetaBadge, BetaBanner } from "@/components/beta-banner";
 import { HomepageFeatureShowcase } from "@/components/homepage-feature-showcase";
@@ -120,27 +121,7 @@ function Landing() {
           </div>
 
           <Reveal delay={150}>
-            <div className="relative mt-6 overflow-hidden rounded-3xl border border-border bg-surface-inverse p-8 md:p-12">
-              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,color-mix(in_oklab,var(--accent)_22%,transparent),transparent_55%)]" />
-              <div className="relative z-10 flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
-                <div className="max-w-xl">
-                  <span className="inline-block rounded-sm bg-accent px-2.5 py-1 font-mono text-[10px] font-medium uppercase tracking-[0.25em] text-accent-foreground">
-                    {MARKETPLACE.tag}
-                  </span>
-                  <h3 className="mt-5 font-display text-3xl font-semibold leading-tight text-surface-inverse-foreground md:text-4xl">
-                    {MARKETPLACE.title}
-                  </h3>
-                  <p className="mt-3 leading-relaxed text-surface-inverse-foreground/70">
-                    {MARKETPLACE.before}
-                    <span className="font-medium text-surface-inverse-foreground">{MARKETPLACE.highlight}</span>
-                    {MARKETPLACE.after}
-                  </p>
-                </div>
-                <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-full border border-accent/60 bg-accent/15 text-accent">
-                  <MARKETPLACE.icon className="h-10 w-10" />
-                </div>
-              </div>
-            </div>
+            <ComingSoonShowcase />
           </Reveal>
         </div>
       </section>
@@ -216,16 +197,6 @@ const JOURNEY: CareStep[] = [
     after: ".",
   },
 ];
-
-const MARKETPLACE: CareStep & { tag: string } = {
-  number: "05",
-  icon: Store,
-  tag: "Coming soon",
-  title: "Trade with trusted plant owners",
-  before: "Swap cuttings, trade plants and buy ",
-  highlight: "offspring raised by caretakers you can trust",
-  after: ".",
-};
 
 function JourneyCard({ step }: { step: CareStep }) {
   const Icon = step.icon;
