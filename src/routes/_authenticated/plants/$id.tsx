@@ -36,6 +36,7 @@ export const Route = createFileRoute("/_authenticated/plants/$id")({
       { property: "og:description", content: "Detailed sensor history and AI care guidance for your plant." },
       { property: "og:url", content: `https://sentia-plants.com/plants/${params.id}` },
       { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex" },
     ],
     links: [{ rel: "canonical", href: `https://sentia-plants.com/plants/${params.id}` }],
@@ -151,16 +152,6 @@ function PlantDetail() {
             speciesNotes={species?.environment_notes ?? null}
             onChanged={invalidate}
           />
-          <p className="mt-1 text-xs text-muted-foreground flex items-center gap-1.5">
-            <span className="relative flex h-1.5 w-1.5">
-              <span className="absolute inline-flex h-full w-full rounded-full bg-success opacity-75 animate-ping" />
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-success" />
-            </span>
-            {latest?.recorded_at
-              ? `Last reading ${formatDistanceToNow(new Date(latest.recorded_at), { addSuffix: true })}`
-              : "No sensor readings yet"}
-            <span className="opacity-60">· updated {formatDistanceToNow(new Date(dataUpdatedAt), { addSuffix: true })}</span>
-          </p>
         </div>
 
         <div className="flex gap-2">
@@ -233,7 +224,7 @@ function PlantDetail() {
           <Button variant={plant.sensor_enabled ? "outline" : "default"} onClick={() => sensorMut.mutate(!plant.sensor_enabled)} disabled={sensorMut.isPending}>{plant.sensor_enabled ? "Hide sensors" : "Enable sensors"}</Button>
         </div>
         {!plant.sensor_enabled ? <div className="mt-5 rounded-md border border-dashed border-border p-6 text-center"><Cpu className="mx-auto h-8 w-8 text-muted-foreground" /><p className="mt-2 text-sm font-medium">Sensors are not enabled for this plant</p><p className="mt-1 text-xs text-muted-foreground">You can turn them on whenever you are ready to connect a device or add readings.</p></div> : <>
-          <div className="mt-5 flex flex-wrap items-center justify-between gap-2 border-t border-border pt-4 text-xs text-muted-foreground"><span>{latest?.recorded_at ? `Last reading ${formatDistanceToNow(new Date(latest.recorded_at), { addSuffix: true })}` : "No sensor readings yet"}{plant.device_id && <> <DeviceIdChip deviceId={plant.device_id} /></>}</span><Button variant="ghost" size="sm" onClick={() => refetch()} disabled={isFetching} title="Refresh sensor data"><RefreshCw className={`h-4 w-4 ${isFetching ? "animate-spin" : ""}`} /> Refresh</Button></div>
+          <div className="mt-5 flex flex-wrap items-center justify-between gap-2 border-t border-border pt-4 text-xs text-muted-foreground"><span className="flex flex-wrap items-center gap-2">{latest?.recorded_at ? `Last reading ${formatDistanceToNow(new Date(latest.recorded_at), { addSuffix: true })}` : "No sensor readings yet"}<span className="opacity-60">Updated {formatDistanceToNow(new Date(dataUpdatedAt), { addSuffix: true })}</span>{plant.device_id && <DeviceIdChip deviceId={plant.device_id} />}</span><Button variant="ghost" size="sm" onClick={() => refetch()} disabled={isFetching} title="Refresh sensor data"><RefreshCw className={`h-4 w-4 ${isFetching ? "animate-spin" : ""}`} /> Refresh</Button></div>
           <div className="mt-3 grid gap-3 md:grid-cols-3">
             <Metric icon={Droplets} label="Moisture" hint={SENSOR_HINTS.moisture} value={latest?.soil_moisture != null ? `${Math.round(latest.soil_moisture)}%` : "Not available"} sub={species?.soil_moisture_min != null ? `Target ${species.soil_moisture_min}-${species.soil_moisture_max}%` : ""} />
             <Metric icon={Thermometer} label="Temp" hint={SENSOR_HINTS.temp} value={latest?.temperature_c != null ? `${latest.temperature_c.toFixed(1)}°C` : "Not available"} sub={species?.temperature_min_c != null ? `${species.temperature_min_c}-${species.temperature_max_c}°C` : ""} />
@@ -524,7 +515,7 @@ function ManualReadingForm({ plantId, onDone }: { plantId: string; onDone: () =>
   );
 }
 
-function Snapshot({ path, alt }: { path: string | null; alt: string }) {
+function Snapshot({ path, alt, embedded = false }: { path: string | null; alt: string; embedded?: boolean }) {
   const [url, setUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -548,8 +539,8 @@ function Snapshot({ path, alt }: { path: string | null; alt: string }) {
   }, [path]);
 
   if (!path) return null;
-  return (
-    <section className="mt-6 rounded-2xl border border-border bg-card p-5">
+  const content = (
+    <>
       <h2 className="font-display text-lg font-semibold mb-3 flex items-center gap-2">
         <Camera className="w-5 h-5 text-primary" /> Latest snapshot
       </h2>
@@ -563,6 +554,8 @@ function Snapshot({ path, alt }: { path: string | null; alt: string }) {
       ) : (
         <p className="text-sm text-muted-foreground">Loading snapshot…</p>
       )}
-    </section>
+    </>
   );
+  if (embedded) return <div className="mt-5 border-t border-border pt-5">{content}</div>;
+  return <section className="mt-6 rounded-lg border border-border bg-card p-5">{content}</section>;
 }

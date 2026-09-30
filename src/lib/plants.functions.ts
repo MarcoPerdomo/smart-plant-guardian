@@ -166,7 +166,7 @@ export const getPlant = createServerFn({ method: "POST" })
       .order("occurred_at", { ascending: false }).limit(100);
     const { data: summaries } = await context.supabase
       .from("ai_summaries").select("*").eq("plant_id", data.id)
-      .order("created_at", { ascending: false }).limit(5);
+      .order("created_at", { ascending: false }).limit(100);
     return { plant, readings: readings ?? [], events: events ?? [], summaries: summaries ?? [] };
   });
 

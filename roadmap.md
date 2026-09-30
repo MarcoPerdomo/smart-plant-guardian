@@ -10,6 +10,6 @@
 - [x] Move the product journey from About to the homepage.
 - [x] Refocus About on connection, AI guidance, and community.
 - [x] Rewrite Get Started as a seven-step practical guide.
-- [ ] Hide sensor pairing from plant creation and make sensors opt-in per plant.
-- [ ] Reorder the plant workspace around status, care guidance and journals.
-- [ ] Add compact and complete AI summary and care-history views.
+- [x] Hide sensor pairing from plant creation and make sensors opt-in per plant.
+- [x] Reorder the plant workspace around status, care guidance and journals.
+- [x] Add compact and complete AI summary and care-history views.

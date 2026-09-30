@@ -9,7 +9,15 @@ import { EnvironmentBadge, normalizeEnvironment } from "@/components/environment
 
 export const Route = createFileRoute("/_authenticated/plants/new")({
   component: NewPlant,
-  head: () => ({ meta: [{ title: "Add plant, Sentia" }, { name: "description", content: "Add a new plant and pair it with an Arduino device." }] }),
+    head: () => ({ meta: [
+      { title: "Add plant, Sentia" },
+      { name: "description", content: "Add a plant to your Sentia garden and start its care journal." },
+      { property: "og:title", content: "Add plant, Sentia" },
+      { property: "og:description", content: "Add a plant to your Sentia garden and start its care journal." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+      { name: "robots", content: "noindex" },
+    ] }),
 });
 
 function NewPlant() {
