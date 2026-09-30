@@ -57,6 +57,11 @@ export function HomepageFeatureShowcase() {
       content: <AdvisorScene />,
     },
     {
+      title: "Ask Sentia AI anything",
+      description: "Snap a leaf for disease identification and get an automatic health plan for your plant.",
+      content: <AiPipelineScene image={showcaseImages[CALATHEA_SLUG]} />,
+    },
+    {
       title: "Grow with your community",
       description: "Share progress, ask for help and learn from plant lovers around you.",
       content: <CommunityScene />,

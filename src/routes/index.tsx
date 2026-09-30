@@ -136,7 +136,7 @@ function Landing() {
                     {MARKETPLACE.after}
                   </p>
                 </div>
-                <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-full border border-dashed border-surface-inverse-foreground/25 text-surface-inverse-foreground/45">
+                <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-full border border-accent/60 bg-accent/15 text-accent">
                   <MARKETPLACE.icon className="h-10 w-10" />
                 </div>
               </div>
