@@ -69,8 +69,9 @@ export function NewsletterCta() {
         <Megaphone className="w-5 h-5 text-primary" /> Stay in the loop
       </h2>
       <p className="text-sm text-muted-foreground mt-1">
-        Get product news, new features and platform updates by email. Announcements also appear in your
-        bell and on What's new.
+        Excited about what we're building?{"\u00a0"}
+        <br />
+        Sign up to email updates about our product, new features and platform updates.
       </p>
       <div className="mt-4 flex flex-wrap items-center gap-3">
         {auth === "signed-out" ? (
