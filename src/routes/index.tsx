@@ -138,22 +138,6 @@ function Landing() {
         </div>
       </section>
 
-      <section id="how" className="mx-auto max-w-6xl px-4 py-16 grid md:grid-cols-3 gap-6">
-        {[
-          { icon: Sparkles, title: "AI care advisor", body: "Get watering predictions, disease warnings, and a friendly summary a few times per week based on your plants and local weather." },
-          { icon: Users, title: "Plant community", body: "Follow friends, celebrate new growth, comment on photos and message fellow plant lovers." },
-          { icon: Store, title: "Trusted marketplace", body: "Buy, sell and trade plants with transparent history. Sentia charges a small commission on completed sales." },
-          { icon: Cpu, title: "Optional sensors", body: "Plug in an Arduino or Raspberry Pi to log soil moisture, humidity, light and motion events automatically." },
-          { icon: Droplets, title: "Track everything", body: "Soil moisture, humidity, temperature and light. All timestamped in one place." },
-          { icon: Sun, title: "Ideal conditions", body: "Every plant is matched against a growing catalogue of care profiles for indoor and outdoor life." },
-        ].map(({ icon: Icon, title, body }) => (
-          <div key={title} className="rounded-xl border border-border bg-card p-6">
-            <Icon className="w-6 h-6 text-primary" />
-            <h2 className="mt-3 font-display font-semibold text-lg">{title}</h2>
-            <p className="mt-1 text-sm text-muted-foreground">{body}</p>
-          </div>
-        ))}
-      </section>
 
       <section className="mx-auto max-w-6xl px-4 pb-16">
         <NewsletterCta />
