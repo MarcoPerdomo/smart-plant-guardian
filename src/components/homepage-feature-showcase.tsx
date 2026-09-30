@@ -26,6 +26,7 @@ type ShowcaseSlide = {
   title: string;
   description: string;
   content: React.ReactNode;
+  comingSoon?: boolean;
 };
 
 type ShowcaseImage = { src: string; alt: string } | undefined;
@@ -60,14 +61,15 @@ export function HomepageFeatureShowcase() {
       content: <AdvisorScene />,
     },
     {
-      title: "Ask Sentia AI anything",
-      description: "Snap a leaf for disease identification and get an automatic health plan for your plant.",
-      content: <AiPipelineScene image={showcaseImages[CALATHEA_SLUG]} />,
-    },
-    {
       title: "Grow with your community",
       description: "Share progress, ask for help and learn from plant lovers around you.",
       content: <CommunityScene />,
+    },
+    {
+      title: "Ask Sentia AI anything",
+      description: "Snap a leaf for disease identification and get an automatic health plan for your plant.",
+      content: <AiPipelineScene image={showcaseImages[CALATHEA_SLUG]} />,
+      comingSoon: true,
     },
   ];
 
@@ -149,7 +151,14 @@ export function HomepageFeatureShowcase() {
           </button>
         </div>
         <div className="border-t border-border px-4 py-4 sm:px-5">
-          <p className="font-display text-lg font-semibold text-foreground">{slide.title}</p>
+          <div className="flex flex-wrap items-center gap-2">
+            <p className="font-display text-lg font-semibold text-foreground">{slide.title}</p>
+            {slide.comingSoon && (
+              <span className="rounded-full bg-accent px-2.5 py-0.5 text-xs font-semibold text-accent-foreground">
+                Coming soon
+              </span>
+            )}
+          </div>
           <p className="mt-1 min-h-10 text-sm text-muted-foreground">{slide.description}</p>
         </div>
       </div>

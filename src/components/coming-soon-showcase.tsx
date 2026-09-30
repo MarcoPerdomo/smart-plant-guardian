@@ -1,6 +1,6 @@
 // ============= Full file contents =============
 import { useEffect, useState } from "react";
-import { ArrowLeft, ArrowRight, Cpu, Store } from "lucide-react";
+import { ArrowLeft, ArrowRight, Cpu, Sparkles, Store } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 type ComingSoonSlide = {
@@ -36,6 +36,20 @@ const SLIDES: ComingSoonSlide[] = [
           moisture, temperature and light
         </span>{" "}
         for every plant, in real time.
+      </>
+    ),
+  },
+  {
+    tag: "Coming soon",
+    icon: Sparkles,
+    title: "Sentia AI, your plant expert",
+    description: (
+      <>
+        Ask Sentia AI by voice or chat,{" "}
+        <span className="font-medium text-surface-inverse-foreground">
+          identify leaf diseases from a photo
+        </span>
+        , get automatic health plans and smart watering predictions for every plant.
       </>
     ),
   },
