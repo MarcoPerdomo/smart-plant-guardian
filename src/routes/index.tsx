@@ -93,10 +93,11 @@ function Landing() {
         <HomepageFeatureShowcase />
       </section>
 
-      <section className="border-y border-border bg-card/40">
+      <section id="how" className="border-y border-border bg-card/40">
         <div className="mx-auto max-w-6xl px-4 py-16">
           <div className="max-w-2xl">
-            <h2 className="font-display text-3xl font-semibold">How it works today</h2>
+            <h2 className="font-display text-3xl font-semibold">How it works</h2>
+
             <p className="mt-3 text-muted-foreground leading-relaxed">
               Bring your plants in, care for them day by day, use the tools when you need them, and
               grow alongside people who love plants as much as you do.
