@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Heart, Users, Sprout, Cpu, Sparkles, Store, ArrowRight } from "lucide-react";
+import { Heart, Users, Sprout, Sparkles, Store, ArrowRight, Camera } from "lucide-react";
 import { SimpleHeader, SimpleFooter } from "@/components/simple-layout";
 import { BetaBadge } from "@/components/beta-banner";
 
@@ -90,11 +90,21 @@ function AboutPage() {
 
           <section>
             <h2 className="font-display text-2xl font-semibold">How it works today</h2>
-            <div className="mt-4 space-y-4">
+            <p className="mt-3 text-muted-foreground leading-relaxed">
+              Sentia follows a simple rhythm: bring your plants in, care for them day by day, lean on
+              the tools when you need them, and grow alongside people who love plants as much as you do.
+            </p>
+            <div className="mt-6 space-y-5">
               <Step icon={Sprout} title="Add your plants" body="Search our growing catalogue, give each plant a nickname and note whether it lives indoors or outdoors." />
-              <Step icon={Sparkles} title="Get AI-powered advice" body="Sentia reads your local weather and your plant's care profile to suggest water, shade and pest checks." />
-              <Step icon={Cpu} title="Optional sensors" body="Connect Arduino or Raspberry Pi sensors to log soil moisture, humidity, light and motion events automatically." />
-              <Step icon={Users} title="Share and trade" body="Post updates for friends, list plants on the marketplace and message other growers." />
+              <Step icon={Camera} title="Keep a diary for each plant" body="Journal your plants with photos and notes, log watering, feeding, pruning and repotting, and keep a living record of how each one grows. It is how you stay close to them." />
+              <Step icon={Sparkles} title="Reach for the tools when you need them" body="Ask the AI care advisor for guidance on water, light and pests, and connect Arduino or Raspberry Pi sensors to log soil moisture, humidity, light and motion automatically." />
+              <Step icon={Users} title="Engage with the community" body="Add friends, ask for help when something looks off, post your pictures and interact with other growers who have been there." />
+              <Step
+                icon={Store}
+                tag="Coming soon"
+                title="Trade with trusted plant owners"
+                body="A marketplace of trusted caretakers to swap cuttings, trade plants and buy offspring raised by growers you can rely on."
+              />
             </div>
           </section>
 
@@ -143,14 +153,21 @@ function ReasonCard({ icon: Icon, title, body }: { icon: React.ElementType; titl
   );
 }
 
-function Step({ icon: Icon, title, body }: { icon: React.ElementType; title: string; body: string }) {
+function Step({ icon: Icon, title, body, tag }: { icon: React.ElementType; title: string; body: string; tag?: string }) {
   return (
     <div className="flex gap-4">
       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
         <Icon className="w-5 h-5" />
       </div>
       <div>
-        <h3 className="font-display font-semibold">{title}</h3>
+        <div className="flex flex-wrap items-center gap-2">
+          <h3 className="font-display font-semibold">{title}</h3>
+          {tag ? (
+            <span className="rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+              {tag}
+            </span>
+          ) : null}
+        </div>
         <p className="text-sm text-muted-foreground">{body}</p>
       </div>
     </div>
