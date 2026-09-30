@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Leaf, Droplets, Sun, Cpu, Sparkles, Users, Store } from "lucide-react";
+import { Leaf, Droplets, Sun, Cpu, Sparkles, Users, Store, Camera } from "lucide-react";
 import { VisitorWeatherChip } from "@/components/weather-chip";
 import { BetaBadge, BetaBanner } from "@/components/beta-banner";
 import { HomepageFeatureShowcase } from "@/components/homepage-feature-showcase";
@@ -92,6 +92,51 @@ function Landing() {
         <HomepageFeatureShowcase />
       </section>
 
+      <section className="border-y border-border bg-card/40">
+        <div className="mx-auto max-w-6xl px-4 py-16">
+          <div className="max-w-2xl">
+            <h2 className="font-display text-3xl font-semibold">How it works today</h2>
+            <p className="mt-3 text-muted-foreground leading-relaxed">
+              Bring your plants in, care for them day by day, use the tools when you need them, and
+              grow alongside people who love plants as much as you do.
+            </p>
+          </div>
+          <div className="mt-8 grid gap-6 md:grid-cols-2">
+            <JourneyStep
+              number={1}
+              icon={Leaf}
+              title="Add your plants"
+              body="Search our growing catalogue, give each plant a nickname and note whether it lives indoors or outdoors."
+            />
+            <JourneyStep
+              number={2}
+              icon={Camera}
+              title="Keep a diary for each plant"
+              body="Journal your plants with photos and notes, log watering, feeding, pruning and repotting, and keep a living record of how each one grows. It is how you stay close to them."
+            />
+            <JourneyStep
+              number={3}
+              icon={Sparkles}
+              title="Reach for the tools when you need them"
+              body="Ask the AI care advisor for guidance on water, light and pests, and connect sensors in the future to follow your plants more closely."
+            />
+            <JourneyStep
+              number={4}
+              icon={Users}
+              title="Engage with the community"
+              body="Add friends, ask for help when something looks off, post your pictures and interact with other growers who have been there."
+            />
+            <JourneyStep
+              number={5}
+              icon={Store}
+              tag="Coming soon"
+              title="Trade with trusted plant owners"
+              body="Swap cuttings, trade plants and buy offspring raised by caretakers you can trust."
+            />
+          </div>
+        </div>
+      </section>
+
       <section id="how" className="mx-auto max-w-6xl px-4 py-16 grid md:grid-cols-3 gap-6">
         {[
           { icon: Sparkles, title: "AI care advisor", body: "Get watering predictions, disease warnings, and a friendly summary a few times per week based on your plants and local weather." },
@@ -124,6 +169,40 @@ function Landing() {
           </div>
         </div>
       </footer>
+    </div>
+  );
+}
+
+function JourneyStep({
+  number,
+  icon: Icon,
+  title,
+  body,
+  tag,
+}: {
+  number: number;
+  icon: React.ElementType;
+  title: string;
+  body: string;
+  tag?: string;
+}) {
+  return (
+    <div className="flex gap-4">
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary font-display font-semibold">
+        {number}
+      </div>
+      <div>
+        <div className="flex flex-wrap items-center gap-2">
+          <Icon className="h-4 w-4 text-primary" />
+          <h3 className="font-display font-semibold">{title}</h3>
+          {tag ? (
+            <span className="rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+              {tag}
+            </span>
+          ) : null}
+        </div>
+        <p className="mt-1 text-sm text-muted-foreground">{body}</p>
+      </div>
     </div>
   );
 }

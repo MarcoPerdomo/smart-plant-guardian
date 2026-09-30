@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Leaf, Cpu, Droplets, Sun, Wifi, Camera, ArrowRight } from "lucide-react";
+import { Leaf, BookOpen, Sparkles, Users, HandHeart, Store, Wifi, ArrowRight } from "lucide-react";
 import { BetaBadge } from "@/components/beta-banner";
 
 const CANONICAL = "https://sentia-plants.com/get-started";
@@ -9,14 +9,14 @@ export const Route = createFileRoute("/get-started")({
   head: () => ({
     meta: [
       { title: "Get Started, Sentia (Beta)" },
-      { name: "description", content: "Join the Sentia beta: set up your account, add plants, connect optional sensors and become part of Europe's network of connected plant lovers." },
+      { name: "description", content: "Follow Sentia's practical guide to add and journal your plants, use care tools, connect with the community and help other plant lovers." },
       { property: "og:title", content: "Get Started, Sentia (Beta)" },
-      { property: "og:description", content: "Join the Sentia beta: set up your account, add plants, connect optional sensors and become part of Europe's network of connected plant lovers." },
+      { property: "og:description", content: "Follow Sentia's practical guide to add and journal your plants, use care tools, connect with the community and help other plant lovers." },
       { property: "og:url", content: CANONICAL },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:title", content: "Get Started, Sentia (Beta)" },
-      { name: "twitter:description", content: "Join the Sentia beta: set up your account, add plants, connect optional sensors and become part of Europe's network of connected plant lovers." },
+      { name: "twitter:description", content: "Follow Sentia's practical guide to add and journal your plants, use care tools, connect with the community and help other plant lovers." },
       { name: "robots", content: "index, follow" },
     ],
     links: [{ rel: "canonical", href: CANONICAL }],
@@ -40,7 +40,7 @@ function GetStartedPage() {
       <main className="mx-auto max-w-3xl px-4 py-12">
         <h1 className="font-display text-4xl font-semibold">Get started with Sentia</h1>
         <p className="mt-2 text-muted-foreground">
-          A quick guide for beta testers: set up your account, add a plant, and start tracking data.
+          Follow these steps to care for your plants, use Sentia's tools and grow with the community.
         </p>
 
         <div className="mt-8 space-y-6">
@@ -58,30 +58,37 @@ function GetStartedPage() {
             </p>
           </Step>
 
-          <Step number={3} title="Connect sensors (optional)" icon={Cpu}>
+          <Step number={3} title="Journal your plants" icon={BookOpen}>
             <p className="text-sm text-muted-foreground">
-              If you have an Arduino or Raspberry Pi, copy the ingestion URL and secret from Settings and point your
-              device at it. Supported readings include soil moisture, temperature, humidity, light and motion events.
+              Record watering, fertilising, pruning, repotting and flowering. Add photos and notes to
+              keep a meaningful history of each plant's health and growth.
             </p>
           </Step>
 
-          <Step number={4} title="Log watering & photos" icon={Droplets}>
+          <Step number={4} title="Use Sentia's tools when you need help" icon={Sparkles}>
             <p className="text-sm text-muted-foreground">
-              Tap "Water" on a plant card when you water it. Use the photo journal to track growth over time.
-              Both actions also appear in your social feed.
+              Check local weather guidance, ask the AI care advisor, or use your camera for help identifying
+              signs of disease when something does not look right.
             </p>
           </Step>
 
-          <Step number={5} title="Check the weather" icon={Sun}>
+          <Step number={5} title="Engage with the community" icon={Users}>
             <p className="text-sm text-muted-foreground">
-              Sentia fetches local weather and warns you when a plant may need extra water, shade or pest checks.
+              Post your plants' progress, share journal activity, comment on other growers' updates, add
+              friends and chat with them.
             </p>
           </Step>
 
-          <Step number={6} title="Camera snapshots (Raspberry Pi)" icon={Camera}>
+          <Step number={6} title="Help the community" icon={HandHeart}>
             <p className="text-sm text-muted-foreground">
-              Raspberry Pi agents can upload camera snapshots to the snapshot endpoint. These appear on the plant
-              detail page and help you spot changes over time.
+              Ask for help by adding clear pictures, and share your own tips and experience with others.
+              Collective knowledge helps us understand and care for plants as living beings.
+            </p>
+          </Step>
+
+          <Step number={7} title="Marketplace" icon={Store} tag="Coming soon">
+            <p className="text-sm text-muted-foreground">
+              Buy, sell and swap plants, cuttings and offspring with trusted caretakers in the Sentia community.
             </p>
           </Step>
         </div>
@@ -111,16 +118,23 @@ function GetStartedPage() {
   );
 }
 
-function Step({ number, title, icon: Icon, children }: { number: number; title: string; icon: React.ElementType; children: React.ReactNode }) {
+function Step({ number, title, icon: Icon, children, tag }: { number: number; title: string; icon: React.ElementType; children: React.ReactNode; tag?: string }) {
   return (
     <div className="flex gap-4 rounded-2xl border border-border bg-card p-5">
       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary font-display font-semibold">
         {number}
       </div>
       <div className="flex-1">
-        <h2 className="font-display text-lg font-semibold flex items-center gap-2">
-          <Icon className="w-4 h-4 text-primary" /> {title}
-        </h2>
+        <div className="flex flex-wrap items-center gap-2">
+          <h2 className="font-display text-lg font-semibold flex items-center gap-2">
+            <Icon className="w-4 h-4 text-primary" /> {title}
+          </h2>
+          {tag ? (
+            <span className="rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+              {tag}
+            </span>
+          ) : null}
+        </div>
         <div className="mt-1">{children}</div>
       </div>
     </div>
