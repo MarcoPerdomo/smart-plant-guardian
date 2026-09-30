@@ -100,10 +100,7 @@ function Landing() {
           <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
             <div className="lg:col-span-4">
               <div className="lg:sticky lg:top-24">
-                <span className="inline-block rounded-sm border border-primary/20 bg-primary/10 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.2em] text-primary">
-                  The Sentia journey
-                </span>
-                <h2 className="mt-8 font-display text-5xl font-semibold leading-[1.05] text-foreground md:text-6xl">
+                <h2 className="font-display text-5xl font-semibold leading-[1.05] text-foreground md:text-6xl">
                   How it <span className="italic text-primary">works</span>
                 </h2>
                 <p className="mt-6 max-w-sm text-lg leading-relaxed text-muted-foreground">
