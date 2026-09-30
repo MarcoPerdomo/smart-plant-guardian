@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Leaf, Droplets, Sun, Cpu, Sparkles, Users, Store, Camera } from "lucide-react";
+import { Leaf, Sparkles, Users, Store, Camera } from "lucide-react";
 import { VisitorWeatherChip } from "@/components/weather-chip";
 import { BetaBadge, BetaBanner } from "@/components/beta-banner";
 import { HomepageFeatureShowcase } from "@/components/homepage-feature-showcase";
