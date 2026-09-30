@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Leaf } from "lucide-react";
 import { BetaBadge } from "@/components/beta-banner";
+import { NewsletterCtaLink } from "@/components/newsletter-cta";
 
 export function SimpleHeader() {
   return (
@@ -34,6 +35,7 @@ export function SimpleFooter() {
           <Link to="/terms" className="hover:text-foreground">Terms</Link>
           <Link to="/cookies" className="hover:text-foreground">Cookies</Link>
           <Link to="/subprocessors" className="hover:text-foreground">Subprocessors</Link>
+          <NewsletterCtaLink className="hover:text-foreground" />
         </div>
       </div>
     </footer>

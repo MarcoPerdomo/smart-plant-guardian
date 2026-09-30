@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Leaf, BookOpen, Sparkles, Users, HandHeart, Store, Wifi, ArrowRight } from "lucide-react";
 import { BetaBadge } from "@/components/beta-banner";
+import { NewsletterCta, NewsletterCtaLink } from "@/components/newsletter-cta";
 
 const CANONICAL = "https://sentia-plants.com/get-started";
 
@@ -93,6 +94,11 @@ function GetStartedPage() {
           </Step>
         </div>
 
+        <div className="mt-8">
+          <NewsletterCta />
+        </div>
+
+
         <div className="mt-10 flex flex-wrap gap-3">
           <Link to="/auth" className="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:opacity-90">
             Create your account <ArrowRight className="w-4 h-4" />
@@ -111,6 +117,7 @@ function GetStartedPage() {
             <Link to="/privacy" className="hover:text-foreground">Privacy</Link>
             <Link to="/terms" className="hover:text-foreground">Terms</Link>
             <Link to="/cookies" className="hover:text-foreground">Cookies</Link>
+            <NewsletterCtaLink className="hover:text-foreground" />
           </div>
         </div>
       </footer>

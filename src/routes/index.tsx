@@ -5,6 +5,7 @@ import { Leaf, Droplets, Sun, Cpu, Sparkles, Users, Store, Camera } from "lucide
 import { VisitorWeatherChip } from "@/components/weather-chip";
 import { BetaBadge, BetaBanner } from "@/components/beta-banner";
 import { HomepageFeatureShowcase } from "@/components/homepage-feature-showcase";
+import { NewsletterCta, NewsletterCtaLink } from "@/components/newsletter-cta";
 
 const CANONICAL = "https://sentia-plants.com/";
 
@@ -154,6 +155,10 @@ function Landing() {
         ))}
       </section>
 
+      <section className="mx-auto max-w-6xl px-4 pb-16">
+        <NewsletterCta />
+      </section>
+
       <footer className="border-t border-border">
         <div className="mx-auto max-w-6xl px-4 py-6 text-sm text-muted-foreground flex flex-col sm:flex-row gap-4 justify-between">
           <span>© 2026 Sentia <BetaBadge /></span>
@@ -165,6 +170,7 @@ function Landing() {
             <Link to="/cookies" className="hover:text-foreground">Cookies</Link>
             <Link to="/subprocessors" className="hover:text-foreground">Subprocessors</Link>
             <Link to="/get-started" className="hover:text-foreground">Get started</Link>
+            <NewsletterCtaLink className="hover:text-foreground" />
             <Link to="/auth" className="hover:text-foreground">Sign in</Link>
           </div>
         </div>
