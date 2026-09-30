@@ -66,9 +66,15 @@ function FounderPage() {
 
           <p>Sentia aims to go beyond scheduling when to water your plants. Plants are complex systems that should be understood holistically, and watering is just one of the multiple variables that contribute towards their health. The aim of Sentia is to enable you to be a steward of nature. Sentia is a platform that provides you with the right tools and enables education to understand truly what your plants need. Additionally, Sentia brings you together with plant lovers out there to create an engaging community where we can help each other.</p>
 
-          <p>{"\n"}</p>
-
-          <p>Sentia is not enough, I know. One person can only have so much impact. But this is a first step towards my ultimate goal to regenerate ecosystems on Earth, and create a community upheld with human values that is economically sustainable to future generations. I hope this can inspire others with a similar mindset to contribute towards a greener future. For further information on other bigger side projects, (for now) you can follow me on: LinkedIn. Feel free to reach out to me if you have any ideas, want to collaborate or just to chat. Nothing makes me happier than talking to like-minded people. I hope we can connect and thrive in a community where these values are important.</p>
+          <p>Sentia is not enough, I know. One person can only have so much impact. But this is a first step towards my ultimate goal to regenerate ecosystems on Earth, and create a community upheld with human values that is economically sustainable to future generations. I hope this can inspire others with a similar mindset to contribute towards a greener future. For further information on other bigger side projects, (for now) you can follow me on: <a
+            href="https://www.linkedin.com/in/marcoperdomo/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium text-primary underline decoration-primary/40 underline-offset-4 hover:decoration-primary"
+            aria-label="Marco Perdomo on LinkedIn (opens in a new tab)"
+          >
+            LinkedIn
+          </a>. Feel free to reach out to me if you have any ideas, want to collaborate or just to chat. Nothing makes me happier than talking to like-minded people. I hope we can connect and thrive in a community where these values are important.</p>
 
           <p className="font-display text-2xl font-semibold text-primary">Happy planting!</p>
         </article>
