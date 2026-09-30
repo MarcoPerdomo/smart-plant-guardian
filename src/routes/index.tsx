@@ -155,7 +155,7 @@ function Landing() {
       </section>
 
 
-      <section className="mx-auto max-w-6xl px-4 pt-20 pb-16 md:pt-24">
+      <section className="mx-auto max-w-6xl px-4 pt-24 pb-16 md:pt-32">
         <NewsletterCta />
       </section>
 
