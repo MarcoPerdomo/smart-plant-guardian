@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { evaluateWeatherRules, weatherCodeLabel, type SpeciesCare } from "@/lib/weather-rules";
+import { resolveAppUrl } from "@/lib/app-url";
 
 /**
  * Daily weather digest sender.
