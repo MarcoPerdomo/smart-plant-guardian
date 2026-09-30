@@ -137,18 +137,46 @@ export const listUserPlants = createServerFn({ method: "GET" })
       .order("created_at", { ascending: false });
     if (error) throw new Error(error.message);
 
-    // Attach latest reading per plant
+    // Attach the latest reading and journal photo per plant.
     const ids = (data ?? []).map((p) => p.id);
     if (ids.length === 0) return [];
-    const { data: readings } = await context.supabase
-      .from("sensor_readings")
-      .select("*")
-      .in("plant_id", ids)
-      .order("recorded_at", { ascending: false });
+    const [{ data: readings }, { data: photos }] = await Promise.all([
+      context.supabase
+        .from("sensor_readings")
+        .select("*")
+        .in("plant_id", ids)
+        .order("recorded_at", { ascending: false }),
+      context.supabase
+        .from("plant_photos")
+        .select("plant_id, storage_path, taken_at")
+        .in("plant_id", ids)
+        .order("taken_at", { ascending: false })
+        .limit(1000),
+    ]);
     const latest = new Map<string, typeof readings extends (infer T)[] | null ? T : never>();
     for (const r of readings ?? []) if (!latest.has(r.plant_id)) latest.set(r.plant_id, r);
 
-    return (data ?? []).map((p) => ({ ...p, latest_reading: latest.get(p.id) ?? null }));
+    const latestPhotoPaths = new Map<string, string>();
+    for (const photo of photos ?? []) {
+      if (!latestPhotoPaths.has(photo.plant_id)) latestPhotoPaths.set(photo.plant_id, photo.storage_path);
+    }
+    const paths = [...latestPhotoPaths.values()];
+    const photoUrls = new Map<string, string>();
+    if (paths.length > 0) {
+      const { data: signed } = await context.supabase.storage.from("plant-images").createSignedUrls(paths, 3600);
+      for (const item of signed ?? []) {
+        if (item.path && item.signedUrl) photoUrls.set(item.path, item.signedUrl);
+      }
+    }
+
+    return (data ?? []).map((p) => {
+      const photoPath = latestPhotoPaths.get(p.id);
+      return {
+        ...p,
+        latest_reading: latest.get(p.id) ?? null,
+        latest_photo_url: photoPath ? photoUrls.get(photoPath) ?? null : null,
+      };
+    });
   });
 
 export const getPlant = createServerFn({ method: "POST" })
@@ -306,6 +334,35 @@ export const logPlantEvent = createServerFn({ method: "POST" })
       .single();
     if (error) throw new Error(error.message);
     return event;
+  });
+
+export const deletePlantEvent = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }) => {
+    const { data: event, error: eventError } = await context.supabase
+      .from("plant_events")
+      .select("id, user_id")
+      .eq("id", data.id)
+      .eq("user_id", context.userId)
+      .maybeSingle();
+    if (eventError) throw new Error(eventError.message);
+    if (!event) throw new Error("Care activity not found");
+
+    const { error: postError } = await context.supabase
+      .from("posts")
+      .delete()
+      .eq("author_id", context.userId)
+      .eq("dedup_key", `plant_event:${event.id}`);
+    if (postError) throw new Error(postError.message);
+
+    const { error } = await context.supabase
+      .from("plant_events")
+      .delete()
+      .eq("id", event.id)
+      .eq("user_id", context.userId);
+    if (error) throw new Error(error.message);
+    return { ok: true };
   });
 
 export const archivePlant = createServerFn({ method: "POST" })

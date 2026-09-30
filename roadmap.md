@@ -13,3 +13,5 @@
 - [x] Hide sensor pairing from plant creation and make sensors opt-in per plant.
 - [x] Reorder the plant workspace around status, care guidance and journals.
 - [x] Add compact and complete AI summary and care-history views.
+- [x] Refine the plant workspace with quicker watering, event deletion, and reordered summaries.
+- [x] Add latest-photo thumbnails to dashboard plant cards.

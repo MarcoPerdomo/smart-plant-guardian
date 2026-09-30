@@ -12,3 +12,4 @@
 - Public founder content lives at `/founder`, linked from `/about` and public footers, so Marco's authored story remains distinct from product copy.
 - `plant_events` is the source of truth for plant care history; `user_plants.last_watered_at` is a trigger-maintained cache for status and predictions.
 - Sensor features are opt-in per plant through `user_plants.sensor_enabled`; disabling them hides the journal without deleting readings or device details.
+- Plant dashboard thumbnails use the latest `plant_photos` image through short-lived signed URLs, with a plant icon fallback.
