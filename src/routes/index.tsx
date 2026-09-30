@@ -234,10 +234,7 @@ function JourneyCard({ step }: { step: CareStep }) {
       <span className="absolute inset-x-0 top-0 h-[3px] origin-left scale-x-0 bg-primary/70 transition-transform duration-300 group-hover:scale-x-100" />
       <div className="flex items-center justify-between">
         <span className="font-display text-[2.5rem] font-semibold leading-none tracking-tight tabular-nums text-primary/75 transition-colors duration-300 group-hover:text-primary">
-          <span className="text-primary/55 transition-colors duration-300 group-hover:text-primary/70">
-            {step.number.slice(0, -1)}
-          </span>
-          {step.number.slice(-1)}
+          {step.number}
         </span>
         <div className="flex h-11 w-11 items-center justify-center rounded-lg border border-primary/15 bg-primary/10 text-primary transition-colors duration-300 group-hover:bg-primary group-hover:text-primary-foreground">
           <Icon className="h-5 w-5" />
