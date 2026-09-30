@@ -109,15 +109,20 @@ function Dashboard() {
           return (
             <div key={p.id} className="rounded-2xl border border-border bg-card p-5 flex flex-col">
               <div className="flex items-start justify-between">
-                <div>
-                  <Link to="/plants/$id" params={{ id: p.id }} className="font-display text-xl font-semibold hover:text-primary">
-                    {p.nickname}
+                <div className="flex min-w-0 items-center gap-3">
+                  <Link to="/plants/$id" params={{ id: p.id }} className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-md bg-primary/10 text-primary" aria-label={`Open ${p.nickname}`}>
+                    {p.latest_photo_url ? <img src={p.latest_photo_url} alt="" className="h-full w-full object-cover" loading="lazy" /> : <Leaf className="h-5 w-5" />}
                   </Link>
-                  <div className="text-xs text-muted-foreground mt-0.5">
-                    {species?.common_name ?? "Unknown species"}
-                    {p.location ? ` · ${p.location}` : ""}
+                  <div className="min-w-0">
+                    <Link to="/plants/$id" params={{ id: p.id }} className="block truncate font-display text-xl font-semibold hover:text-primary">
+                      {p.nickname}
+                    </Link>
+                    <div className="mt-0.5 truncate text-xs text-muted-foreground">
+                      {species?.common_name ?? "Unknown species"}
+                      {p.location ? ` · ${p.location}` : ""}
+                    </div>
+                    <EnvironmentBadge value={p.environment} className="mt-1.5" />
                   </div>
-                  <EnvironmentBadge value={p.environment} className="mt-1.5" />
                 </div>
                 <span className={`text-xs font-medium px-2 py-1 rounded-full ${statusColor}`}>{status.label}</span>
               </div>

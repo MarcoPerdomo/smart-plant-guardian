@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getPlant, generateSummary, logPlantEvent, archivePlant, addManualReading, deletePlant, updatePlantEnvironment, updatePlantSensorEnabled } from "@/lib/plants.functions";
+import { getPlant, generateSummary, logPlantEvent, deletePlantEvent, archivePlant, addManualReading, deletePlant, updatePlantEnvironment, updatePlantSensorEnabled } from "@/lib/plants.functions";
 import { computeStatus, predictNextWatering } from "@/lib/plant-status";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -81,6 +81,7 @@ function PlantDetail() {
   const [showAllSummaries, setShowAllSummaries] = useState(false);
   const [showAllEvents, setShowAllEvents] = useState(false);
   const [confirmArchive, setConfirmArchive] = useState(false);
+  const [eventToDelete, setEventToDelete] = useState<string | null>(null);
 
   const invalidate = () => qc.invalidateQueries({ queryKey: ["plant", id] });
 
@@ -101,6 +102,16 @@ function PlantDetail() {
   const sensorMut = useMutation({
     mutationFn: (sensor_enabled: boolean) => updatePlantSensorEnabled({ data: { plant_id: id, sensor_enabled } }),
     onSuccess: (_row, enabled) => { toast.success(enabled ? "Sensor journal enabled" : "Sensor journal hidden"); invalidate(); },
+    onError: (e: Error) => toast.error(e.message),
+  });
+  const waterMut = useMutation({
+    mutationFn: () => logPlantEvent({ data: { plant_id: id, event_type: "watering", amount_ml: null, notes: null, metadata: {} } }),
+    onSuccess: () => { toast.success("Watering logged"); invalidate(); },
+    onError: (e: Error) => toast.error(e.message),
+  });
+  const deleteEventMut = useMutation({
+    mutationFn: (eventId: string) => deletePlantEvent({ data: { id: eventId } }),
+    onSuccess: () => { toast.success("Care activity deleted"); setEventToDelete(null); invalidate(); },
     onError: (e: Error) => toast.error(e.message),
   });
 
@@ -210,31 +221,16 @@ function PlantDetail() {
       <section className="mt-6 rounded-lg border border-border bg-card p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div><h2 className="font-display text-lg font-semibold flex items-center gap-2"><BookOpen className="h-5 w-5 text-primary" /> Maintenance journal</h2><p className="text-sm text-muted-foreground">Record the care that keeps {plant.nickname} thriving.</p></div>
-          <Button onClick={() => setShowActivity((open) => !open)}><Plus className="h-4 w-4" /> Log care</Button>
+          <div className="flex flex-wrap gap-2">
+            <Button onClick={() => waterMut.mutate()} disabled={waterMut.isPending}><Droplets className="h-4 w-4" /> {waterMut.isPending ? "Logging…" : "Log watering"}</Button>
+            <Button variant="outline" onClick={() => setShowActivity((open) => !open)}><Plus className="h-4 w-4" /> Log other care</Button>
+          </div>
         </div>
         {showActivity && <ActivityForm plantId={id} onCancel={() => setShowActivity(false)} onDone={(eventType) => { setShowActivity(false); invalidate(); if (eventType === "deceased") setConfirmArchive(true); }} />}
-        {maintenanceEvents.length > 0 && <ul className="mt-4 space-y-1">{maintenanceEvents.map((event) => <PlantEventRow key={event.id} event={event} />)}</ul>}
+        {maintenanceEvents.length > 0 && <ul className="mt-4 space-y-1">{maintenanceEvents.map((event) => <PlantEventRow key={event.id} event={event} onDelete={() => setEventToDelete(event.id)} />)}</ul>}
       </section>
 
       <LatestPhotoCard plantId={plant.id} plantName={plant.nickname} />
-
-      <section className="mt-6 rounded-lg border border-border bg-card p-5">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div><h2 className="font-display text-lg font-semibold flex items-center gap-2"><Radio className="h-5 w-5 text-primary" /> Sensor journal</h2><p className="text-sm text-muted-foreground">Optional live conditions and history from connected sensors.</p></div>
-          <Button variant={plant.sensor_enabled ? "outline" : "default"} onClick={() => sensorMut.mutate(!plant.sensor_enabled)} disabled={sensorMut.isPending}>{plant.sensor_enabled ? "Hide sensors" : "Enable sensors"}</Button>
-        </div>
-        {!plant.sensor_enabled ? <div className="mt-5 rounded-md border border-dashed border-border p-6 text-center"><Cpu className="mx-auto h-8 w-8 text-muted-foreground" /><p className="mt-2 text-sm font-medium">Sensors are not enabled for this plant</p><p className="mt-1 text-xs text-muted-foreground">You can turn them on whenever you are ready to connect a device or add readings.</p></div> : <>
-          <div className="mt-5 flex flex-wrap items-center justify-between gap-2 border-t border-border pt-4 text-xs text-muted-foreground"><span className="flex flex-wrap items-center gap-2">{latest?.recorded_at ? `Last reading ${formatDistanceToNow(new Date(latest.recorded_at), { addSuffix: true })}` : "No sensor readings yet"}<span className="opacity-60">Updated {formatDistanceToNow(new Date(dataUpdatedAt), { addSuffix: true })}</span>{plant.device_id && <DeviceIdChip deviceId={plant.device_id} />}</span><Button variant="ghost" size="sm" onClick={() => refetch()} disabled={isFetching} title="Refresh sensor data"><RefreshCw className={`h-4 w-4 ${isFetching ? "animate-spin" : ""}`} /> Refresh</Button></div>
-          <div className="mt-3 grid gap-3 md:grid-cols-3">
-            <Metric icon={Droplets} label="Moisture" hint={SENSOR_HINTS.moisture} value={latest?.soil_moisture != null ? `${Math.round(latest.soil_moisture)}%` : "Not available"} sub={species?.soil_moisture_min != null ? `Target ${species.soil_moisture_min}-${species.soil_moisture_max}%` : ""} />
-            <Metric icon={Thermometer} label="Temp" hint={SENSOR_HINTS.temp} value={latest?.temperature_c != null ? `${latest.temperature_c.toFixed(1)}°C` : "Not available"} sub={species?.temperature_min_c != null ? `${species.temperature_min_c}-${species.temperature_max_c}°C` : ""} />
-            <Metric icon={Sun} label="Light" hint={SENSOR_HINTS.light} value={latest?.light_lux != null ? `${Math.round(latest.light_lux)}%` : "Not available"} sub={species?.light ?? ""} />
-          </div>
-          {readings.length > 0 && <div className="mt-5 h-64"><ResponsiveContainer><LineChart data={chartData}><XAxis dataKey="time" tick={{ fontSize: 10 }} /><YAxis tick={{ fontSize: 10 }} /><Tooltip contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 8, fontSize: 12 }} /><Line type="monotone" dataKey="moisture" stroke="var(--primary)" strokeWidth={2} dot={false} name="Moisture %" /><Line type="monotone" dataKey="temp" stroke="var(--warning)" strokeWidth={2} dot={false} name="Temp °C" /><Line type="monotone" dataKey="light" stroke="var(--accent)" strokeWidth={2} dot={false} name="Light %" /></LineChart></ResponsiveContainer></div>}
-          <Snapshot path={latest?.snapshot_url ?? null} alt={`Snapshot of ${plant.nickname}`} embedded />
-          <div className="mt-5 border-t border-border pt-4"><div className="flex items-center justify-between"><h3 className="text-sm font-medium">Manual reading</h3><Button variant="ghost" size="sm" onClick={() => setShowManual(!showManual)}>{showManual ? "Hide" : "Add reading"}</Button></div>{showManual && <ManualReadingForm plantId={id} onDone={() => { setShowManual(false); invalidate(); }} />}</div>
-        </>}
-      </section>
 
       <section className="mt-6 rounded-lg border border-border bg-card p-5">
         <div className="flex justify-between items-center mb-3">
@@ -262,6 +258,24 @@ function PlantDetail() {
         )}
       </section>
 
+      <section className="mt-6 rounded-lg border border-border bg-card p-5">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div><h2 className="font-display text-lg font-semibold flex items-center gap-2"><Radio className="h-5 w-5 text-primary" /> Sensor journal</h2><p className="text-sm text-muted-foreground">Optional live conditions and history from connected sensors.</p></div>
+          <Button variant={plant.sensor_enabled ? "outline" : "default"} onClick={() => sensorMut.mutate(!plant.sensor_enabled)} disabled={sensorMut.isPending}>{plant.sensor_enabled ? "Hide sensors" : "Enable sensors"}</Button>
+        </div>
+        {!plant.sensor_enabled ? <div className="mt-5 rounded-md border border-dashed border-border p-6 text-center"><Cpu className="mx-auto h-8 w-8 text-muted-foreground" /><p className="mt-2 text-sm font-medium">Sensors are not enabled for this plant</p><p className="mt-1 text-xs text-muted-foreground">You can turn them on whenever you are ready to connect a device or add readings.</p></div> : <>
+          <div className="mt-5 flex flex-wrap items-center justify-between gap-2 border-t border-border pt-4 text-xs text-muted-foreground"><span className="flex flex-wrap items-center gap-2">{latest?.recorded_at ? `Last reading ${formatDistanceToNow(new Date(latest.recorded_at), { addSuffix: true })}` : "No sensor readings yet"}<span className="opacity-60">Updated {formatDistanceToNow(new Date(dataUpdatedAt), { addSuffix: true })}</span>{plant.device_id && <DeviceIdChip deviceId={plant.device_id} />}</span><Button variant="ghost" size="sm" onClick={() => refetch()} disabled={isFetching} title="Refresh sensor data"><RefreshCw className={`h-4 w-4 ${isFetching ? "animate-spin" : ""}`} /> Refresh</Button></div>
+          <div className="mt-3 grid gap-3 md:grid-cols-3">
+            <Metric icon={Droplets} label="Moisture" hint={SENSOR_HINTS.moisture} value={latest?.soil_moisture != null ? `${Math.round(latest.soil_moisture)}%` : "Not available"} sub={species?.soil_moisture_min != null ? `Target ${species.soil_moisture_min}-${species.soil_moisture_max}%` : ""} />
+            <Metric icon={Thermometer} label="Temp" hint={SENSOR_HINTS.temp} value={latest?.temperature_c != null ? `${latest.temperature_c.toFixed(1)}°C` : "Not available"} sub={species?.temperature_min_c != null ? `${species.temperature_min_c}-${species.temperature_max_c}°C` : ""} />
+            <Metric icon={Sun} label="Light" hint={SENSOR_HINTS.light} value={latest?.light_lux != null ? `${Math.round(latest.light_lux)}%` : "Not available"} sub={species?.light ?? ""} />
+          </div>
+          {readings.length > 0 && <div className="mt-5 h-64"><ResponsiveContainer><LineChart data={chartData}><XAxis dataKey="time" tick={{ fontSize: 10 }} /><YAxis tick={{ fontSize: 10 }} /><Tooltip contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 8, fontSize: 12 }} /><Line type="monotone" dataKey="moisture" stroke="var(--primary)" strokeWidth={2} dot={false} name="Moisture %" /><Line type="monotone" dataKey="temp" stroke="var(--warning)" strokeWidth={2} dot={false} name="Temp °C" /><Line type="monotone" dataKey="light" stroke="var(--accent)" strokeWidth={2} dot={false} name="Light %" /></LineChart></ResponsiveContainer></div>}
+          <Snapshot path={latest?.snapshot_url ?? null} alt={`Snapshot of ${plant.nickname}`} embedded />
+          <div className="mt-5 border-t border-border pt-4"><div className="flex items-center justify-between"><h3 className="text-sm font-medium">Manual reading</h3><Button variant="ghost" size="sm" onClick={() => setShowManual(!showManual)}>{showManual ? "Hide" : "Add reading"}</Button></div>{showManual && <ManualReadingForm plantId={id} onDone={() => { setShowManual(false); invalidate(); }} />}</div>
+        </>}
+      </section>
+
       {events.length > 0 && (
         <section className="mt-6 rounded-lg border border-border bg-card p-5">
           <div className="mb-3 flex items-center justify-between"><h2 className="font-display text-lg font-semibold">Care journal</h2><Button variant="link" size="sm" asChild><Link to="/plants/$id/care" params={{ id }}><History /> Full care history</Link></Button></div>
@@ -286,6 +300,25 @@ function PlantDetail() {
             <AlertDialogCancel>Keep in garden</AlertDialogCancel>
             <AlertDialogAction onClick={() => archiveMut.mutate()} disabled={archiveMut.isPending}>
               Archive plant
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={eventToDelete !== null} onOpenChange={(open) => { if (!open) setEventToDelete(null); }}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete this care activity?</AlertDialogTitle>
+            <AlertDialogDescription>This removes it from the plant journal and social feed. This cannot be undone.</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Keep activity</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => { if (eventToDelete) deleteEventMut.mutate(eventToDelete); }}
+              disabled={deleteEventMut.isPending}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Delete activity
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -366,7 +399,7 @@ function TextInput({ label, value, onChange, type = "text" }: { label: string; v
   return <label className="text-sm"><span className="mb-1 block text-xs font-medium text-muted-foreground">{label}</span><input type={type} min={type === "number" ? 0 : undefined} value={value} onChange={(event) => onChange(event.target.value)} className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm" /></label>;
 }
 
-function PlantEventRow({ event }: { event: { event_type: string; occurred_at: string; amount_ml: number | null; notes: string | null; source: string; metadata: unknown } }) {
+function PlantEventRow({ event, onDelete }: { event: { event_type: string; occurred_at: string; amount_ml: number | null; notes: string | null; source: string; metadata: unknown }; onDelete?: () => void }) {
   const option = EVENT_OPTIONS.find((item) => item.value === event.event_type);
   const Icon = option?.icon ?? Leaf;
   const metadata = (event.metadata ?? {}) as { product?: string | null; amount?: string | null; pot_or_soil?: string | null };
@@ -384,7 +417,10 @@ function PlantEventRow({ event }: { event: { event_type: string; occurred_at: st
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <span className="font-medium">{option?.label ?? event.event_type}</span>
-          <span className="text-xs text-muted-foreground">{format(new Date(event.occurred_at), "MMM d, yyyy · HH:mm")}</span>
+          <span className="flex items-center gap-1 text-xs text-muted-foreground">
+            {format(new Date(event.occurred_at), "MMM d, yyyy · HH:mm")}
+            {onDelete && <Button type="button" variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-destructive" onClick={onDelete} aria-label={`Delete ${option?.label ?? event.event_type} activity`} title="Delete activity"><Trash2 className="h-3.5 w-3.5" /></Button>}
+          </span>
         </div>
         {(detail || event.notes) && <p className="mt-0.5 text-xs text-muted-foreground">{[detail, event.notes].filter(Boolean).join(" · ")}</p>}
         {event.source === "sensor" && <span className="mt-1 inline-block text-[10px] uppercase text-muted-foreground">Automatic</span>}
