@@ -170,6 +170,52 @@ export const getPlant = createServerFn({ method: "POST" })
     return { plant, readings: readings ?? [], events: events ?? [], summaries: summaries ?? [] };
   });
 
+export const updatePlantSensorEnabled = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({
+    plant_id: z.string().uuid(),
+    sensor_enabled: z.boolean(),
+  }).parse(input))
+  .handler(async ({ data, context }) => {
+    const { data: plant, error } = await context.supabase
+      .from("user_plants")
+      .update({ sensor_enabled: data.sensor_enabled })
+      .eq("id", data.plant_id)
+      .eq("user_id", context.userId)
+      .select("id, sensor_enabled")
+      .single();
+    if (error) throw new Error(error.message);
+    return plant;
+  });
+
+export const listPlantCareHistory = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ plant_id: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }) => {
+    const { data: owned } = await context.supabase
+      .from("user_plants").select("id").eq("id", data.plant_id).eq("user_id", context.userId).maybeSingle();
+    if (!owned) throw new Error("Plant not found");
+    const { data: events, error } = await context.supabase
+      .from("plant_events").select("*").eq("plant_id", data.plant_id)
+      .order("occurred_at", { ascending: false }).limit(500);
+    if (error) throw new Error(error.message);
+    return events ?? [];
+  });
+
+export const listPlantSummaryHistory = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ plant_id: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }) => {
+    const { data: owned } = await context.supabase
+      .from("user_plants").select("id").eq("id", data.plant_id).eq("user_id", context.userId).maybeSingle();
+    if (!owned) throw new Error("Plant not found");
+    const { data: summaries, error } = await context.supabase
+      .from("ai_summaries").select("*").eq("plant_id", data.plant_id)
+      .order("created_at", { ascending: false }).limit(500);
+    if (error) throw new Error(error.message);
+    return summaries ?? [];
+  });
+
 export const createPlant = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((i: unknown) => z.object({
