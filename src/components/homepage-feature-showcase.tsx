@@ -131,6 +131,22 @@ export function HomepageFeatureShowcase() {
       <div key={active} className="animate-fade-in" aria-live="polite">
         <div className="relative aspect-[4/3] min-h-[320px] overflow-hidden bg-muted/30 p-4 sm:p-6">
           {slide.content}
+          <button
+            type="button"
+            onClick={() => move(-1)}
+            aria-label="Previous feature"
+            className="absolute left-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-background/90 text-foreground shadow-md transition hover:bg-background sm:left-3"
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </button>
+          <button
+            type="button"
+            onClick={() => move(1)}
+            aria-label="Next feature"
+            className="absolute right-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-background/90 text-foreground shadow-md transition hover:bg-background sm:right-3"
+          >
+            <ArrowRight className="h-4 w-4" />
+          </button>
         </div>
         <div className="border-t border-border px-4 py-4 sm:px-5">
           <p className="font-display text-lg font-semibold text-foreground">{slide.title}</p>
