@@ -5,14 +5,17 @@ import {
   ArrowRight,
   Camera,
   Check,
+  ClipboardList,
   Droplets,
   Flower2,
   Heart,
   Leaf,
   MessageCircle,
   Plus,
+  ScanSearch,
   Scissors,
   Send,
+  ShieldCheck,
   Sparkles,
   Users,
 } from "lucide-react";
@@ -55,6 +58,11 @@ export function HomepageFeatureShowcase() {
       title: "Get thoughtful AI care",
       description: "Turn readings, weather and plant history into clear next steps.",
       content: <AdvisorScene />,
+    },
+    {
+      title: "Ask Sentia AI anything",
+      description: "Snap a leaf for disease identification and get an automatic health plan for your plant.",
+      content: <AiPipelineScene image={showcaseImages[CALATHEA_SLUG]} />,
     },
     {
       title: "Grow with your community",
@@ -250,6 +258,54 @@ function AdvisorScene() {
         <MiniMetric label="Humidity" value="61%" />
       </div>
       <div className="mt-4 flex items-center gap-2 text-xs text-muted-foreground"><Check className="h-4 w-4 text-success" /> Rotate the pot toward the morning light</div>
+    </div>
+  );
+}
+
+function AiPipelineScene({ image }: { image: ShowcaseImage }) {
+  const plan = [
+    { label: "Treat the spotted leaves", detail: "Fungicide spray, weekly for 3 weeks" },
+    { label: "Isolate the pot", detail: "Keeps any spread contained" },
+    { label: "Recheck in 7 days", detail: "We will remind you, photo in hand" },
+  ];
+  return (
+    <div className="grid h-full gap-3 sm:grid-cols-[0.9fr_1.1fr]">
+      <div className="relative overflow-hidden rounded-lg border border-border">
+        {image ? (
+          <img src={image.src} alt={image.alt} className="h-full w-full object-cover" />
+        ) : (
+          <Leaf className="absolute -bottom-5 right-1 h-36 w-36 rotate-[-18deg] text-primary/50" strokeWidth={1.1} />
+        )}
+        <span className="absolute left-3 top-3 flex h-8 w-8 items-center justify-center rounded-md bg-background/90 text-primary shadow-sm">
+          <ScanSearch className="h-4 w-4" />
+        </span>
+        <div className="absolute inset-x-3 bottom-3 rounded-md border border-warning/40 bg-background/95 p-3 shadow-sm">
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-warning">Disease check</p>
+          <p className="mt-0.5 text-sm font-semibold">Leaf spot detected, 92% match</p>
+        </div>
+      </div>
+      <div className="rounded-lg border border-border bg-background p-4">
+        <div className="flex items-center gap-2">
+          <Sparkles className="h-4 w-4 text-primary" />
+          <p className="font-display text-sm font-semibold">Automatic health plan</p>
+        </div>
+        <div className="mt-3 space-y-3">
+          {plan.map((item, index) => (
+            <div key={item.label} className="flex items-start gap-3">
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-primary/10 text-xs font-semibold text-primary">
+                {index + 1}
+              </span>
+              <div className="min-w-0">
+                <p className="text-sm font-medium leading-snug">{item.label}</p>
+                <p className="text-xs text-muted-foreground">{item.detail}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="mt-4 flex items-center gap-2 rounded-md bg-success/10 px-3 py-2 text-xs text-success">
+          <ShieldCheck className="h-4 w-4" /> Plan adapts as your plant recovers
+        </div>
+      </div>
     </div>
   );
 }
