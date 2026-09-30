@@ -1,14 +1,12 @@
-const DEFAULT_APP_URL = "https://sentia-plants.com";
+const PRODUCTION_APP_URL = "https://sentia-plants.com";
 
 /**
- * Returns the public site URL used in email links. Falls back to the
- * production domain when APP_URL is missing or malformed (not an http(s) URL),
- * so a bad secret can never produce broken links in emails.
+ * Returns the public site URL used in email links.
+ *
+ * Always the production domain. Email links must point at the live site no
+ * matter which environment sent them, and relying on the APP_URL secret
+ * produced broken links when it held a bad value in a deployment.
  */
 export function resolveAppUrl(): string {
-  const raw = (process.env["APP_URL"] ?? "").trim();
-  if (/^https?:\/\/[a-z0-9.-]+(:\d+)?(\/.*)?$/i.test(raw)) {
-    return raw.replace(/\/+$/, "");
-  }
-  return DEFAULT_APP_URL;
+  return PRODUCTION_APP_URL;
 }
