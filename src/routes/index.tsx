@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Leaf, Droplets, Sun, Cpu, Sparkles, Users, Store, Camera } from "lucide-react";
+import { Leaf, Sparkles, Users, Store, Camera } from "lucide-react";
 import { VisitorWeatherChip } from "@/components/weather-chip";
 import { BetaBadge, BetaBanner } from "@/components/beta-banner";
 import { HomepageFeatureShowcase } from "@/components/homepage-feature-showcase";
@@ -93,10 +93,11 @@ function Landing() {
         <HomepageFeatureShowcase />
       </section>
 
-      <section className="border-y border-border bg-card/40">
+      <section id="how" className="border-y border-border bg-card/40">
         <div className="mx-auto max-w-6xl px-4 py-16">
           <div className="max-w-2xl">
-            <h2 className="font-display text-3xl font-semibold">How it works today</h2>
+            <h2 className="font-display text-3xl font-semibold">How it works</h2>
+
             <p className="mt-3 text-muted-foreground leading-relaxed">
               Bring your plants in, care for them day by day, use the tools when you need them, and
               grow alongside people who love plants as much as you do.
@@ -138,22 +139,6 @@ function Landing() {
         </div>
       </section>
 
-      <section id="how" className="mx-auto max-w-6xl px-4 py-16 grid md:grid-cols-3 gap-6">
-        {[
-          { icon: Sparkles, title: "AI care advisor", body: "Get watering predictions, disease warnings, and a friendly summary a few times per week based on your plants and local weather." },
-          { icon: Users, title: "Plant community", body: "Follow friends, celebrate new growth, comment on photos and message fellow plant lovers." },
-          { icon: Store, title: "Trusted marketplace", body: "Buy, sell and trade plants with transparent history. Sentia charges a small commission on completed sales." },
-          { icon: Cpu, title: "Optional sensors", body: "Plug in an Arduino or Raspberry Pi to log soil moisture, humidity, light and motion events automatically." },
-          { icon: Droplets, title: "Track everything", body: "Soil moisture, humidity, temperature and light. All timestamped in one place." },
-          { icon: Sun, title: "Ideal conditions", body: "Every plant is matched against a growing catalogue of care profiles for indoor and outdoor life." },
-        ].map(({ icon: Icon, title, body }) => (
-          <div key={title} className="rounded-xl border border-border bg-card p-6">
-            <Icon className="w-6 h-6 text-primary" />
-            <h2 className="mt-3 font-display font-semibold text-lg">{title}</h2>
-            <p className="mt-1 text-sm text-muted-foreground">{body}</p>
-          </div>
-        ))}
-      </section>
 
       <section className="mx-auto max-w-6xl px-4 pb-16">
         <NewsletterCta />
