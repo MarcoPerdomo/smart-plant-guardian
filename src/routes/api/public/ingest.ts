@@ -88,7 +88,7 @@ export const Route = createFileRoute("/api/public/ingest")({
   },
 });
 
-const MOISTURE_SPIKE_PCT = 10;
+const MOISTURE_SPIKE_PCT = 30;
 const AUTO_LOG_COOLDOWN_MS = 6 * 60 * 60 * 1000;
 const PREV_READING_MAX_AGE_MS = 24 * 60 * 60 * 1000;
 
