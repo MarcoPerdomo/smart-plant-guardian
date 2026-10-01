@@ -14,9 +14,10 @@ const STATUS_STYLE: Record<string, string> = {
 export function AdminDeletionRequests() {
   const [all, setAll] = useState(false);
   const qc = useQueryClient();
-  const { data: rows, isLoading } = useQuery({
+  type Row = { id: string; userRef: string; requestedAt: string; scheduledFor: string; status: string };
+  const { data: rows, isLoading } = useQuery<Row[]>({
     queryKey: ["admin", "deletions", all],
-    queryFn: () => listDeletionRequests({ data: { all } }),
+    queryFn: () => listDeletionRequests({ data: { all } }) as Promise<Row[]>,
   });
   const dueCount = (rows ?? []).filter((r) => r.status === "due").length;
 
