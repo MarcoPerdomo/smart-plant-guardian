@@ -50,7 +50,6 @@ function AuthPage() {
   const [needsConsent, setNeedsConsent] = useState(false);
   const [newsletter, setNewsletter] = useState(false);
   const [consentError, setConsentError] = useState(false);
-  const [emailTaken, setEmailTaken] = useState<null | "active" | "pending_deletion">(null);
   const checkEmail = useServerFn(checkSignupEmail);
   const subscribe = useServerFn(subscribeNewsletter);
 
