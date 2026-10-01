@@ -1,9 +1,16 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
-/** Public: tells the sign-up form whether an email already belongs to an account. */
+const emailInput = (i: unknown) => z.object({ email: z.string().trim().email().max(255) }).parse(i);
+
+/**
+ * Public: checks whether an email already belongs to an account (active or
+ * pending deletion). When it does, the existing owner is notified by email
+ * instead of revealing anything to the visitor, so the sign-up form can stay
+ * privacy-preserving and never confirm whether an address is registered.
+ */
 export const checkSignupEmail = createServerFn({ method: "POST" })
-  .inputValidator((i: unknown) => z.object({ email: z.string().trim().email().max(255) }).parse(i))
+  .inputValidator(emailInput)
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const email = data.email.toLowerCase();
@@ -13,6 +20,7 @@ export const checkSignupEmail = createServerFn({ method: "POST" })
       .ilike("email", email)
       .maybeSingle();
     if (!profile) return { status: "available" as const };
+
     const { data: pending } = await supabaseAdmin
       .from("account_deletion_requests")
       .select("id")
@@ -20,5 +28,21 @@ export const checkSignupEmail = createServerFn({ method: "POST" })
       .is("cancelled_at", null)
       .is("completed_at", null)
       .maybeSingle();
-    return { status: pending ? ("pending_deletion" as const) : ("active" as const) };
+    const status = pending ? ("pending_deletion" as const) : ("active" as const);
+
+    // Notify the existing owner; never leak the outcome to the visitor.
+    try {
+      const { sendTemplateEmail } = await import("@/lib/email-templates/send-email");
+      await sendTemplateEmail("signup-attempt-notice", email, {
+        templateData: {
+          signInUrl: "https://sentia-plants.com/auth",
+          resetUrl: "https://sentia-plants.com/auth",
+        },
+        idempotencyKey: `signup-attempt-${profile.id}-${new Date().toISOString().slice(0, 13)}`,
+      });
+    } catch {
+      /* email notice is best-effort, never block or reveal */
+    }
+
+    return { status };
   });
