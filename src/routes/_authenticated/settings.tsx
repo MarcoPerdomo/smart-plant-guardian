@@ -441,6 +441,7 @@ function PrivacySection() {
           >
             <Trash2 className="w-4 h-4" /> Request account deletion
           </button>
+          )
         ) : (
           <div className="w-full rounded-xl border border-destructive/30 bg-destructive/5 p-4">
             <p className="text-sm text-destructive font-medium">This will schedule your account for deletion.</p>

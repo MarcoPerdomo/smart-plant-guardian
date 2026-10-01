@@ -8,7 +8,7 @@ export function DeletionBanner() {
   const keep = useMutation({
     mutationFn: () => cancelAccountDeletion(),
     onSuccess: () => {
-      toast.success("Welcome back, your account will not be deleted.");
+      toast.success("Welcome back, your account will not be deleted.", { duration: 6000 });
       qc.invalidateQueries({ queryKey: ["my-deletion-status"] });
     },
     onError: (e: Error) => toast.error(e.message),
