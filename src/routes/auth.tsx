@@ -48,9 +48,8 @@ function AuthPage() {
   const [loading, setLoading] = useState(false);
   const [consent, setConsent] = useState(false);
   const [needsConsent, setNeedsConsent] = useState(false);
-  const [newsletter, setNewsletter] = useState(true);
+  const [newsletter, setNewsletter] = useState(false);
   const [consentError, setConsentError] = useState(false);
-  const [emailTaken, setEmailTaken] = useState<null | "active" | "pending_deletion">(null);
   const checkEmail = useServerFn(checkSignupEmail);
   const subscribe = useServerFn(subscribeNewsletter);
 
@@ -118,11 +117,12 @@ function AuthPage() {
     setLoading(true);
     try {
         if (mode === "signup") {
-          setEmailTaken(null);
           try {
             const check = await checkEmail({ data: { email } });
             if (check.status !== "available") {
-              setEmailTaken(check.status);
+              // Privacy-preserving: never reveal that the email is registered.
+              // The existing owner is notified by email server-side instead.
+              toast.success("If this email can be used, you'll receive a verification link shortly.");
               return;
             }
           } catch {
@@ -141,7 +141,8 @@ function AuthPage() {
           });
           if (error) throw error;
           if (data.user && data.user.identities && data.user.identities.length === 0) {
-            setEmailTaken("active");
+            // Supabase duplicate-email fallback: stay silent, same neutral message.
+            toast.success("If this email can be used, you'll receive a verification link shortly.");
             return;
           }
           if (data.session) {
@@ -375,7 +376,7 @@ function AuthPage() {
           <form onSubmit={handleSubmit} className="space-y-3">
             <input
               type="email" required placeholder="you@example.com" value={email}
-              onChange={(e) => { setEmail(e.target.value); setEmailTaken(null); }}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full px-3 py-2.5 rounded-lg border border-input bg-background text-sm"
             />
             <input
@@ -401,22 +402,6 @@ function AuthPage() {
               </>
             )}
 
-            {mode === "signup" && emailTaken && (
-              <div role="alert" className="rounded-lg border border-destructive/40 bg-destructive/10 p-3 text-xs leading-relaxed">
-                {emailTaken === "active" ? (
-                  <>This email already has a Sentia account. Sign in instead, or use a different email.</>
-                ) : (
-                  <>This email belongs to an account that is scheduled for deletion. Sign in within the 30-day window to cancel the deletion and keep your account, or use a different email.</>
-                )}
-                <button
-                  type="button"
-                  onClick={() => { setMode("signin"); setEmailTaken(null); setConfirmPassword(""); }}
-                  className="mt-2 block font-medium underline hover:text-primary"
-                >
-                  Go to sign in
-                </button>
-              </div>
-            )}
 
             {mode === "signup" && (
               <div>
