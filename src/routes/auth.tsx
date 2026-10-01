@@ -117,7 +117,6 @@ function AuthPage() {
     setLoading(true);
     try {
         if (mode === "signup") {
-          setEmailTaken(null);
           try {
             const check = await checkEmail({ data: { email } });
             if (check.status !== "available") {
@@ -377,7 +376,7 @@ function AuthPage() {
           <form onSubmit={handleSubmit} className="space-y-3">
             <input
               type="email" required placeholder="you@example.com" value={email}
-              onChange={(e) => { setEmail(e.target.value); setEmailTaken(null); }}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full px-3 py-2.5 rounded-lg border border-input bg-background text-sm"
             />
             <input
