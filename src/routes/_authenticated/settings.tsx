@@ -8,9 +8,9 @@ import { formatDistanceToNow } from "date-fns";
 import { LocationSettings } from "@/components/location-settings";
 import { getMyUsername, setUsername as setUsernameFn, checkUsername } from "@/lib/social.functions";
 import { AtSign, Check, Pencil } from "lucide-react";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { getMySubscription, subscribeNewsletter, unsubscribeNewsletter } from "@/lib/newsletter.functions";
-import { exportMyData, requestAccountDeletion } from "@/lib/privacy.functions";
+import { exportMyData, requestAccountDeletion, cancelAccountDeletion } from "@/lib/privacy.functions";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated/settings")({
@@ -348,18 +348,50 @@ function PrivacySection() {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const navigate = useNavigate();
+  const [scheduledDate, setScheduledDate] = useState<string | null>(null);
+  const [countdown, setCountdown] = useState(0);
+  const [cancelling, setCancelling] = useState(false);
+
   const deleteMut = useMutation({
     mutationFn: () => requestAccountDeletion({ data: { reason: "" } }),
-    onSuccess: async (res) => {
-      const date = new Date(res.scheduledFor).toLocaleDateString(undefined, { dateStyle: "long" });
-      toast.success(`Your account is scheduled for deletion on ${date}. Sign in before then to keep it.`);
+    onSuccess: (res) => {
+      setScheduledDate(new Date(res.scheduledFor).toLocaleDateString(undefined, { dateStyle: "long" }));
+      setCountdown(10);
       setConfirmDelete(false);
       setDeleteText("");
-      await supabase.auth.signOut();
-      window.location.href = "/";
     },
     onError: (e: Error) => toast.error(e.message),
   });
+
+  useEffect(() => {
+    if (!scheduledDate || cancelling) return;
+    if (countdown <= 0) {
+      const date = scheduledDate;
+      (async () => {
+        await supabase.auth.signOut();
+        await navigate({ to: "/" });
+        toast.success(`Your account is scheduled for deletion on ${date}. Sign in before then to keep it.`, {
+          duration: 8000,
+        });
+      })();
+      return;
+    }
+    const t = setTimeout(() => setCountdown((c) => c - 1), 1000);
+    return () => clearTimeout(t);
+  }, [countdown, scheduledDate, cancelling, navigate]);
+
+  async function cancelScheduled() {
+    setCancelling(true);
+    try {
+      await cancelAccountDeletion();
+      setScheduledDate(null);
+      toast.success("Deletion cancelled, your account is safe.", { duration: 6000 });
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : String(e));
+    }
+    setCancelling(false);
+  }
 
   return (
     <section className="rounded-2xl border border-border bg-card p-5">
@@ -382,12 +414,34 @@ function PrivacySection() {
         </button>
 
         {!confirmDelete ? (
+          scheduledDate ? (
+          <div className="w-full rounded-xl border border-destructive/30 bg-destructive/5 p-4" role="status">
+            <p className="text-sm font-medium text-destructive">
+              Your account is scheduled for deletion on {scheduledDate}.
+            </p>
+            <p className="mt-1 text-xs text-muted-foreground">Signing you out in {countdown}s.</p>
+            <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-muted">
+              <div
+                className="h-full bg-destructive transition-all duration-1000 ease-linear"
+                style={{ width: `${(countdown / 10) * 100}%` }}
+              />
+            </div>
+            <button
+              onClick={cancelScheduled}
+              disabled={cancelling}
+              className="mt-3 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium disabled:opacity-50"
+            >
+              {cancelling ? "Cancelling…" : "Cancel"}
+            </button>
+          </div>
+          ) : (
           <button
             onClick={() => setConfirmDelete(true)}
             className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-destructive/30 text-sm text-destructive hover:bg-destructive/10"
           >
             <Trash2 className="w-4 h-4" /> Request account deletion
           </button>
+          )
         ) : (
           <div className="w-full rounded-xl border border-destructive/30 bg-destructive/5 p-4">
             <p className="text-sm text-destructive font-medium">This will schedule your account for deletion.</p>

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { listArchive, restoreRecord } from "@/lib/admin.functions";
 import { RotateCcw } from "lucide-react";
+import { AdminDeletionRequests } from "@/components/admin-deletion-requests";
 
 export const Route = createFileRoute("/_authenticated/admin/archive")({
   component: AdminArchive,
@@ -39,6 +40,7 @@ function AdminArchive() {
 
   return (
     <div className="space-y-4">
+      <AdminDeletionRequests />
       <label className="flex items-center gap-2 text-sm text-muted-foreground">
         <input
           type="checkbox"

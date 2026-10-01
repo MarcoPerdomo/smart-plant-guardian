@@ -312,3 +312,108 @@ export const restoreRecord = createServerFn({ method: "POST" })
 
     return { ok: true };
   });
+
+// ---------- Account deletions ----------
+
+export const listDeletionRequests = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) => z.object({ all: z.boolean().default(false) }).parse(d ?? {}))
+  .handler(async ({ context, data }) => {
+    await assertAdmin(context);
+    let q: any = (context.supabase as any)
+      .from("account_deletion_requests")
+      .select("id, user_id, requested_at, scheduled_for, cancelled_at, completed_at")
+      .order("scheduled_for", { ascending: true })
+      .limit(500);
+    if (!data.all) q = q.is("cancelled_at", null).is("completed_at", null);
+    const { data: rows, error } = await q;
+    if (error) throw new Error(error.message);
+    const now = Date.now();
+    return (rows ?? []).map((r: any) => ({
+      id: r.id as string,
+      userRef: String(r.user_id).slice(0, 8),
+      requestedAt: r.requested_at as string,
+      scheduledFor: r.scheduled_for as string,
+      status: r.completed_at
+        ? "completed"
+        : r.cancelled_at
+          ? "cancelled"
+          : new Date(r.scheduled_for).getTime() <= now
+            ? "due"
+            : "pending",
+    }));
+  });
+
+async function listFolder(admin: any, bucket: string, prefix: string): Promise<string[]> {
+  const out: string[] = [];
+  const { data } = await admin.storage.from(bucket).list(prefix, { limit: 1000 });
+  for (const item of data ?? []) {
+    const path = `${prefix}/${item.name}`;
+    if (item.id) out.push(path);
+    else out.push(...(await listFolder(admin, bucket, path)));
+  }
+  return out;
+}
+
+export const processDueDeletions = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const admin = supabaseAdmin as any;
+
+    const { data: due, error } = await admin
+      .from("account_deletion_requests")
+      .select("id, user_id, requested_at")
+      .is("cancelled_at", null)
+      .is("completed_at", null)
+      .lte("scheduled_for", new Date().toISOString());
+    if (error) throw new Error(error.message);
+
+    let deleted = 0;
+    let files = 0;
+    const failures: { userRef: string; reason: string }[] = [];
+
+    for (const r of due ?? []) {
+      const uid = r.user_id as string;
+      try {
+        const { data: photos } = await admin.from("plant_photos").select("storage_path").eq("user_id", uid);
+        const imagePaths = new Set<string>((photos ?? []).map((p: any) => p.storage_path).filter(Boolean));
+        for (const p of await listFolder(admin, "plant-images", uid)) imagePaths.add(p);
+        if (imagePaths.size) {
+          const { error: e } = await admin.storage.from("plant-images").remove([...imagePaths]);
+          if (e) throw new Error(`photos: ${e.message}`);
+          files += imagePaths.size;
+        }
+
+        const { data: fb } = await admin.from("feedback").select("screenshot_path").eq("user_id", uid);
+        const shots = (fb ?? []).map((f: any) => f.screenshot_path).filter(Boolean);
+        for (const p of await listFolder(admin, "feedback-screenshots", uid)) if (!shots.includes(p)) shots.push(p);
+        if (shots.length) {
+          const { error: e } = await admin.storage.from("feedback-screenshots").remove(shots);
+          if (e) throw new Error(`screenshots: ${e.message}`);
+          files += shots.length;
+        }
+
+        const { error: delErr } = await admin.auth.admin.deleteUser(uid);
+        if (delErr) throw new Error(delErr.message);
+
+        await admin
+          .from("account_deletion_requests")
+          .update({ completed_at: new Date().toISOString(), reason: null })
+          .eq("id", r.id);
+        await admin.from("archived_records").insert({
+          entity_type: "account_deleted",
+          entity_id: uid,
+          owner_id: null,
+          snapshot: { requested_at: r.requested_at, deleted_at: new Date().toISOString() },
+          reason: "Account deleted after 30-day grace period",
+          archived_by: context.userId,
+        });
+        deleted++;
+      } catch (e) {
+        failures.push({ userRef: uid.slice(0, 8), reason: e instanceof Error ? e.message : String(e) });
+      }
+    }
+    return { deleted, files, failures };
+  });
