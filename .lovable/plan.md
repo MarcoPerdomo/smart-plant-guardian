@@ -1,22 +1,31 @@
-# Branded sign-up emails with a working code
+# Fix code length mismatch on sign-up verification
 
-## What is happening
-- The branded Sentia emails (with the 6-digit code) already exist in the app, and the sender domain notify.sentia-plants.com is verified.
-- But your login system is connected to your own Supabase project, not one Lovable manages. Lovable cannot switch that project over to the Sentia emails, so Supabase keeps sending its plain default email from noreply@mail.app.supabase.io (confirmed in the sign-in logs).
-- That default email only contains a link, no code. That is why the code box on the sign-up page never gets a code.
+## Root cause
+Supabase creates the code (`{{ .Token }}`) using its own **Email OTP Length** setting. You're using your own Supabase project, so it uses that setting, and your email shows 8 digits. The Sentia sign-up page assumes the code is always 6 digits:
+- the input field cuts off anything after 6 characters (`maxLength={6}` and `.slice(0, 6)`)
+- "Verify and continue" stays disabled unless the code has exactly 6 digits
+- the check before submitting rejects anything that isn't 6 digits
+- the text on the page and in the error messages says "6-digit code"
 
-## The fix (done in your Supabase dashboard, I will give exact text to paste)
-1. **Authentication > Emails > Templates > "Confirm signup"**: replace the subject and body with a Sentia-branded version (green header, logo, wording matching the app) that shows both the 6-digit code and the confirm button. I will prepare the full HTML for this and the other templates (reset password, magic link, change email, reauthentication) so all match.
-2. **Authentication > Emails > SMTP settings**: turn on custom SMTP so emails come from "Sentia <noreply@sentia-plants.com>" instead of Supabase, and the "powered by Supabase" footer disappears. This needs an SMTP provider login (for example Brevo, which you already looked at, free up to 300 emails a day). The current notify.sentia-plants.com setup cannot be used as SMTP.
-3. **Authentication > Providers > Email**: keep "Confirm email" on, and set the email code length to 6 to match the code boxes in the app.
-4. **Sign-in rate limit**: once custom SMTP is on, raise the hourly email limit so test sign-ups are not blocked.
+So an 8-digit code gets cut to 6 and always fails. Nothing is broken in the email itself.
 
-## In the app
-- Check the sign-up page accepts the 6-digit code and that "Resend code" works with the new template.
-- Test a full sign-up again and confirm the code and link both work.
+## Fix (two parts, both recommended)
+
+1. **Make the sign-up page accept any length (in the app)**
+   - Accept codes from 6 to 10 digits, which is the range Supabase allows.
+   - Paste-friendly: strip spaces or dashes, keep digits only.
+   - Turn on "Verify and continue" once the code has at least 6 digits.
+   - Neutral text: "We sent a verification code to ..." and "Please enter the code from your email."
+   - Widen the input slightly so 8 to 10 digits fit with the current spacing between digits.
+   - Keep the same look, no em dashes.
+
+2. **Pick one length in Supabase (you do this)**
+   - Supabase Dashboard, Authentication, then Providers, Email: set **Email OTP Length** to the length you want (6 is the most common and easiest to type). With part 1 in place, 6 or 8 both work.
+
+## Out of scope
+The email template, the Brevo SMTP setup, and the rest of the sign-in flow stay as they are.
 
 ## Technical details
-- Supabase templates use Go variables: `{{ .Token }}` for the code, `{{ .ConfirmationURL }}` for the link, `{{ .SiteURL }}` set to https://sentia-plants.com.
-- I will generate the HTML from the existing React Email templates in `src/lib/email-templates/` so styling stays identical, and save the output files for you to copy.
-- `verifyOtp({ type: "signup" })` in `src/routes/auth.tsx` already handles the code; only a length check may need adjusting.
-- The Lovable auth webhook route stays in place but unused unless the project later moves to Lovable-managed Cloud.
+- File: `src/routes/auth.tsx` only (verify view and `handleVerify`).
+- Constants `OTP_MIN = 6`, `OTP_MAX = 10`. Validate `token.length >= OTP_MIN && token.length <= OTP_MAX`. `verifyOtp({ type: "signup" })` doesn't change.
+- Testing: with a signed-out browser, check that an 8-digit code typed into the field stays complete and enables the button.
