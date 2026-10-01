@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      account_deletion_requests: {
+        Row: {
+          cancelled_at: string | null
+          completed_at: string | null
+          created_at: string
+          id: string
+          reason: string | null
+          requested_at: string
+          scheduled_for: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cancelled_at?: string | null
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          reason?: string | null
+          requested_at?: string
+          scheduled_for?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cancelled_at?: string | null
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          reason?: string | null
+          requested_at?: string
+          scheduled_for?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       ai_summaries: {
         Row: {
           created_at: string
@@ -1587,6 +1623,7 @@ export type Database = {
           username: string
         }[]
       }
+      process_due_account_deletions: { Args: never; Returns: number }
       profiles_public_by_ids: {
         Args: { _ids: string[] }
         Returns: {
