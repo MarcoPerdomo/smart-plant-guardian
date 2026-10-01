@@ -5,6 +5,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { Leaf } from "lucide-react";
 import { toast } from "sonner";
 import { BetaBadge } from "@/components/beta-banner";
+import { useServerFn } from "@tanstack/react-start";
+import { checkSignupEmail } from "@/lib/signup-check.functions";
+import { subscribeNewsletter } from "@/lib/newsletter.functions";
+
+const NEWSLETTER_FLAG = "sentia_signup_newsletter";
 
 export const Route = createFileRoute("/auth")({
   ssr: false,
@@ -43,6 +48,23 @@ function AuthPage() {
   const [loading, setLoading] = useState(false);
   const [consent, setConsent] = useState(false);
   const [needsConsent, setNeedsConsent] = useState(false);
+  const [newsletter, setNewsletter] = useState(true);
+  const [consentError, setConsentError] = useState(false);
+  const [emailTaken, setEmailTaken] = useState<null | "active" | "pending_deletion">(null);
+  const checkEmail = useServerFn(checkSignupEmail);
+  const subscribe = useServerFn(subscribeNewsletter);
+
+  async function applyPendingNewsletter(userEmail?: string | null) {
+    try {
+      const flagged = localStorage.getItem(NEWSLETTER_FLAG);
+      if (!flagged || (userEmail && flagged !== userEmail.toLowerCase())) return;
+      localStorage.removeItem(NEWSLETTER_FLAG);
+      await subscribe({ data: {} });
+      toast.success("Check your inbox to confirm your newsletter subscription.");
+    } catch {
+      /* newsletter is optional, never block sign-up */
+    }
+  }
 
   useEffect(() => {
     if (resendIn <= 0) return;
@@ -61,6 +83,7 @@ function AuthPage() {
 
     supabase.auth.getUser().then(({ data }) => {
       if (data.user) {
+        void applyPendingNewsletter(data.user.email);
         checkLegalAcceptance(data.user.id).then((accepted) => {
           if (accepted) {
             navigate({ href: next || "/dashboard", replace: true });
@@ -73,13 +96,14 @@ function AuthPage() {
   }, [navigate, next]);
 
   const passwordMismatch = mode === "signup" && confirmPassword.length > 0 && password !== confirmPassword;
-  const signupReady = password.length >= 8 && password === confirmPassword && consent;
+  const signupReady = password.length >= 8 && password === confirmPassword;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (mode === "signup") {
       if (!consent) {
-        toast.error("Please accept the Terms and Privacy Policy to continue.");
+        setConsentError(true);
+        toast.error("You must accept the Terms of Service and Privacy Policy to sign up.");
         return;
       }
       if (password.length < 8) {
@@ -94,13 +118,34 @@ function AuthPage() {
     setLoading(true);
     try {
         if (mode === "signup") {
+          setEmailTaken(null);
+          try {
+            const check = await checkEmail({ data: { email } });
+            if (check.status !== "available") {
+              setEmailTaken(check.status);
+              return;
+            }
+          } catch {
+            /* fall through, Supabase still rejects duplicates */
+          }
+          try {
+            if (newsletter) localStorage.setItem(NEWSLETTER_FLAG, email.trim().toLowerCase());
+            else localStorage.removeItem(NEWSLETTER_FLAG);
+          } catch {
+            /* ignore storage errors */
+          }
           const { data, error } = await supabase.auth.signUp({
             email,
             password,
             options: { emailRedirectTo: `${window.location.origin}/auth?${new URLSearchParams({ next }).toString()}` },
           });
           if (error) throw error;
+          if (data.user && data.user.identities && data.user.identities.length === 0) {
+            setEmailTaken("active");
+            return;
+          }
           if (data.session) {
+            await applyPendingNewsletter(data.user?.email);
             // Confirmation disabled: already signed in.
             if (data.user) await recordAcceptance(data.user.id);
             navigate({ href: next || "/dashboard", replace: true });
@@ -163,6 +208,7 @@ function AuthPage() {
         await recordAcceptance(data.user.id);
         setPendingConsent(false);
       }
+      if (data.user) await applyPendingNewsletter(data.user.email);
       if (data.user) {
         const accepted = await checkLegalAcceptance(data.user.id);
         if (!accepted) {
@@ -329,7 +375,7 @@ function AuthPage() {
           <form onSubmit={handleSubmit} className="space-y-3">
             <input
               type="email" required placeholder="you@example.com" value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => { setEmail(e.target.value); setEmailTaken(null); }}
               className="w-full px-3 py-2.5 rounded-lg border border-input bg-background text-sm"
             />
             <input
@@ -355,20 +401,60 @@ function AuthPage() {
               </>
             )}
 
+            {mode === "signup" && emailTaken && (
+              <div role="alert" className="rounded-lg border border-destructive/40 bg-destructive/10 p-3 text-xs leading-relaxed">
+                {emailTaken === "active" ? (
+                  <>This email already has a Sentia account. Sign in instead, or use a different email.</>
+                ) : (
+                  <>This email belongs to an account that is scheduled for deletion. Sign in within the 30-day window to cancel the deletion and keep your account, or use a different email.</>
+                )}
+                <button
+                  type="button"
+                  onClick={() => { setMode("signin"); setEmailTaken(null); setConfirmPassword(""); }}
+                  className="mt-2 block font-medium underline hover:text-primary"
+                >
+                  Go to sign in
+                </button>
+              </div>
+            )}
+
             {mode === "signup" && (
-              <label className="flex items-start gap-3 rounded-lg border border-border p-3 cursor-pointer">
+              <div>
+              <label className={`flex items-start gap-3 rounded-lg border p-3 cursor-pointer ${consentError ? "border-destructive" : "border-border"}`}>
                 <input
                   type="checkbox"
                   checked={consent}
-                  onChange={(e) => setConsent(e.target.checked)}
-                  required
+                  onChange={(e) => { setConsent(e.target.checked); if (e.target.checked) setConsentError(false); }}
+                  aria-invalid={consentError}
                   className="mt-0.5 h-4 w-4"
                 />
                 <span className="text-xs leading-relaxed text-muted-foreground">
                   I agree to the{" "}
                   <Link to="/terms" target="_blank" className="underline hover:text-foreground">Terms of Service</Link>{" "}
                   and{" "}
-                  <Link to="/privacy" target="_blank" className="underline hover:text-foreground">Privacy Policy</Link>.
+                  <Link to="/privacy" target="_blank" className="underline hover:text-foreground">Privacy Policy</Link>.{" "}
+                  <span className="font-medium text-foreground">(required)</span>
+                </span>
+              </label>
+              {consentError && (
+                <p role="alert" className="mt-1.5 text-xs text-destructive">
+                  Accepting the Terms of Service and Privacy Policy is mandatory to create an account.
+                </p>
+              )}
+              </div>
+            )}
+
+            {mode === "signup" && (
+              <label className="flex items-start gap-3 rounded-lg border border-border p-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={newsletter}
+                  onChange={(e) => setNewsletter(e.target.checked)}
+                  className="mt-0.5 h-4 w-4"
+                />
+                <span className="text-xs leading-relaxed text-muted-foreground">
+                  Send me the Sentia newsletter and product updates. You can unsubscribe anytime.{" "}
+                  <span className="italic">(optional)</span>
                 </span>
               </label>
             )}
