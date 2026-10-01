@@ -60,24 +60,52 @@ export const exportMyData = createServerFn({ method: "GET" })
     return { json: JSON.stringify(payload, null, 2) };
   });
 
+type DeletionRow = { id: string; scheduled_for: string; requested_at: string };
+// New table, typed loosely until generated types refresh.
+const deletionTable = (supabase: unknown) =>
+  (supabase as { from: (t: string) => any }).from("account_deletion_requests");
+
 export const requestAccountDeletion = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data) => z.object({ reason: z.string().max(500).optional() }).parse(data))
   .handler(async ({ context, data }) => {
     const { supabase, userId } = context;
+    const existing = await deletionTable(supabase)
+      .select("id, scheduled_for, requested_at")
+      .eq("user_id", userId)
+      .is("cancelled_at", null)
+      .is("completed_at", null)
+      .maybeSingle();
+    if (existing.data) return { scheduledFor: (existing.data as DeletionRow).scheduled_for };
 
-    const { data: profile } = await supabase.from("profiles").select("email").eq("id", userId).single();
+    const { data: row, error } = await deletionTable(supabase)
+      .insert({ user_id: userId, reason: data.reason || null })
+      .select("scheduled_for")
+      .single();
+    if (error) throw new Error(error.message);
+    return { scheduledFor: (row as DeletionRow).scheduled_for };
+  });
 
-    const { error } = await supabase.from("archived_records").insert({
-      entity_type: "account_deletion_request",
-      entity_id: userId,
-      owner_id: userId,
-      snapshot: { requested_at: new Date().toISOString(), email: profile?.email ?? null, reason: data.reason ?? null },
-      reason: data.reason ?? "User requested account deletion",
-      archived_by: userId,
-    });
+export const getMyDeletionStatus = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { data } = await deletionTable(context.supabase)
+      .select("id, scheduled_for, requested_at")
+      .eq("user_id", context.userId)
+      .is("cancelled_at", null)
+      .is("completed_at", null)
+      .maybeSingle();
+    return { scheduledFor: (data as DeletionRow | null)?.scheduled_for ?? null };
+  });
 
-    if (error) throw error;
-
+export const cancelAccountDeletion = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { error } = await deletionTable(context.supabase)
+      .update({ cancelled_at: new Date().toISOString() })
+      .eq("user_id", context.userId)
+      .is("cancelled_at", null)
+      .is("completed_at", null);
+    if (error) throw new Error(error.message);
     return { ok: true };
   });

@@ -349,10 +349,13 @@ function PrivacySection() {
 
   const deleteMut = useMutation({
     mutationFn: () => requestAccountDeletion({ data: { reason: "" } }),
-    onSuccess: () => {
-      toast.success("Account deletion requested. We will process it within 30 days.");
+    onSuccess: async (res) => {
+      const date = new Date(res.scheduledFor).toLocaleDateString(undefined, { dateStyle: "long" });
+      toast.success(`Your account is scheduled for deletion on ${date}. Sign in before then to keep it.`);
       setConfirmDelete(false);
       setDeleteText("");
+      await supabase.auth.signOut();
+      window.location.href = "/";
     },
     onError: (e: Error) => toast.error(e.message),
   });
