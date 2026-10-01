@@ -16,4 +16,8 @@
 - [x] Refine the plant workspace with quicker watering, event deletion, and reordered summaries.
 - [x] Add latest-photo thumbnails to dashboard plant cards.
 - [x] Give the newsletter section more breathing room below the journey section.
-- [x] Revamp the homepage "How it works" section into an editorial journey layout.
+- [x] Revamp the homepage "How it works" section into an editorial journey layout.- [x] Fix account deletion with a 30-day grace period and "Keep my account" banner.
+- [x] Add 10-second countdown with Cancel after confirming deletion.
+- [x] Admin "Process due deletions" button that also removes photo files.
+- [x] Account deletions list in the admin Archive tab.
+- [x] Lock down internal-only database helpers flagged by the security check.
