@@ -8,9 +8,9 @@ import { formatDistanceToNow } from "date-fns";
 import { LocationSettings } from "@/components/location-settings";
 import { getMyUsername, setUsername as setUsernameFn, checkUsername } from "@/lib/social.functions";
 import { AtSign, Check, Pencil } from "lucide-react";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { getMySubscription, subscribeNewsletter, unsubscribeNewsletter } from "@/lib/newsletter.functions";
-import { exportMyData, requestAccountDeletion } from "@/lib/privacy.functions";
+import { exportMyData, requestAccountDeletion, cancelAccountDeletion } from "@/lib/privacy.functions";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated/settings")({

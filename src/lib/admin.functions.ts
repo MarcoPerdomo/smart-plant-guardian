@@ -272,7 +272,7 @@ export const listArchive = createServerFn({ method: "POST" })
     if (!data.includeRestored) query = query.is("restored_at", null);
     const { data: rows, error } = await query;
     if (error) throw new Error(error.message);
-    return (rows ?? []).map((r: any) => ({
+    return (rows ?? []).map((r: any): { id: string; userRef: string; requestedAt: string; scheduledFor: string; status: string } => ({
       id: r.id,
       entity_type: r.entity_type,
       entity_id: r.entity_id,
@@ -329,7 +329,7 @@ export const listDeletionRequests = createServerFn({ method: "GET" })
     const { data: rows, error } = await q;
     if (error) throw new Error(error.message);
     const now = Date.now();
-    return (rows ?? []).map((r: any) => ({
+    return (rows ?? []).map((r: any): { id: string; userRef: string; requestedAt: string; scheduledFor: string; status: string } => ({
       id: r.id as string,
       userRef: String(r.user_id).slice(0, 8),
       requestedAt: r.requested_at as string,
