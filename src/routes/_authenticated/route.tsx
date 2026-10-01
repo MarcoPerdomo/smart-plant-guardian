@@ -36,6 +36,7 @@ import { WeatherChip } from "@/components/weather-chip";
 import { UsernameGate } from "@/components/social/username-gate";
 import { BetaBanner, BetaBadge } from "@/components/beta-banner";
 import { FeedbackForm } from "@/components/feedback-form";
+import { DeletionBanner } from "@/components/deletion-banner";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -570,6 +571,7 @@ function AuthedLayout() {
         </div>
       </header>
       <main className="mx-auto max-w-6xl px-4 py-8">
+        <DeletionBanner />
         <Outlet />
       </main>
       <UsernameGate />

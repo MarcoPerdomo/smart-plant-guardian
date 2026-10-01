@@ -11,6 +11,7 @@ import { AtSign, Check, Pencil } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { getMySubscription, subscribeNewsletter, unsubscribeNewsletter } from "@/lib/newsletter.functions";
 import { exportMyData, requestAccountDeletion } from "@/lib/privacy.functions";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated/settings")({
   component: Settings,
@@ -349,10 +350,13 @@ function PrivacySection() {
 
   const deleteMut = useMutation({
     mutationFn: () => requestAccountDeletion({ data: { reason: "" } }),
-    onSuccess: () => {
-      toast.success("Account deletion requested. We will process it within 30 days.");
+    onSuccess: async (res) => {
+      const date = new Date(res.scheduledFor).toLocaleDateString(undefined, { dateStyle: "long" });
+      toast.success(`Your account is scheduled for deletion on ${date}. Sign in before then to keep it.`);
       setConfirmDelete(false);
       setDeleteText("");
+      await supabase.auth.signOut();
+      window.location.href = "/";
     },
     onError: (e: Error) => toast.error(e.message),
   });
