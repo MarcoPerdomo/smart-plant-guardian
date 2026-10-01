@@ -11,6 +11,7 @@ import { AtSign, Check, Pencil } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { getMySubscription, subscribeNewsletter, unsubscribeNewsletter } from "@/lib/newsletter.functions";
 import { exportMyData, requestAccountDeletion } from "@/lib/privacy.functions";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated/settings")({
   component: Settings,
