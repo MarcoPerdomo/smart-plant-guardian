@@ -426,7 +426,7 @@ export const updateProfile = createServerFn({ method: "POST" })
     notify_sms: z.boolean(),
   }).parse(i))
   .handler(async ({ data, context }) => {
-    const { error } = await context.supabase.from("profiles").upsert({ id: context.userId, ...data });
+    const { error } = await context.supabase.from("profiles").upsert({ id: context.userId, ...data, notify_sms: false });
     if (error) throw new Error(error.message);
     return { ok: true };
   });

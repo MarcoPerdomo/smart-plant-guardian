@@ -21,3 +21,5 @@
 - [x] Admin "Process due deletions" button that also removes photo files.
 - [x] Account deletions list in the admin Archive tab.
 - [x] Lock down internal-only database helpers flagged by the security check.
+- [x] Make dashboard cards weather-first with optional sensor views for enabled plants.
+- [x] Keep SMS notifications disabled and marked as coming soon.

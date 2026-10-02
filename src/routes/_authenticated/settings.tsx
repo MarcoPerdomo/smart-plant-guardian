@@ -27,7 +27,6 @@ function Settings() {
   const [phone, setPhone] = useState("");
   const [inApp, setInApp] = useState(true);
   const [email, setEmail] = useState(false);
-  const [sms, setSms] = useState(false);
 
   useEffect(() => {
     if (profile) {
@@ -35,14 +34,13 @@ function Settings() {
       setPhone(profile.phone ?? "");
       setInApp(profile.notify_in_app);
       setEmail(profile.notify_email);
-      setSms(profile.notify_sms);
     }
   }, [profile]);
 
   const saveMut = useMutation({
     mutationFn: () => updateProfile({ data: {
       display_name: displayName || null, phone: phone || null,
-      notify_in_app: inApp, notify_email: email, notify_sms: sms,
+      notify_in_app: inApp, notify_email: email, notify_sms: false,
     } }),
     onSuccess: () => { toast.success("Saved"); qc.invalidateQueries({ queryKey: ["profile"] }); },
     onError: (e: Error) => toast.error(e.message),
@@ -75,7 +73,7 @@ function Settings() {
         <div className="mt-4 space-y-3">
           <Toggle icon={Bell} label="In-app" desc="Feed on this page and status badges." value={inApp} onChange={setInApp} />
           <Toggle icon={Mail} label="Email" desc="Needs an email provider connected." value={email} onChange={setEmail} />
-          <Toggle icon={MessageSquare} label="SMS" desc="Needs Twilio (or similar) connected." value={sms} onChange={setSms} />
+          <Toggle icon={MessageSquare} label="SMS" desc="Coming soon" value={false} onChange={() => {}} disabled />
         </div>
       </section>
 
@@ -145,15 +143,15 @@ function Settings() {
   );
 }
 
-function Toggle({ icon: Icon, label, desc, value, onChange }: { icon: React.ElementType; label: string; desc: string; value: boolean; onChange: (v: boolean) => void }) {
+function Toggle({ icon: Icon, label, desc, value, onChange, disabled = false }: { icon: React.ElementType; label: string; desc: string; value: boolean; onChange: (v: boolean) => void; disabled?: boolean }) {
   return (
-    <label className="flex items-start gap-3 p-3 rounded-lg border border-border hover:bg-muted/40 cursor-pointer">
-      <Icon className="w-5 h-5 mt-0.5 text-primary" />
+    <label className={`flex items-start gap-3 p-3 rounded-lg border border-border ${disabled ? "cursor-not-allowed bg-muted/50 opacity-60" : "cursor-pointer hover:bg-muted/40"}`}>
+      <Icon className={`w-5 h-5 mt-0.5 ${disabled ? "text-muted-foreground" : "text-primary"}`} />
       <div className="flex-1">
         <div className="font-medium text-sm">{label}</div>
         <div className="text-xs text-muted-foreground">{desc}</div>
       </div>
-      <input type="checkbox" checked={value} onChange={(e) => onChange(e.target.checked)} className="w-5 h-5 accent-primary" />
+      <input type="checkbox" checked={value} onChange={(e) => onChange(e.target.checked)} disabled={disabled} className="w-5 h-5 accent-primary" />
     </label>
   );
 }
