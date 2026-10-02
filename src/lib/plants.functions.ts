@@ -449,6 +449,33 @@ export const generateSummary = createServerFn({ method: "POST" })
     const { data: plant } = await context.supabase
       .from("user_plants").select("*, plant_species(*)").eq("id", data.plant_id).eq("user_id", context.userId).maybeSingle();
     if (!plant) throw new Error("Plant not found");
+
+    // Daily AI check limits: 3 per plant, 20 per user (reset at UTC midnight).
+    {
+      const AI_PER_PLANT_DAY = 3;
+      const AI_PER_USER_DAY = 20;
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      const dayStart = new Date();
+      dayStart.setUTCHours(0, 0, 0, 0);
+      const since = dayStart.toISOString();
+      const { count: plantCount } = await supabaseAdmin
+        .from("ai_summaries").select("id", { count: "exact", head: true })
+        .eq("plant_id", data.plant_id).gte("created_at", since);
+      if ((plantCount ?? 0) >= AI_PER_PLANT_DAY) {
+        throw new Error(`You've used all ${AI_PER_PLANT_DAY} AI checks for ${plant.nickname} today. Please try again tomorrow.`);
+      }
+      const { data: myPlants } = await supabaseAdmin
+        .from("user_plants").select("id").eq("user_id", context.userId);
+      const ids = (myPlants ?? []).map((p) => p.id);
+      if (ids.length) {
+        const { count: userCount } = await supabaseAdmin
+          .from("ai_summaries").select("id", { count: "exact", head: true })
+          .in("plant_id", ids).gte("created_at", since);
+        if ((userCount ?? 0) >= AI_PER_USER_DAY) {
+          throw new Error(`You've reached your daily limit of ${AI_PER_USER_DAY} AI checks. Please try again tomorrow.`);
+        }
+      }
+    }
     const { data: readings } = await context.supabase
       .from("sensor_readings").select("*").eq("plant_id", data.plant_id)
       .order("recorded_at", { ascending: false }).limit(50);
