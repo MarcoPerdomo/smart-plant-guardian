@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import { listUserPlants, generateSummary, logWatering } from "@/lib/plants.functions";
 import { getWeatherForMe } from "@/lib/weather.functions";
 import { computeStatus, predictNextWatering } from "@/lib/plant-status";
@@ -8,6 +9,7 @@ import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
 import { SensorHint, SENSOR_HINTS } from "@/components/sensor-hint";
 import { EnvironmentBadge } from "@/components/environment-badge";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   component: Dashboard,
@@ -27,6 +29,7 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 
 function Dashboard() {
   const qc = useQueryClient();
+  const [sensorViews, setSensorViews] = useState<Set<string>>(() => new Set());
   const { data: plants, isLoading } = useQuery({
     queryKey: ["user_plants"],
     queryFn: () => listUserPlants(),
@@ -105,6 +108,16 @@ function Dashboard() {
             unknown: "bg-muted text-muted-foreground",
           }[status.status];
           const plantAlerts = (weather?.alerts ?? []).filter((a) => a.plant_id === p.id);
+          const showingSensors = p.sensor_enabled && sensorViews.has(p.id);
+
+          function setShowingSensors(show: boolean) {
+            setSensorViews((current) => {
+              const next = new Set(current);
+              if (show) next.add(p.id);
+              else next.delete(p.id);
+              return next;
+            });
+          }
 
           return (
             <div key={p.id} className="rounded-2xl border border-border bg-card p-5 flex flex-col">
@@ -127,37 +140,60 @@ function Dashboard() {
                 <span className={`text-xs font-medium px-2 py-1 rounded-full ${statusColor}`}>{status.label}</span>
               </div>
 
-              {plantAlerts.length > 0 && (
-                <ul className="mt-3 space-y-1.5">
-                  {plantAlerts.map((a) => (
-                    <li
-                      key={a.rule}
-                      title={a.message}
-                      className={`text-[11px] px-2 py-1.5 rounded-md flex items-start gap-1.5 ${a.severity === "warning" ? "bg-warning/15 text-warning-foreground" : "bg-muted text-muted-foreground"}`}
+              <div className="mt-4 min-h-32 rounded-md border border-border bg-muted/20 p-3">
+                <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
+                  <h3 className="flex min-w-0 items-center gap-1.5 truncate text-xs font-semibold">
+                    <CloudSun className="h-4 w-4 shrink-0 text-primary" />
+                    {showingSensors ? "Sensor data" : "Weather watch today"}
+                  </h3>
+                  {p.sensor_enabled && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 shrink-0 px-2"
+                      onClick={() => setShowingSensors(!showingSensors)}
                     >
-                      <CloudSun className="w-3.5 h-3.5 mt-px shrink-0" />
-                      <span>{a.message}</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
+                      {showingSensors ? "Weather watch" : "View sensors"}
+                    </Button>
+                  )}
+                </div>
 
-
-              <div className="mt-4 grid grid-cols-3 gap-2 text-center">
-                <Stat icon={Droplets} label="Moisture" hint={SENSOR_HINTS.moisture} value={latest?.soil_moisture != null ? `${Math.round(latest.soil_moisture)}%` : "Not available"} />
-                <Stat icon={Thermometer} label="Temp" hint={SENSOR_HINTS.temp} value={latest?.temperature_c != null ? `${latest.temperature_c.toFixed(1)}°` : "Not available"} />
-                <Stat icon={Sun} label="Light" hint={SENSOR_HINTS.light} value={latest?.light_lux != null ? `${Math.round(latest.light_lux)}%` : "Not available"} />
+                {showingSensors ? (
+                  <>
+                    <div className="mt-3 grid grid-cols-3 gap-2 text-center">
+                      <Stat icon={Droplets} label="Moisture" hint={SENSOR_HINTS.moisture} value={latest?.soil_moisture != null ? `${Math.round(latest.soil_moisture)}%` : "Not available"} />
+                      <Stat icon={Thermometer} label="Temp" hint={SENSOR_HINTS.temp} value={latest?.temperature_c != null ? `${latest.temperature_c.toFixed(1)}°` : "Not available"} />
+                      <Stat icon={Sun} label="Light" hint={SENSOR_HINTS.light} value={latest?.light_lux != null ? `${Math.round(latest.light_lux)}%` : "Not available"} />
+                    </div>
+                    {latest?.recorded_at && (
+                      <p className="mt-2 text-[11px] text-muted-foreground">
+                        Last reading {formatDistanceToNow(new Date(latest.recorded_at), { addSuffix: true })}
+                      </p>
+                    )}
+                  </>
+                ) : plantAlerts.length > 0 ? (
+                  <ul className="mt-3 space-y-1.5">
+                    {plantAlerts.map((a) => (
+                      <li
+                        key={a.rule}
+                        title={a.message}
+                        className={`flex items-start gap-1.5 rounded-md px-2 py-1.5 text-[11px] ${a.severity === "warning" ? "bg-warning/15 text-warning-foreground" : "bg-muted text-muted-foreground"}`}
+                      >
+                        <CloudSun className="mt-px h-3.5 w-3.5 shrink-0" />
+                        <span>{a.message}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="mt-3 text-xs text-muted-foreground">No weather warnings today.</p>
+                )}
               </div>
 
               <div className="mt-4 flex items-center justify-between text-xs">
                 <span className="text-muted-foreground">Next water</span>
                 <span className="font-medium">{nextWater.label}</span>
               </div>
-              {latest?.recorded_at && (
-                <div className="mt-1 text-xs text-muted-foreground">
-                  Last reading {formatDistanceToNow(new Date(latest.recorded_at), { addSuffix: true })}
-                </div>
-              )}
 
               <div className="mt-4 flex gap-2">
                 <button
