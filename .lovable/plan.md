@@ -1,31 +1,26 @@
-# Fix code length mismatch on sign-up verification
+# Dashboard card and SMS notification refinements
 
-## Root cause
-Supabase creates the code (`{{ .Token }}`) using its own **Email OTP Length** setting. You're using your own Supabase project, so it uses that setting, and your email shows 8 digits. The Sentia sign-up page assumes the code is always 6 digits:
-- the input field cuts off anything after 6 characters (`maxLength={6}` and `.slice(0, 6)`)
-- "Verify and continue" stays disabled unless the code has exactly 6 digits
-- the check before submitting rejects anything that isn't 6 digits
-- the text on the page and in the error messages says "6-digit code"
+## Dashboard plant cards
+- Keep each card’s plant identity, status, next-watering information and actions intact.
+- Replace the always-visible three sensor tiles with one compact content area that shows **Weather watch today** by default.
+- Show the plant’s weather alerts in that area, or a calm “No weather warnings today” state when there are none.
+- Only when that plant has sensors enabled, add a **View sensors** control that switches the same area to Moisture, Temperature and Light readings.
+- In sensor view, provide a **Weather watch** control to switch back. This is a temporary per-card view choice, so opening or refreshing the dashboard always starts on weather.
+- Plants with sensors disabled will show no sensor control or sensor readings. Sensor availability continues to be controlled only from the individual plant page’s **Enable sensors / Hide sensors** action.
+- Use the existing Sentia card styling and responsive patterns so the reduced content remains clear on mobile and desktop.
 
-So an 8-digit code gets cut to 6 and always fails. Nothing is broken in the email itself.
-
-## Fix (two parts, both recommended)
-
-1. **Make the sign-up page accept any length (in the app)**
-   - Accept codes from 6 to 10 digits, which is the range Supabase allows.
-   - Paste-friendly: strip spaces or dashes, keep digits only.
-   - Turn on "Verify and continue" once the code has at least 6 digits.
-   - Neutral text: "We sent a verification code to ..." and "Please enter the code from your email."
-   - Widen the input slightly so 8 to 10 digits fit with the current spacing between digits.
-   - Keep the same look, no em dashes.
-
-2. **Pick one length in Supabase (you do this)**
-   - Supabase Dashboard, Authentication, then Providers, Email: set **Email OTP Length** to the length you want (6 is the most common and easiest to type). With part 1 in place, 6 or 8 both work.
-
-## Out of scope
-The email template, the Brevo SMTP setup, and the rest of the sign-in flow stay as they are.
+## SMS notifications
+- Present SMS as a disabled, greyed-out notification option with the message **Coming soon**.
+- Keep SMS off in the settings form and save it as disabled, including for an older profile that may previously have had it enabled.
+- Leave in-app and email notification controls unchanged.
 
 ## Technical details
-- File: `src/routes/auth.tsx` only (verify view and `handleVerify`).
-- Constants `OTP_MIN = 6`, `OTP_MAX = 10`. Validate `token.length >= OTP_MIN && token.length <= OTP_MAX`. `verifyOtp({ type: "signup" })` doesn't change.
-- Testing: with a signed-out browser, check that an 8-digit code typed into the field stays complete and enables the button.
+- Update the authenticated dashboard presentation only; reuse the existing `sensor_enabled`, latest reading and weather alert data already returned to the page.
+- Add local per-plant display state for weather versus sensors, without changing the database or sensor setting.
+- Update the settings toggle presentation to support a disabled state and ensure `notify_sms` remains `false` when preferences are saved.
+
+## Validation
+- Check cards for a plant with sensors disabled, a plant with sensors enabled, weather alerts, no weather alerts and missing sensor readings.
+- Confirm the weather/sensor switch works independently on each card and resets to weather after a reload.
+- Confirm SMS is greyed out, cannot be selected and saves as disabled.
+- Verify the dashboard and settings at desktop and mobile widths, then confirm the preview builds cleanly.
